@@ -17,25 +17,24 @@ import Link from "components/Link";
 
 const styles = (theme) => ({
   subNav: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
   },
   listItemRoot: {
-    paddingTop: 16,
-    paddingBottom: 16
+    paddingBottom: 16,
   },
   listItemDense: {
     paddingTop: 4,
-    paddingBottom: 4
+    paddingBottom: 4,
   },
   listItemTextDense: {
-    fontWeight: 400
+    fontWeight: 400,
   },
   listItemGutters: {
-    paddingRight: 0
+    paddingRight: 0,
   },
   subMenuList: {
-    paddingBottom: theme.spacing(2)
-  }
+    paddingBottom: theme.spacing(2),
+  },
 });
 
 class NavigationItemMobile extends Component {
@@ -47,8 +46,8 @@ class NavigationItemMobile extends Component {
     routingStore: PropTypes.object,
     shouldShowDivider: PropTypes.bool,
     uiStore: PropTypes.shape({
-      closeMenuDrawer: PropTypes.func.isRequired
-    })
+      closeMenuDrawer: PropTypes.func.isRequired,
+    }),    
   };
 
   static defaultProps = {
@@ -57,7 +56,7 @@ class NavigationItemMobile extends Component {
     navItem: {},
     onClick() {},
     routingStore: {},
-    shouldShowDivider: true
+    shouldShowDivider: true,
   };
 
   state = { isSubNavOpen: false };
@@ -70,7 +69,9 @@ class NavigationItemMobile extends Component {
   }
 
   get hasSubNavItems() {
-    const { navItem: { items } } = this.props;
+    const {
+      navItem: { items },
+    } = this.props;
     return Array.isArray(items) && items.length > 0;
   }
 
@@ -93,14 +94,24 @@ class NavigationItemMobile extends Component {
   };
 
   renderSubNav() {
-    const { classes, isTopLevel, navItem: { items }, uiStore, routingStore } = this.props;
+    const {
+      classes,
+      isTopLevel,
+      navItem: { items },
+      uiStore,
+      routingStore,
+    } = this.props;
 
     if (this.hasSubNavItems && !isTopLevel) {
       return (
         <Collapse in={this.state.isSubNavOpen} timeout="auto" unmountOnExit>
           <MenuList className={classes.subMenuList} component="div" disablePadding>
             {items.map((item, index) => {
-              const { navigationItem: { data: { classNames: navigationItemClassNames, isUrlRelative, shouldOpenInNewWindow } } } = item;
+              const {
+                navigationItem: {
+                  data: { classNames: navigationItemClassNames, isUrlRelative, shouldOpenInNewWindow },
+                },
+              } = item;
 
               return (
                 <Link
@@ -152,29 +163,26 @@ class NavigationItemMobile extends Component {
   }
 
   render() {
-    const { classes, navItem: { navigationItem: { data } }, shouldShowDivider } = this.props;
+    const {
+      classes,
+      navItem: {
+        navigationItem: { data },
+      },
+      shouldShowDivider,
+    } = this.props;
 
-    const listItemClasses = classNames(
-      data.classNames,
-      {
-        root: classes.listItemRoot,
-        dense: classes.listItemDense,
-        gutters: classes.listItemGutters
-      }
-    );
+    const listItemClasses = classNames(data.classNames, {
+      root: classes.listItemRoot,
+      dense: classes.listItemDense,
+      gutters: classes.listItemGutters,
+    });
 
     return (
       <Fragment>
-        <ListItem
-          button
-          classes={listItemClasses}
-          color="inherit"
-          dense={!shouldShowDivider}
-          onClick={this.onClick}
-        >
+        <ListItem button classes={listItemClasses} color="inherit" dense={!shouldShowDivider} onClick={this.onClick}>
           <ListItemText
             classes={{
-              textDense: classes.listItemTextDense
+              textDense: classes.listItemTextDense,
             }}
             primary={data.contentForLanguage}
           />

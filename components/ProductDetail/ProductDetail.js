@@ -17,16 +17,21 @@ import priceByCurrencyCode from "lib/utils/priceByCurrencyCode";
 import variantById from "lib/utils/variantById";
 
 const styles = (theme) => ({
-  section: {
-    marginBottom: theme.spacing(2)
-  },
-  breadcrumbGrid: {
-    marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(2)
-  },
-  info: {
-    marginBottom: theme.spacing()
-  }
+	section: {
+		marginBottom: theme.spacing(2),
+		marginLeft:"auto",
+		marginRight:"auto"
+	},
+	breadcrumbGrid: {
+		marginBottom: theme.spacing(2),
+		marginTop: theme.spacing(2)
+	},
+	info: {
+		marginBottom: theme.spacing()
+	},
+	page: {
+		padding: theme.spacing(3)
+	}
 });
 
 /**
@@ -37,44 +42,44 @@ const styles = (theme) => ({
  */
 class ProductDetail extends Component {
   static propTypes = {
-    /**
+  	/**
      * Function to add items to a cart.
      * Implementation may be provided by addItemsToCart function from the @withCart decorator
      *
      * @example addItemsToCart(CartItemInput)
      * @type Function
      */
-    addItemsToCart: PropTypes.func,
-    classes: PropTypes.object,
-    currencyCode: PropTypes.string.isRequired,
-    product: PropTypes.object,
-    routingStore: PropTypes.object.isRequired,
-    shop: PropTypes.object.isRequired,
-    theme: PropTypes.object,
-    uiStore: PropTypes.object.isRequired,
-    width: PropTypes.string.isRequired
+  	addItemsToCart: PropTypes.func,
+  	classes: PropTypes.object,
+  	currencyCode: PropTypes.string.isRequired,
+  	product: PropTypes.object,
+  	routingStore: PropTypes.object.isRequired,
+  	shop: PropTypes.object.isRequired,
+  	theme: PropTypes.object,
+  	uiStore: PropTypes.object.isRequired,
+  	width: PropTypes.string.isRequired
   };
 
   componentDidMount() {
-    const { product } = this.props;
+  	const { product } = this.props;
 
-    // Select first variant by default
-    this.selectVariant(product.variants[0]);
+  	// Select first variant by default
+  	this.selectVariant(product.variants[0]);
   }
 
   selectVariant(variant, optionId) {
-    const { product, uiStore } = this.props;
+  	const { product, uiStore } = this.props;
 
-    // Select the variant, and if it has options, the first option
-    const variantId = variant._id;
-    let selectOptionId = optionId;
-    if (!selectOptionId && variant.options && variant.options.length) {
-      selectOptionId = variant.options[0]._id;
-    }
+  	// Select the variant, and if it has options, the first option
+  	const variantId = variant._id;
+  	let selectOptionId = optionId;
+  	if (!selectOptionId && variant.options && variant.options.length) {
+  		selectOptionId = variant.options[0]._id;
+  	}
 
-    uiStore.setPDPSelectedVariantId(variantId, selectOptionId);
+  	uiStore.setPDPSelectedVariantId(variantId, selectOptionId);	
 
-    Router.replace("/product/[...slugOrId]", `/product/${product.slug}/${selectOptionId || variantId}`);
+  	Router.replace("/product/[...slugOrId]", `/product/${product.slug}/${selectOptionId || variantId}`);
   }
 
   /**
@@ -86,7 +91,7 @@ class ProductDetail extends Component {
    * @returns {undefined} No return
    */
   handleSelectVariant = (variant) => {
-    this.selectVariant(variant);
+  	this.selectVariant(variant);
   };
 
   /**
@@ -98,42 +103,42 @@ class ProductDetail extends Component {
    * @returns {undefined} No return
    */
   handleAddToCartClick = async (quantity) => {
-    const {
-      addItemsToCart,
-      currencyCode,
-      product,
-      uiStore: { openCartWithTimeout, pdpSelectedOptionId, pdpSelectedVariantId },
-      width
-    } = this.props;
+  	const {
+  		addItemsToCart,
+  		currencyCode,
+  		product,
+  		uiStore: { openCartWithTimeout, pdpSelectedOptionId, pdpSelectedVariantId },
+  		width
+  	} = this.props;
 
-    // Get selected variant or variant option
-    const selectedVariant = variantById(product.variants, pdpSelectedVariantId);
-    const selectedOption = variantById(selectedVariant.options, pdpSelectedOptionId);
-    const selectedVariantOrOption = selectedOption || selectedVariant;
+  	// Get selected variant or variant option
+  	const selectedVariant = variantById(product.variants, pdpSelectedVariantId);
+  	const selectedOption = variantById(selectedVariant.options, pdpSelectedOptionId);
+  	const selectedVariantOrOption = selectedOption || selectedVariant;
 
-    if (selectedVariantOrOption) {
-      // Get the price for the currently selected variant or variant option
-      const price = priceByCurrencyCode(currencyCode, selectedVariantOrOption.pricing);
+  	if (selectedVariantOrOption) {
+  		// Get the price for the currently selected variant or variant option
+  		const price = priceByCurrencyCode(currencyCode, selectedVariantOrOption.pricing);
 
-      // Call addItemsToCart with an object matching the GraphQL `CartItemInput` schema
-      await addItemsToCart([
-        {
-          price: {
-            amount: price.price,
-            currencyCode
-          },
-          productConfiguration: {
-            productId: product.productId, // Pass the productId, not to be confused with _id
-            productVariantId: selectedVariantOrOption.variantId // Pass the variantId, not to be confused with _id
-          },
-          quantity
-        }
-      ]);
-    }
-    if (isWidthUp("md", width)) {
-      // Open the cart, and close after a 3 second delay
-      openCartWithTimeout(3000);
-    }
+  		// Call addItemsToCart with an object matching the GraphQL `CartItemInput` schema
+  		await addItemsToCart([
+  			{
+  				price: {
+  					amount: price.price,
+  					currencyCode
+  				},
+  				productConfiguration: {
+  					productId: product.productId, // Pass the productId, not to be confused with _id
+  					productVariantId: selectedVariantOrOption.variantId // Pass the variantId, not to be confused with _id
+  				},
+  				quantity
+  			}
+  		]);
+  	}
+  	if (isWidthUp("md", width)) {
+  		// Open the cart, and close after a 3 second delay
+  		openCartWithTimeout(3000);
+  	}
   };
 
   /**
@@ -145,12 +150,12 @@ class ProductDetail extends Component {
    * @returns {undefined} No return
    */
   handleSelectOption = (option) => {
-    const { product, uiStore } = this.props;
+  	const { product, uiStore } = this.props;
 
-    // If we are clicking an option, it must be for the current selected variant
-    const variant = product.variants.find((vnt) => vnt._id === uiStore.pdpSelectedVariantId);
+  	// If we are clicking an option, it must be for the current selected variant
+  	const variant = product.variants.find((vnt) => vnt._id === uiStore.pdpSelectedVariantId);
 
-    this.selectVariant(variant, option._id);
+  	this.selectVariant(variant, option._id);
   };
 
   /**
@@ -160,145 +165,134 @@ class ProductDetail extends Component {
    * @returns {Object} An pricing object
    */
   determineProductPrice() {
-    const { currencyCode, product } = this.props;
-    const { pdpSelectedVariantId, pdpSelectedOptionId } = this.props.uiStore;
-    const selectedVariant = variantById(product.variants, pdpSelectedVariantId);
-    let productPrice = {};
+  	const { currencyCode, product } = this.props;
+  	const { pdpSelectedVariantId, pdpSelectedOptionId } = this.props.uiStore;
+  	const selectedVariant = variantById(product.variants, pdpSelectedVariantId);
+  	let productPrice = {};
 
-    if (pdpSelectedOptionId && selectedVariant) {
-      const selectedOption = variantById(selectedVariant.options, pdpSelectedOptionId);
-      productPrice = priceByCurrencyCode(currencyCode, selectedOption.pricing);
-    } else if (!pdpSelectedOptionId && selectedVariant) {
-      productPrice = priceByCurrencyCode(currencyCode, selectedVariant.pricing);
-    }
+  	if (pdpSelectedOptionId && selectedVariant) {
+  		const selectedOption = variantById(selectedVariant.options, pdpSelectedOptionId);
+  		productPrice = priceByCurrencyCode(currencyCode, selectedOption.pricing);
+  	} else if (!pdpSelectedOptionId && selectedVariant) {
+  		productPrice = priceByCurrencyCode(currencyCode, selectedVariant.pricing);
+  	}
 
-    return productPrice;
+  	return productPrice;
   }
 
   render() {
-    const {
-      classes,
-      currencyCode,
-      product,
-      routingStore,
-      uiStore: { pdpSelectedOptionId, pdpSelectedVariantId },
-      width
-    } = this.props;
+  	const {
+  		classes,
+  		currencyCode,
+  		product,
+  		routingStore,
+  		uiStore: { pdpSelectedOptionId, pdpSelectedVariantId },
+  		width
+  	} = this.props;
 
-    // Set the default media as the top-level product's media
-    // (all media on all variants and objects)
-    let pdpMediaItems = product.media;
+  	// Set the default media as the top-level product's media
+  	// (all media on all variants and objects)
+  	let pdpMediaItems = product.media;
 
-    // If we have a selected variant (we always should)
-    // check to see if media is available, and use this media instead
-    // Revert to original media if variant doesn't have specific media
-    const selectedVariant = product.variants.find((variant) => variant._id === pdpSelectedVariantId);
-    if (selectedVariant) {
-      if (selectedVariant.media && selectedVariant.media.length) {
-        pdpMediaItems = selectedVariant.media;
-      }
+  	// If we have a selected variant (we always should)
+  	// check to see if media is available, and use this media instead
+  	// Revert to original media if variant doesn't have specific media
+  	const selectedVariant = product.variants.find((variant) => variant._id === pdpSelectedVariantId);
+  	if (selectedVariant) {
+  		if (selectedVariant.media && selectedVariant.media.length) {
+  			pdpMediaItems = selectedVariant.media;
+  		}
 
-      // If we have a selected option, do the same check
-      // Will revert to variant check if no option media is available
-      if (Array.isArray(selectedVariant.options) && selectedVariant.options.length) {
-        const selectedOption = selectedVariant.options.find((option) => option._id === pdpSelectedOptionId);
-        if (selectedOption) {
-          if (selectedOption.media && selectedOption.media.length) {
-            pdpMediaItems = selectedOption.media;
-          }
-        }
-      }
-    }
+  		// If we have a selected option, do the same check
+  		// Will revert to variant check if no option media is available
+  		if (Array.isArray(selectedVariant.options) && selectedVariant.options.length) {
+  			const selectedOption = selectedVariant.options.find((option) => option._id === pdpSelectedOptionId);
+  			if (selectedOption) {
+  				if (selectedOption.media && selectedOption.media.length) {
+  					pdpMediaItems = selectedOption.media;
+  				}
+  			}
+  		}
+  	}
 
-    const productPrice = this.determineProductPrice();
-    const compareAtDisplayPrice = (productPrice.compareAtPrice && productPrice.compareAtPrice.displayAmount) || null;
+  	const productPrice = this.determineProductPrice();
+	console.log(productPrice)
+  	const compareAtDisplayPrice = (productPrice.compareAtPrice && productPrice.compareAtPrice.displayAmount) || null;
 
 
-    // Phone size
-    if (isWidthDown("sm", width)) {
-      return (
-        <Fragment>
-          <div className={classes.section}>
-            <ProductDetailTitle pageTitle={product.pageTitle} title={product.title} />
-            <div className={classes.info}>
-              <ProductDetailVendor>{product.vendor}</ProductDetailVendor>
-            </div>
-            <div className={classes.info}>
-              <ProductDetailPrice compareAtPrice={compareAtDisplayPrice} isCompact price={productPrice.displayPrice} />
-            </div>
-          </div>
+  	// Phone size
+  	if (isWidthDown("sm", width)) {
+  		return (
+  			<Fragment>
+  				<div className={classes.section}>
+  					<ProductDetailTitle pageTitle={product.pageTitle} title={product.title} />
+  					<div className={classes.info}>
+  						<ProductDetailVendor>{product.vendor}</ProductDetailVendor>
+  					</div>
+  					<div className={classes.info}>
+  						<ProductDetailPrice compareAtPrice={compareAtDisplayPrice} isCompact price={productPrice.displayPrice} />
+  					</div>
+					
+					<Grid container>
+						<Grid item xs={10} md={10} sm={10}> 
+						<ProductDetailDescription estilo={"15px"}>{product.description}</ProductDetailDescription> 
+						</Grid>					  
+					</Grid>
+					  <MediaGallery mediaItems={pdpMediaItems} />
 
-          <div className={classes.section}>
-            <MediaGallery mediaItems={pdpMediaItems} />
-          </div>
-
-          <div className={classes.section}>
-            <VariantList
-              onSelectOption={this.handleSelectOption}
-              onSelectVariant={this.handleSelectVariant}
-              product={product}
-              selectedOptionId={pdpSelectedOptionId}
-              selectedVariantId={pdpSelectedVariantId}
-              currencyCode={currencyCode}
-              variants={product.variants}
-            />
-            <ProductDetailAddToCart
-              onClick={this.handleAddToCartClick}
-              selectedOptionId={pdpSelectedOptionId}
-              selectedVariantId={pdpSelectedVariantId}
-              variants={product.variants}
-            />
-          </div>
-
-          <div className={classes.section}>
-            <ProductDetailDescription>{product.description}</ProductDetailDescription>
-          </div>
-        </Fragment>
-      );
-    }
-
-    return (
-      <Fragment>
-        <Grid container spacing={5}>
-          <Grid item className={classes.breadcrumbGrid} xs={12}>
-            <Breadcrumbs isPDP tagId={routingStore.tagId} product={product} />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <div className={classes.section}>
-              <MediaGallery mediaItems={pdpMediaItems} />
-            </div>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <ProductDetailTitle pageTitle={product.pageTitle} title={product.title} />
-            <div className={classes.info}>
-              <ProductDetailVendor>{product.vendor}</ProductDetailVendor>
-            </div>
-            <div className={classes.info}>
-              <ProductDetailPrice className={classes.bottomMargin} compareAtPrice={compareAtDisplayPrice} price={productPrice.displayPrice} />
-            </div>
-            <div className={classes.info}>
-              <ProductDetailDescription>{product.description}</ProductDetailDescription>
-            </div>
-            <VariantList
-              onSelectOption={this.handleSelectOption}
-              onSelectVariant={this.handleSelectVariant}
-              product={product}
-              selectedOptionId={pdpSelectedOptionId}
-              selectedVariantId={pdpSelectedVariantId}
-              currencyCode={currencyCode}
-              variants={product.variants}
-            />
-            <ProductDetailAddToCart
-              onClick={this.handleAddToCartClick}
-              selectedOptionId={pdpSelectedOptionId}
-              selectedVariantId={pdpSelectedVariantId}
-              variants={product.variants}
-            />
-          </Grid>
-        </Grid>
-      </Fragment>
-    );
+					  <ProductDetailAddToCart
+  						onClick={this.handleAddToCartClick}
+  						selectedOptionId={pdpSelectedOptionId}
+  						selectedVariantId={pdpSelectedVariantId}
+  						variants={product.variants}
+  					/>
+  				</div>
+  				
+  			</Fragment>
+  		);
+  	}
+	
+  	return (
+  		<div className = { classes.page }>
+  			<Grid container spacing={5}>
+  				{/* <Grid item className={classes.breadcrumbGrid} xs={12}>
+  					<Breadcrumbs isPDP tagId={routingStore.tagId} product={product} />
+  				</Grid> */}
+  				<Grid item xs={12} sm={6}>
+  					<div className={classes.section}>
+  						<MediaGallery mediaItems={pdpMediaItems} />
+  					</div>
+  				</Grid>
+  				<Grid item xs={12} sm={6} md={6}>
+  					<ProductDetailTitle pageTitle={product.pageTitle} title={product.title} />
+  					<div className={classes.info}>
+  						<ProductDetailVendor>{product.vendor}</ProductDetailVendor>
+  					</div>
+  					<div className={classes.info}>
+  						<ProductDetailPrice className={classes.bottomMargin} compareAtPrice={compareAtDisplayPrice} price={productPrice.displayPrice} />
+  					</div>
+  					<div className={classes.info}>
+  						<ProductDetailDescription estilo={"15px"}>{product.description}</ProductDetailDescription>
+  					</div>
+  					{/* <VariantList
+  						onSelectOption={this.handleSelectOption}
+  						onSelectVariant={this.handleSelectVariant}
+  						product={product}
+  						selectedOptionId={pdpSelectedOptionId}
+  						selectedVariantId={pdpSelectedVariantId}
+  						currencyCode={currencyCode}
+  						variants={product.variants}
+  					/> */}
+  					<ProductDetailAddToCart
+  						onClick={this.handleAddToCartClick}
+  						selectedOptionId={pdpSelectedOptionId}
+  						selectedVariantId={pdpSelectedVariantId}
+  						variants={product.variants}
+  					/>
+  				</Grid>
+  			</Grid>
+  		</div>
+  	);
   }
 }
 

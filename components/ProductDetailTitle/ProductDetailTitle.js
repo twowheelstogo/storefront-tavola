@@ -9,33 +9,33 @@ import Grid from "@material-ui/core/Grid";
  */
 class ProductDetailTitle extends Component {
   static propTypes = {
-    /**
+  	/**
      * Subtitle
      */
-    pageTitle: PropTypes.string,
+  	pageTitle: PropTypes.string,
 
-    /**
+  	/**
      * Main title, the h1 for the page
      */
-    title: PropTypes.string,
+  	title: PropTypes.string,
 
-    /**
+  	/**
      * Typography theme variant
      */
-    variant: PropTypes.string
+  	variant: PropTypes.string
   }
   render() {
-    const { pageTitle, title, variant = "h3" } = this.props;
+  	const { pageTitle, title, variant = "h3" } = this.props;
 
-    // Render nothing if neither the title nor pageTitle exists
-    if (!title && !pageTitle) return null;
+  	// Render nothing if neither the title nor pageTitle exists
+  	if (!title && !pageTitle) return null;
 
-    return (
-      <Grid item sm={12}>
-        {title && <Typography color="textSecondary" gutterBottom={true} variant={variant}>{title}</Typography>}
-        {pageTitle && <Typography color="primary" component="h2" variant="h6">{pageTitle}</Typography>}
-      </Grid>
-    );
+  	return (
+  		<Grid item sm={12}>
+  			{title && <Typography style={{color:"#000",fontSize:"30px"}} gutterBottom={true} variant={variant}>{title}</Typography>}
+  			{pageTitle && <Typography style={{color:"#000"}} component="h2" variant="h6">{pageTitle}</Typography>}
+  		</Grid>
+  	);
   }
 }
 

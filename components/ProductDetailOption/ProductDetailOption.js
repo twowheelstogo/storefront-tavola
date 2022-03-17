@@ -9,41 +9,41 @@ import styles from "./styles";
 
 class ProductDetailOption extends Component {
   static propTypes = {
-    classes: PropTypes.object,
-    isActive: PropTypes.bool,
-    onClick: PropTypes.func,
-    option: PropTypes.object
+  	classes: PropTypes.object,
+  	isActive: PropTypes.bool,
+  	onClick: PropTypes.func,
+  	option: PropTypes.object
   }
 
   handleOnClick = () => {
-    this.props.onClick && this.props.onClick(this.props.option);
+  	this.props.onClick && this.props.onClick(this.props.option);
   }
 
   render() {
-    const {
-      classes: { isSelected, optionButton, optionText, soldOutOption },
-      isActive,
-      option
-    } = this.props;
+  	const {
+  		classes: { isSelected, optionButton, optionText, soldOutOption },
+  		isActive,
+  		option
+  	} = this.props;
 
-    const optionInventoryStatus = inventoryStatus(option, STATUS_LABELS);
+  	const optionInventoryStatus = inventoryStatus(option, STATUS_LABELS);
 
-    return (
-      <ButtonBase
-        disableRipple
-        onClick={this.handleOnClick}
-        className={classNames(
-          optionButton,
-          { [isSelected]: isActive || false },
-          { [soldOutOption]: optionInventoryStatus && optionInventoryStatus.type === "SOLD_OUT" }
-        )
-        }
-      >
-        <Typography className={optionText} component="span" variant="body1">
-          {option.optionTitle}
-        </Typography>
-      </ButtonBase>
-    );
+  	return (
+  		<ButtonBase
+  			disableRipple
+  			onClick={this.handleOnClick}
+  			className={classNames(
+  				optionButton,
+  				{ [isSelected]: isActive || false },
+  				{ [soldOutOption]: optionInventoryStatus && optionInventoryStatus.type === "SOLD_OUT" }
+  			)
+  			}
+  		>
+  			<Typography className={optionText} component="span" variant="body1">
+  				{option.optionTitle}
+  			</Typography>
+  		</ButtonBase>
+  	);
   }
 }
 

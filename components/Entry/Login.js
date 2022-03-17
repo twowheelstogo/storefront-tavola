@@ -17,21 +17,25 @@ const useStyles = makeStyles((theme) => ({
     "flexDirection": "column",
     "& > *": {
       margin: theme.spacing(1)
-    }
+    },
+    backgroundColor: theme.palette.colors.TextThemeTitle,     
+    color: theme.palette.colors.TextTheme,
   },
   forgotPassword: {
     textDecoration: "underline",
     fontStyle: "italic",
     cursor: "pointer",
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
+    color: theme.palette.colors.TextTheme,
   },
   switchEntryMode: {
     textAlign: "center",
     textDecoration: "underline",
     cursor: "pointer",
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
+    color: theme.palette.colors.TextTheme,
   },
   error: {
     marginTop: theme.spacing(2),
@@ -39,6 +43,21 @@ const useStyles = makeStyles((theme) => ({
     color: red[500],
     fontSize: "1.1em",
     textAlign: "center"
+  },
+  BotonPrincipal:{
+    backgroundColor: theme.palette.secondary.botones,    
+    color: theme.palette.colors.BotonColor,
+    borderColor: theme.palette.secondary.botones, 
+    fontWeight: "800",
+    fontSize:"18px",    
+    "&:hover": {      
+      backgroundColor: theme.palette.secondary.botones,    
+      color: theme.palette.colors.BotonColor,
+      borderColor: theme.palette.secondary.botones,   
+      }
+  },
+  Texto_:{
+    color: theme.palette.colors.TextTheme,
   }
 }));
 
@@ -88,21 +107,27 @@ export default function Login(props) {
   };
   return (
     <form className={classes.root} noValidate>
-      <h1>Sign in to your account</h1>
+      <h1>Iniciar sesión en tu cuenta</h1>
       <FormControl>
-        <InputLabel htmlFor="email">Email</InputLabel>
+        <InputLabel htmlFor="email"
+        className={classes.Texto_}
+        >Correo electronico</InputLabel>
         <Input id="email" aria-describedby="email-address" onChange={handleEmailChange} value={email}
           type="email"
+          className={classes.Texto_}
         />
       </FormControl>
       <FormControl>
-        <InputLabel htmlFor="password">Password</InputLabel>
+        <InputLabel htmlFor="password"
+        className={classes.Texto_}
+        >Contraseña</InputLabel>
         <Input
           id="password"
           aria-describedby="password"
           onChange={handlePasswordChange}
           value={password}
           type="password"
+          className={classes.Texto_}
         />
       </FormControl>
       <div
@@ -112,10 +137,12 @@ export default function Login(props) {
         role="button"
         tabIndex={0}
       >
-        Forgot Password?
+        Olvidaste tu contraseña?
       </div>
-      <Button onClick={registerUser} color="primary" variant="contained" role="button">
-        Sign In
+      <Button onClick={registerUser}
+      className={classes.BotonPrincipal}
+      variant="contained" role="button">
+        Iniciar Sesión
       </Button>
       {!!error && <div className={classes.error}>{error}</div>}
       <div
@@ -125,7 +152,7 @@ export default function Login(props) {
         role="button"
         tabIndex={0}
       >
-        Don't have an account? Sign Up
+        ¿No tienes una cuenta? Registrate
       </div>
     </form>
   );

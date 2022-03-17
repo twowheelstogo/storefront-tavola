@@ -22,7 +22,7 @@ export default function withCatalogItems(Component) {
       }),
       uiStore: PropTypes.object.isRequired
     };
-    
+
     render() {
       const { primaryShopId, routingStore, uiStore, tag } = this.props;
       const [sortBy, sortOrder] = uiStore.sortBy.split("-");
@@ -42,7 +42,8 @@ export default function withCatalogItems(Component) {
         tagIds,
         sortBy,
         sortByPriceCurrencyCode: uiStore.sortByCurrencyCode,
-        sortOrder
+        sortOrder,
+        first: 120
       };
 
       return (

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import withStyles from "@material-ui/core/styles/withStyles";
-import ProgressiveImage from "components/ProgressiveImage";
+import ProgressiveImage from "components/ProgressiveImage/v2";
 import MediaGalleryItem from "components/MediaGalleryItem";
 
 const styles = (theme) => ({
@@ -16,7 +16,7 @@ const styles = (theme) => ({
   },
   featuredImage: {
     flex: 0,
-    height: "100%"
+    height: "90%"
   }
 });
 
@@ -62,16 +62,20 @@ class MediaGallery extends Component {
   renderPlaceHolderImg = () => {
     const placeholderURL = "/images/placeholder.gif";
     return (
-      <ProgressiveImage
-        presrc={placeholderURL}
+      <img
         src={placeholderURL}
+        width={100}
+        height={416}
       />
+      // <ProgressiveImage
+      //   presrc={placeholderURL}
+      //   src={placeholderURL}
+      // />
     );
   }
 
   renderFeaturedImage() {
     const { mediaItems } = this.props;
-
     // Render placeholder, when product does not have images set.
     if (Array.isArray(mediaItems) && mediaItems.length === 0) {
       return this.renderPlaceHolderImg();
@@ -92,14 +96,6 @@ class MediaGallery extends Component {
       <Grid container className={classes.root}>
         <Grid item xs={12} sm={12}>
           <div className={classes.featured}>{this.renderFeaturedImage()}</div>
-
-          <Grid container spacing={1}>
-            {mediaItems.map((media, index) => (
-              <Grid item key={index} xs={3} sm={2}>
-                <MediaGalleryItem index={index} media={media} onClick={this.handleMediaItemClick} />
-              </Grid>
-            ))}
-          </Grid>
         </Grid>
       </Grid>
     );

@@ -1,0 +1,15 @@
+#import "./tagFragment.gql"
+
+query tagsQuery($shopId: ID!, $cursor: ConnectionCursor, $metakey: String) {
+  tags(shopId: $shopId, metakey: $metakey, first: 200, after: $cursor, sortBy: createdAt) {
+    pageInfo {
+      endCursor
+      startCursor
+      hasNextPage
+    }
+    nodes {
+      ...TagInfo
+    }
+  }
+}
+
