@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+set -o errexit  # always exit on error
+set -o pipefail # don't ignore exit codes when piping output
+# set -x          # enable debugging
+
+IFS="$(printf "\n\t")"
+
+cd "$(dirname "$0")/.."
+yarn install
+
+yarn start:dev
