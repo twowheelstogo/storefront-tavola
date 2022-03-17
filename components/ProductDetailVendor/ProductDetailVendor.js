@@ -8,20 +8,20 @@ import Typography from "@material-ui/core/Typography";
  */
 class ProductDetailVendor extends Component {
   static propTypes = {
-    /**
+  	/**
      * Product vendor
      */
-    children: PropTypes.string
+  	children: PropTypes.string
   }
 
   render() {
-    const { children, ...props } = this.props;
+  	const { children, ...props } = this.props;
 
-    if (!children) return null;
+  	if (!children) return null;
 
-    return (
-      <Typography component="div" {...props}>{children}</Typography>
-    );
+  	return (
+  		<Typography component="div" {...props}>{children}</Typography>
+  	);
   }
 }
 

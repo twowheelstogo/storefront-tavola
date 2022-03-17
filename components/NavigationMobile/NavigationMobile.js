@@ -18,25 +18,26 @@ import NavigationSubMenuMobile from "./NavigationSubMenuMobile";
 const styles = (theme) => ({
   root: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   header: {
-    flex: "0 0 auto"
+    flex: "0 0 auto",
   },
   toolbarTitle: {
     position: "absolute",
     width: "100%",
-    textAlign: "center"
+    height: "auto",
+    textAlign: "center",
   },
   title: {
     display: "inline-block",
     color: theme.palette.reaction.reactionBlue,
-    borderBottom: `solid 5px ${theme.palette.reaction.reactionBlue200}`
+    borderBottom: `solid 5px ${theme.palette.reaction.reactionBlue200}`,
   },
   menu: {
     flex: "1 1 auto",
     overflowY: "auto",
-    width: 320
+    width: 320,
   },
   subNav: {
     position: "absolute",
@@ -44,49 +45,66 @@ const styles = (theme) => ({
     left: 0,
     width: 320,
     height: "100vh",
-    backgroundColor: theme.palette.background.default
+    backgroundColor: theme.palette.background.default,
+  },  
+  logo: {
+    margin: theme.spacing(2, 0),
+    width: 75,
+    height: "auto",
+  },
+  Toolbar_ : {
+    backgroundColor: theme.palette.background.theme_,    
+    color: theme.palette.colors.TextTheme,
+  },
+  CloseIcon_:{
+    color: theme.palette.colors.TextTheme,
+  },
+  Divider_:{
+    backgroundColor: theme.palette.colors.TextTheme, 
+    height: "3px"
+  },
+  MenuList_:{    
+    backgroundColor: theme.palette.background.theme_,    
+    color: theme.palette.colors.TextTheme,
+      height: "100%",    
+      "& .MuiDivider-root": {
+        borderBottomStyle: "solid",
+      },
   }
 });
 
 class NavigationMobile extends Component {
   static propTypes = {
     classes: PropTypes.object,
+    Logo: PropTypes.string,
     navItems: PropTypes.object,
     shop: PropTypes.shape({
-      name: PropTypes.string
+      name: PropTypes.string,
     }),
     uiStore: PropTypes.shape({
-      closeMenuDrawer: PropTypes.func
-    }).isRequired
+      closeMenuDrawer: PropTypes.func,
+    }).isRequired,
+    ModalMenuColores: PropTypes.object,
   };
 
   static defaultProps = {
     classes: {},
-    navItems: {}
+    navItems: {},
   };
 
   state = {
-    navItem: null
-  }
+    navItem: null,
+  };
 
   handleNavItemClick = (navItem) => {
     this.setState({
-      navItem
+      navItem,
     });
-  }
+  };
 
   handleCloseSubMenu = () => {
     this.setState({ navItem: null });
-  }
-
-  renderNavItem = (navItem, index) => (
-    <NavigationItemMobile
-      key={index}
-      isTopLevel
-      navItem={navItem}
-      onClick={this.handleNavItemClick}
-    />
-  );
+  };
 
   handleClose = () => {
     this.handleCloseSubMenu();
@@ -94,35 +112,53 @@ class NavigationMobile extends Component {
   };
 
   render() {
-    const { classes, navItems, uiStore, shop } = this.props;
+    const { classes, navItems, uiStore, shop, Logo } = this.props;
+
+    const renderNavItem = (navItem, index) => (
+    
+        <NavigationItemMobile
+          key={index}
+          isTopLevel
+          navItem={navItem}
+          onClick={this.handleNavItemClick}          
+        />
+ 
+    );
 
     if (navItems && navItems.items) {
       return (
         <Drawer open={uiStore.isMenuDrawerOpen} onClose={this.handleClose}>
           <div className={classes.header}>
-            <Toolbar disableGutters>
-              <div className={classes.toolbarTitle}>
-                <Typography className={classes.title} color="inherit" variant="h6">
-                  <Link route="/" onClick={this.handleClose}>
-                    {shop ? <ShopLogo shopName={shop.name} /> : "Example Storefront"}
-                  </Link>
-                </Typography>
+            <Toolbar
+              disableGutters
+              className={classes.Toolbar_}
+            >
+              <div className={classes.toolbarTitle}>              
+                <Link route="/">
+                  <img
+                    // src = 'https://firebasestorage.googleapis.com/v0/b/twg-rrhh.appspot.com/o/company-logos%2Flulis-logo%20(2).png?alt=media&token=50e9772a-81c8-43d8-ba5d-29c70ed918c4'
+                    src={Logo}
+                    className={classes.logo}
+                  />
+                </Link>
               </div>
               <IconButton onClick={this.handleClose}>
-                <CloseIcon />
+                <CloseIcon className={classes.CloseIcon_} />
               </IconButton>
             </Toolbar>
-            <Divider />
+            <Divider className={classes.Divider_} />
           </div>
           <nav className={classes.menu}>
-            <MenuList disablePadding>{navItems.items.map(this.renderNavItem)}</MenuList>
+            <MenuList
+              className={classes.MenuList_}              
+              disablePadding              
+            >
+              {navItems.items.map(renderNavItem)}
+            </MenuList>
           </nav>
           <Slide direction="left" in={!!this.state.navItem}>
             <nav className={classes.subNav}>
-              <NavigationSubMenuMobile
-                navItem={this.state.navItem}
-                onBackButtonClick={this.handleCloseSubMenu}
-              />
+              <NavigationSubMenuMobile navItem={this.state.navItem} onBackButtonClick={this.handleCloseSubMenu} />
             </nav>
           </Slide>
         </Drawer>

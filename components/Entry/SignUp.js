@@ -15,16 +15,19 @@ const useStyles = makeStyles((theme) => ({
   root: {
     "display": "flex",
     "flexDirection": "column",
+    "width": "400px",
     "& > *": {
       margin: theme.spacing(1)
-    }
+    },
+    color: theme.palette.colors.TextTheme,
   },
   switchEntryMode: {
     textAlign: "center",
     textDecoration: "underline",
     cursor: "pointer",
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
+    color: theme.palette.colors.TextTheme,
   },
   error: {
     marginTop: theme.spacing(2),
@@ -34,7 +37,20 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center"
   },
   signUpButton: {
-    marginTop: theme.spacing(4)
+    marginTop: theme.spacing(4),
+    backgroundColor: theme.palette.secondary.botones,
+    color: theme.palette.colors.BotonColor,
+    borderColor: theme.palette.secondary.botones,
+    fontWeight: "800",
+    fontSize: "18px",
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.botones,
+      color: theme.palette.colors.BotonColor,
+      borderColor: theme.palette.secondary.botones,
+    }
+  },
+  Texto_: {
+    color: theme.palette.colors.TextTheme,
   }
 }));
 
@@ -76,21 +92,23 @@ export default function SignUp(props) {
   };
   return (
     <form className={classes.root} noValidate>
-      <h1>Create your account</h1>
+      <h1>Crear una cuenta</h1>
       <FormControl>
-        <InputLabel htmlFor="email">Email</InputLabel>
+        <InputLabel htmlFor="email" className={classes.Texto_}>Correo electronico</InputLabel>
         <Input id="email" aria-describedby="email-address" onChange={handleEmailChange} value={email}
           type="email"
+          className={classes.Texto_}
         />
       </FormControl>
       <FormControl>
-        <InputLabel htmlFor="password">Password</InputLabel>
+        <InputLabel htmlFor="password" className={classes.Texto_}>Contraseña</InputLabel>
         <Input
           id="password"
           aria-describedby="password"
           onChange={handlePasswordChange}
           value={password}
           type="password"
+          className={classes.Texto_}
         />
       </FormControl>
       <Button
@@ -101,7 +119,7 @@ export default function SignUp(props) {
         tabIndex="0"
         role="button"
       >
-        Sign Up
+        Registrarse
       </Button>
       {!!error && <div className={classes.error}>{error}</div>}
       <div
@@ -111,7 +129,7 @@ export default function SignUp(props) {
         role="button"
         tabIndex={0}
       >
-        Already have an account? Log In
+        ¿Ya tienes una cuenta? Iniciar sesión
       </div>
     </form>
   );

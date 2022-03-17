@@ -3,13 +3,11 @@ import PropTypes from "prop-types";
 import { ContainerQuery } from "react-container-query";
 import styled from "styled-components";
 import { applyTheme } from "@reactioncommerce/components/utils";
-
 const imageContainerQueries = {
   isLargeWidth: {
     minWidth: 301 // Use medium image (600px) until container width is greater than image width / 2 (up to 2x scaling)
   }
 };
-
 /**
  * @file Image component does a "Medium/Instagram" like progressive loading effect for images.
  * To achieve this the component first renders an img element with a tiny version of the full resolution image.
@@ -18,30 +16,18 @@ const imageContainerQueries = {
  * Once the buffer loads the full resolution image the blurred low res img will fade out revealing the full res image.
  *
  */
-
 const ImageWrapper = styled.div`
-  background-color: ${applyTheme("ProgressiveImage.backgroundColor")};
-  display: block;
-  height: 0;
   overflow: hidden;
-  padding-top: 100%;
-  position: relative;
+  height: 110px;
   width: 100%;
 `;
-
 const Img = styled.img`
   width: ${({ fit }) => (fit === "contain" && "100%") || "auto"};
   height: ${({ fit }) => (fit === "cover" && "100%") || "auto"};
-  left: 50%;
   opacity: 1;
-  position: absolute;
   transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  top: 50%;
-  transform: translate(-50%, -50%);
-
   ${({ isLoading, isLoaded, isHidden }) => {
     let styles = "";
-
     if (isLoading) {
       styles += `
         filter: blur(8px);
@@ -53,11 +39,9 @@ const Img = styled.img`
     if (isHidden) {
       styles += "opacity: 0;";
     }
-
     return styles;
   }}
 `;
-
 class ProgressiveImage extends Component {
   static propTypes = {
     /**
@@ -92,35 +76,28 @@ class ProgressiveImage extends Component {
       small: PropTypes.string
     })
   };
-
   static defaultProps = {
     altText: "",
     fit: "contain"
   };
-
   state = { ready: false };
-
   componentDidMount() {
     this._mounted = true;
     if (typeof window !== "undefined") {
       this.lazyLoad();
     }
   }
-
   componentWillUnmount() {
     this._mounted = false;
   }
-
   /**
    * Private check for component mount, used in image buffer
    */
   _mounted = false;
-
   /**
    * Private prop for the img wrapper div, used in intersection observer
    */
   _wrapper = null;
-
   /**
    *
    * @method supportIntersectionObserver
@@ -133,7 +110,6 @@ class ProgressiveImage extends Component {
     }
     return "IntersectionObserver" in window;
   }
-
   /**
    *
    * @method lazyLoad
@@ -155,13 +131,11 @@ class ProgressiveImage extends Component {
         },
         { root: null, rootMargin: "50px 0px", threshold: 0.01 }
       );
-
       viewportIntersection.observe(this._wrapper);
     } else {
       this.loadImage();
     }
   }
-
   /**
    *
    * @method loadImage
@@ -178,7 +152,6 @@ class ProgressiveImage extends Component {
     };
     buffer.src = src || (srcs && srcs.medium);
   }
-
   /**
    *
    * @method renderResponsiveImage
@@ -189,7 +162,6 @@ class ProgressiveImage extends Component {
   renderResponsiveImage() {
     const { altText, fit, srcs } = this.props;
     const { medium, large } = srcs;
-
     return (
       <ContainerQuery query={imageContainerQueries}>
         {(params) => {
@@ -198,7 +170,6 @@ class ProgressiveImage extends Component {
           if (isLargeWidth) {
             src = large;
           }
-
           return (
             <Img
               src={src}
@@ -211,7 +182,6 @@ class ProgressiveImage extends Component {
       </ContainerQuery>
     );
   }
-
   /**
    *
    * @method renderImg
@@ -222,7 +192,6 @@ class ProgressiveImage extends Component {
     const { altText, fit, src } = this.props;
     return <Img src={src} isLoaded={true} alt={altText} fit={fit} />;
   }
-
   /**
    *
    * @method renderImage
@@ -233,7 +202,6 @@ class ProgressiveImage extends Component {
     const { src } = this.props;
     return src ? this.renderImg() : this.renderResponsiveImage();
   }
-
   /**
    *
    * @method renderLoadingImage
@@ -254,7 +222,6 @@ class ProgressiveImage extends Component {
       />
     );
   }
-
   render() {
     const { className, presrc } = this.props;
     const { ready } = this.state;
@@ -266,5 +233,4 @@ class ProgressiveImage extends Component {
     );
   }
 }
-
 export default ProgressiveImage;

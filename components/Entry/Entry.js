@@ -8,6 +8,7 @@ import Button from "@reactioncommerce/components/Button/v1";
 import useStores from "hooks/useStores";
 
 // flex wrapper jss mixin
+
 const flexWrapper = () => ({
   alignItems: "stretch",
   display: "flex",
@@ -16,17 +17,27 @@ const flexWrapper = () => ({
 });
 
 const styles = (theme) => ({
-  loginWrapper: {
-    ...flexWrapper(),
-    paddingBottom: theme.spacing(8),
-    [theme.breakpoints.up("md")]: {
-      minHeight: "400px",
-      paddingBottom: 0,
-      paddingRight: theme.spacing(8)
-    }
-  },
+	loginWrapper: {
+		...flexWrapper(),
+		paddingBottom: theme.spacing(8),
+		[theme.breakpoints.up("md")]: {
+			minHeight: "400px",
+			paddingBottom: 0,
+			paddingRight: theme.spacing(8)
+		}
+	},
   loginButton: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
+	backgroundColor: theme.palette.secondary.botones,    
+    color: theme.palette.colors.BotonColor,
+    borderColor: theme.palette.secondary.botones, 
+    fontWeight: "800",
+    fontSize:"18px",    
+    "&:hover": {      
+      backgroundColor: theme.palette.secondary.botones,    
+      color: theme.palette.colors.BotonColor,
+      borderColor: theme.palette.secondary.botones,   
+      }
   },
   guestWrapper: {
     ...flexWrapper(),
@@ -47,18 +58,18 @@ const Entry = (props) => {
   const { setEntryModal } = uiStore;
   return (
     <Grid container>
-      <Grid item xs={12} md={7}>
-        <div className={classes.loginWrapper}>
-          <Typography variant="h6" gutterBottom>
-            Returning Customer
-          </Typography>
+      <Grid item xs={12} >
+        <div className={classes.loginWrapper}>      
+		<Typography variant="h6" gutterBottom style={{marginLeft:"auto",marginRight:"auto"}}>
+							Registrate o inicia Sesión
+		</Typography>    
           <Button
             onClick={() => setEntryModal("login")}
             actionType="important"
             isFullWidth
             className={classes.loginButton}
           >
-            Login
+            INICIAR SESIÓN
           </Button>
           <Button
             onClick={() => setEntryModal("signup")}
@@ -66,18 +77,10 @@ const Entry = (props) => {
             isFullWidth
             className={classes.loginButton}
           >
-            Create a new accounts
+            CREAR NUEVA CUENTA
           </Button>
         </div>
-      </Grid>
-      <Grid item xs={12} md={5}>
-        <div className={classes.guestWrapper}>
-          <Typography variant="h6" gutterBottom>
-            Guest Checkout
-          </Typography>
-          <GuestForm onSubmit={setEmailOnAnonymousCart} />
-        </div>
-      </Grid>
+      </Grid>    
     </Grid>
   );
 };
@@ -94,4 +97,4 @@ Entry.propTypes = {
   theme: PropTypes.object
 };
 
-export default withStyles(styles, { withTheme: true })(Entry);
+export default withStyles(styles, { withTheme: true })(Entry)

@@ -7,31 +7,21 @@ import { priceByCurrencyCode } from "@reactioncommerce/components/CatalogGridIte
 import Link from "components/Link";
 
 const ProductMediaWrapper = styled.div`
-  background-color: ${applyTheme("CatalogGridItem.mediaBackgroundColor")};
-  position: relative;
+
 `;
 
 const ProductInfo = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 0;
-  padding-left: 0;
-  padding-right: 0;
-  padding-top: ${applyTheme("CatalogGridItem.verticalSpacingBetweenImageAndInfo")};
+
 `;
 
 const ProductTitle = styled.aside`
-  ${addTypographyStyles("CatalogGridItemProductTitle", "headingTextBold")}
-  line-height: 1.125;
+
 `;
 
 const ProductVendor = styled.span`
-  ${addTypographyStyles("CatalogGridItemProductVendor", "labelText")}
 `;
 
 const PriceContainer = styled.div`
-  text-align: right;
 `;
 
 class CatalogGridItem extends Component {
