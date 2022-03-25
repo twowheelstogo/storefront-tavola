@@ -5,43 +5,43 @@ import inject from "hocs/inject";
 import { Query } from "@apollo/react-components";
 import hoistNonReactStatic from "hoist-non-react-statics";
 import { pagination, paginationVariablesFromUrlParams } from "lib/utils/pagination";
-import TagsQuery from "./tags.gql";
+import CatalogProductsQuery from "./catalogProducts.gql";
 import { withApollo } from "lib/apollo/withApollo";
 
-export  function withTags(Component, { group, isVisible = true } = {}) {
-  class TagsInner extends React.Component {
+export  function withCatalogProducts(Component, { tagId, isVisible = true } = {}) {
+  class CatalogProductsInner extends React.Component {
     render() {
       return (
-        <Tags group={group}>
+        <CatalogProducts tagId={tagId}>
           {(result) => {
             return <Component {...result} />;
           }}
-        </Tags>
+        </CatalogProducts>
       );
     }
   }
-  hoistNonReactStatic(TagsInner, Component);
-  return TagsInner;
+  hoistNonReactStatic(CatalogProductsInner, Component);
+  return CatalogProductsInner;
 }
- class Tags extends React.Component {
+ class CatalogProducts extends React.Component {
   static propTypes = {
     primaryShopId: PropTypes.string.isRequired,
     routingStore: PropTypes.object.isRequired,
-    group: PropTypes.string,
+    tagId: PropTypes.string,
     uiStore: PropTypes.object.isRequired,
     children: PropTypes.func.isRequired,
   };
 
   render() {
-    const { primaryShopId, routingStore, uiStore, group = "home" } = this.props;
+    const { primaryShopId, routingStore, uiStore, tagId = "home" } = this.props;
     const variables = {
       shopId: primaryShopId,
       ...paginationVariablesFromUrlParams(routingStore.query, { defaultPageLimit: uiStore.pageSize }),
-      metakey: group,
+      metakey: tagId,
     };
 
     return (
-      <Query errorPolicy="all" query={TagsQuery} variables={variables}>
+      <Query errorPolicy="all" query={CatalogProductsQuery} variables={variables}>
         {({ data, fetchMore, loading }) => {
           const result = {
             ...this.props,
@@ -49,10 +49,10 @@ export  function withTags(Component, { group, isVisible = true } = {}) {
               fetchMore,
               routingStore,
               data,
-              queryName: "Tags",
+              queryName: "CatalogProducts",
               limit: uiStore.pageSize,
             }),
-            tags:( (data || {}).tags || {}).nodes  || [],
+            catalogProducts:( (data || {}).catalogProducts || {}).nodes  || [],
             isLoading: loading,
           };
           return <Fragment>{this.props.children(result)}</Fragment>;
@@ -61,4 +61,4 @@ export  function withTags(Component, { group, isVisible = true } = {}) {
     );
   }
 }
-export  default withApollo()(inject("primaryShopId", "routingStore", "uiStore")(Tags));
+export  default withApollo()(inject("primaryShopId", "routingStore", "uiStore")(CatalogProducts));

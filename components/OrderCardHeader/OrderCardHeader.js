@@ -13,19 +13,18 @@ import OrderCardStatusBadge from "components/OrderCardStatusBadge";
 
 const styles = (theme) => ({
   orderCardHeader: {
-    background: theme.palette.secondary.dark,
-    padding: "25px",
+    background: theme.palette.reaction.black02,
+    padding: theme.spacing(2)
   },
   orderCardInfoText: {
-    color: theme.palette.primary.light,
-    fontWeight: 800,
+    color: theme.palette.reaction.coolGrey500
   },
   orderCardInfoHeaderText: {
     marginBottom: theme.spacing(0.5)
   },
   orderCardInfoTextBold: {
-    color: theme.palette.primary.light,
-    fontWeight: 800,
+    color: theme.palette.reaction.coolGrey500,
+    fontWeight: theme.typography.fontWeightBold
   },
   orderCardInfoTextDetails: {
     color: theme.palette.reaction.coolGrey500,
@@ -102,9 +101,7 @@ class OrderCardHeader extends Component {
 
   render() {
     const { classes, order: { createdAt, displayStatus, fulfillmentGroups, payments, referenceId, status } } = this.props;
-    const { shippingAddress } = fulfillmentGroups[0].data || {};
-
-    console.log(displayStatus)
+    const { shippingAddress } = fulfillmentGroups[0].data;
     const orderDate = format(
       createdAt,
       "MM/DD/YYYY"
@@ -112,15 +109,64 @@ class OrderCardHeader extends Component {
 
     return (
       <div className={classes.orderCardHeader}>
-        <Grid container direction="row" alignItems="center" style={{ position: 'relative' }}>
-          <div style={{ position: 'absolute', left: 0 }}>
-            <Typography variant="caption" className={classnames(classes.orderCardInfoText, classes.orderCardInfoHeaderText)}>Orden No.{" "}</Typography>
-            <Typography variant="caption" className={classes.orderCardInfoTextBold}>{referenceId}</Typography>
-          </div>
-          <div style={{ position: 'absolute', right: 0 }}>
+        <Grid container alignItems="center">
+          <Grid item xs={12} md={3}>
             <OrderCardStatusBadge displayStatus={displayStatus} status={status} />
-          </div>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Typography variant="caption" className={classnames(classes.orderCardInfoText, classes.orderCardInfoHeaderText)}>Date:</Typography>
+            <Typography variant="caption" className={classes.orderCardInfoTextBold}>{orderDate}</Typography>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Typography variant="caption" className={classnames(classes.orderCardInfoText, classes.orderCardInfoHeaderText)}>Order ID:</Typography>
+            <Typography variant="caption" className={classes.orderCardInfoTextBold}>{referenceId}</Typography>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Typography variant="caption" className={classes.orderCardInfoTextDetails}>
+              Order details
+              <IconButton className={classes.orderCardInfoExpandIcon} color="inherit" onClick={this.toggleHeader}>
+                {this.state.isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              </IconButton>
+            </Typography>
+          </Grid>
         </Grid>
+        {this.state.isExpanded ?
+          <section className={classes.orderCardExpandedHeader}>
+            <Grid container>
+              <Grid item xs={12} md={6}>
+                <Grid item className={classes.orderCardExpandedInfoSection} xs={12} md={12}>
+                  <Typography
+                    variant="caption"
+                    className={classnames(classes.orderCardInfoTextBold, classes.orderCardExpandedInfoHeaderText)}
+                  >
+                    Payment Method{payments.length !== 1 ? "s" : null}:
+                  </Typography>
+                  {this.renderOrderPayments()}
+                </Grid>
+                <Grid item className={classes.orderCardExpandedInfoSection} xs={12} md={12}>
+                  <Typography
+                    variant="caption"
+                    className={classnames(classes.orderCardInfoTextBold, classes.orderCardExpandedInfoHeaderText)}
+                  >
+                    Shipping Method{fulfillmentGroups.length !== 1 ? "s" : null}:
+                  </Typography>
+                  {this.renderOrderShipments()}
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={12}>
+                  <Typography
+                    variant="caption"
+                    className={classnames(classes.orderCardInfoTextBold, classes.orderCardInfoHeader)}
+                  >
+                    Shipping Address:
+                  </Typography>
+                  <Address address={shippingAddress} className={classes.orderAddressText} />
+                </Grid>
+              </Grid>
+            </Grid>
+          </section>
+          : null}
       </div>
     );
   }

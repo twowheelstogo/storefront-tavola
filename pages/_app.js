@@ -8,6 +8,7 @@ import components from "custom/componentsContext";
 import theme from "custom/reactionTheme";
 
 import { StripeWrapper } from "components/StripeCard";
+import 'rc-collapse/assets/index.css';
 
 export default class App extends NextApp {
   componentDidMount() {

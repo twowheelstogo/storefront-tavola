@@ -105,8 +105,8 @@ class Layout extends Component {
       children,
       viewer,
       shop,
-      components: { NavigationHeader },
-      components: { CustomFooter },
+      components: { NavigationHeader }, 
+      components: { CustomFooter }, 
       withHero,
       catalogItems,
       routerLabel,
@@ -159,7 +159,7 @@ class Layout extends Component {
               "https://firebasestorage.googleapis.com/v0/b/twg-vehicle-dashboard.appspot.com/o/Iconos%2FLaTavolaInicio.jpg?alt=media&token=c60c0f5b-3d2b-43a2-a537-4d0565d5f3cd"
             }
             MessageCover={"LA TAVOLA CREATIVE BISTRO"}
-          />
+          /> 
 
           {
             <>
@@ -167,16 +167,16 @@ class Layout extends Component {
                 <div className={classes.page}>
                   <Grid container>
                     <Grid item xs={12} className={classes.breadcrumbGrid}>
-                      <Breadcrumbs isPDP tagId={routerLabel} product={product} />
-                    </Grid>
+                      <Breadcrumbs isPDP tagId={routerLabel} product={product} />                        </Grid>
                   </Grid>
                 </div>
                 :
-                <BreadcrumbsSwitch routerLabel={routerLabel} router={router} routerType={routerType} />}
+                <BreadcrumbsSwitch routerLabel={routerLabel} router={router} routerType={routerType} /> 
+              }
             </>
           }
 
-          <main className={classes.main}>
+          <main className={classes.main}> 
             <article className={classes.article}>{children}</article>
           </main>
           <CustomFooter Descripcion={Descripcion} />

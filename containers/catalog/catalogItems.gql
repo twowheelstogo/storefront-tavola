@@ -16,6 +16,16 @@ query catalogItemsQuery($shopId: ID!, $tagIds: [ID] $first: ConnectionLimitInt, 
             _id
             title
             slug
+         		variants{
+               _id
+              maxOption
+              minOption
+              multipleOption
+              title
+              options{
+                title
+              }
+            }
             tagIds
             description
             vendor

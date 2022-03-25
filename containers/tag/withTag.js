@@ -8,11 +8,11 @@ import { pagination, paginationVariablesFromUrlParams } from "lib/utils/paginati
 import TagsQuery from "./tags.gql";
 import { withApollo } from "lib/apollo/withApollo";
 
-export  function withTags(Component, { group, isVisible = true } = {}) {
+export function withTags(Component, { group, isVisible = true, filter } = {}) {
   class TagsInner extends React.Component {
     render() {
       return (
-        <Tags group={group}>
+        <Tags group={group} filter={filter}>
           {(result) => {
             return <Component {...result} />;
           }}
@@ -23,21 +23,23 @@ export  function withTags(Component, { group, isVisible = true } = {}) {
   hoistNonReactStatic(TagsInner, Component);
   return TagsInner;
 }
- class Tags extends React.Component {
+class Tags extends React.Component {
   static propTypes = {
     primaryShopId: PropTypes.string.isRequired,
     routingStore: PropTypes.object.isRequired,
     group: PropTypes.string,
     uiStore: PropTypes.object.isRequired,
     children: PropTypes.func.isRequired,
+    filter: PropTypes.string,
   };
 
   render() {
-    const { primaryShopId, routingStore, uiStore, group = "home" } = this.props;
+    const { primaryShopId, routingStore, uiStore, group = "home", filter } = this.props;
     const variables = {
       shopId: primaryShopId,
       ...paginationVariablesFromUrlParams(routingStore.query, { defaultPageLimit: uiStore.pageSize }),
       metakey: group,
+      filter,
     };
 
     return (
@@ -52,13 +54,17 @@ export  function withTags(Component, { group, isVisible = true } = {}) {
               queryName: "Tags",
               limit: uiStore.pageSize,
             }),
-            tags:( (data || {}).tags || {}).nodes  || [],
+            tags: ((data || {}).tags || {}).nodes || [],
             isLoading: loading,
           };
-          return <Fragment>{this.props.children(result)}</Fragment>;
+          return (
+            <Fragment>
+              {typeof this.props.children === "function" ? this.props.children(result) : this.props.children}
+            </Fragment>
+          );
         }}
       </Query>
     );
   }
 }
-export  default withApollo()(inject("primaryShopId", "routingStore", "uiStore")(Tags));
+export default withApollo()(inject("primaryShopId", "routingStore", "uiStore")(Tags));

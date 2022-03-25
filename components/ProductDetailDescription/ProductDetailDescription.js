@@ -8,21 +8,20 @@ import Typography from "@material-ui/core/Typography";
  */
 class ProductDetailDescription extends Component {
   static propTypes = {
-  	/**
+    /**
      * Product description
      */
-  	children: PropTypes.string,
-	estilo: PropTypes.string
+    children: PropTypes.string
   }
 
   render() {
-  	const { children , estilo, ...props } = this.props;
+    const { children, ...props } = this.props;
 
-  	if (!children) return null;
+    if (!children) return null;
 
-  	return (
-  		<Typography component="div" {...props} style={{ fontSize: estilo }}>{children}</Typography>
-  	);
+    return (
+      <Typography component="div" {...props}>{children}</Typography>
+    );
   }
 }
 

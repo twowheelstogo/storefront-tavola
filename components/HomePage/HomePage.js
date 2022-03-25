@@ -27,7 +27,7 @@ const HomePage = props => {
                 tags={tags}
                 setPageSize={setPageSize}
                 setSortBy={setSortBy}
-                sortBy={sortBy}
+                sortBy={sortBy} 
             />
         </Fragment>
     );

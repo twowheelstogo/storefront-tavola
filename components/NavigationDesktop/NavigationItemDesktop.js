@@ -32,8 +32,7 @@ const styles = (theme) => ({
     fontSize: "14px",
     marginTop: theme.spacing(6),
     marginBottom: theme.spacing(2),
-    fontFamily: theme.typography.fontFamily,
-
+    fontFamily: theme.typography.fontFamily
   },
   navigationShopAllLinkIcon: {
     fontSize: "12px"
@@ -170,7 +169,7 @@ class NavigationItemDesktop extends Component {
 
     return (
       <Fragment>
-        <Button style= {{color:'white'}} className={classNames(primaryNavItem, navigationItem.data.classNames)} color="inherit" onClick={this.onClick} href={this.linkPath(navItem)}>
+        <Button className={classNames(primaryNavItem, navigationItem.data.classNames)} color="inherit" onClick={this.onClick} href={this.linkPath(navItem)}>
           {navigationItem.data.contentForLanguage}
           {this.hasSubNavItems && <Fragment>{this.state.isSubNavOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}</Fragment>}
         </Button>

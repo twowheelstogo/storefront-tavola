@@ -16,9 +16,9 @@ import Router from "translations/i18nRouter";
 import calculateRemainderDue from "lib/utils/calculateRemainderDue";
 import { placeOrderMutation } from "../../hooks/orders/placeOrder.gql";
 import FulfillmentTypeAction from "components/FulfillmentTypeAction";
-import deliveryMethods from "custom/deliveryMethods";
-import PaymentMethodCheckoutAction from "components/PaymentMethodCheckoutAction";
-import BillingCheckoutAction from "components/BillingCheckoutAction";
+/* import deliveryMethods from "custom/deliveryMethods"; */
+/* import PaymentMethodCheckoutAction from "components/PaymentMethodCheckoutAction";
+import BillingCheckoutAction from "components/BillingCheckoutAction"; */
 import { withStyles } from "@material-ui/core/styles";
 import { withComponents } from "@reactioncommerce/components-context";
 import { Mutex } from "async-mutex";
@@ -517,7 +517,7 @@ class CheckoutActions extends Component {
         onSubmit: this.setShippingAddress,
         props: {
           alert: actionAlerts["1"],
-          deliveryMethods,
+       /*    deliveryMethods, */
           fulfillmentGroup,
           actionAlerts: {
             "2": actionAlerts["2"],
@@ -531,7 +531,7 @@ class CheckoutActions extends Component {
           }
         }
       },
-      {
+     /*  {
         id: "4",
         activeLabel: "Elige cómo pagarás tu orden",
         completeLabel: "Payment information",
@@ -567,7 +567,7 @@ class CheckoutActions extends Component {
           nameValue: this.state.invoiceInputs.name,
           addressValue: this.state.invoiceInputs.address
         }
-      },
+      }, */
     ];
     return (
       <Fragment>

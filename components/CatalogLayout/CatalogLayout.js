@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import HorizontalProductCard from "components/HorizontalProductCard";
 import HorizontalTagsProducts from "../HorizontalTagsProducts";
 
 const CatalogLayout = props => {
@@ -31,23 +30,11 @@ const CatalogLayout = props => {
                 isLoadingCatalogItems={isLoadingCatalogItems}
                 pageInfo={pageInfo}
                 pageSize={pageSize}
-                tags={tags}
                 setPageSize={setPageSize}
                 setSortBy={setSortBy}
                 sortBy={sortBy} 
                 id = "catalog"
             />
-            {/* <HorizontalProductCard
-                tags={tags}
-                currencyCode={currencyCode}
-                isLoadingCatalogItems={isLoadingCatalogItems}
-                pageInfo={pageInfo}
-                pageSize={pageSize}
-                tags={tags}
-                setPageSize={setPageSize}
-                setSortBy={setSortBy}
-                sortBy={sortBy}
-            /> */}
         </Fragment>
     )
 

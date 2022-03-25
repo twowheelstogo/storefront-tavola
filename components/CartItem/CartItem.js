@@ -249,6 +249,10 @@ class CartItem extends Component {
             },
             totalText
         } = this.props;
+        
+
+        console.log('this is components info',this.props);
+
 
         const { displayAmount: displaySubtotal } = subtotal || {};
         const { displayAmount: displayCompareAtPrice } = compareAtPrice || {};

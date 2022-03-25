@@ -14,14 +14,10 @@ import hashPassword from "../../lib/utils/hashPassword";
 const useStyles = makeStyles((theme) => ({
   root: {
     "display": "flex",
-    "color" : "#fff",
     "flexDirection": "column",
     "& > *": {
       margin: theme.spacing(1)
     }
-  },
-  Texto_:{
-    color: theme.palette.primary.TextTheme,
   },
   error: {
     marginTop: theme.spacing(2),
@@ -30,9 +26,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center"
   },
   resetButton: {
-    marginTop: theme.spacing(4),
-    backgroundColor: theme.palette.secondary.botones,    
-    color: theme.palette.colors.BotonColor,
+    marginTop: theme.spacing(4)
   }
 }));
 
@@ -66,19 +60,15 @@ export default function ChangePassword(props) {
   };
   return (
     <form className={classes.root} noValidate>
-      <h1>Cambiar contraseña</h1>
+      <h1>Change password</h1>
       <FormControl>
-        <InputLabel htmlFor="old-password"
-        className={classes.Texto_}
-        >Antigua Contraseña</InputLabel>
+        <InputLabel htmlFor="old-password">Old Password</InputLabel>
         <Input id="old-password" aria-describedby="old-password" onChange={handleOldPasswordChange} value={oldPassword}
           type="password"
         />
       </FormControl>
       <FormControl>
-        <InputLabel htmlFor="new-password"
-        className={classes.Texto_}
-        >Nueva Contraseña</InputLabel>
+        <InputLabel htmlFor="new-password">New Password</InputLabel>
         <Input id="new-password" aria-describedby="new-password" onChange={handleNewPasswordChange} value={newPassword}
           type="password"
         />
@@ -86,7 +76,7 @@ export default function ChangePassword(props) {
       {!!error && <div className={classes.error}>{error}</div>}
       <Button className={classes.resetButton} onClick={handleChangePassword} color="primary" variant="contained"
         tabIndex="0" role="button"
-      >Cambiar</Button>
+      >Change</Button>
     </form>
   );
 }

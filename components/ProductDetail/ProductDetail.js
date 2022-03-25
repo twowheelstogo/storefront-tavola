@@ -274,7 +274,7 @@ class ProductDetail extends Component {
   					<div className={classes.info}>
   						<ProductDetailDescription estilo={"15px"}>{product.description}</ProductDetailDescription>
   					</div>
-  					{/* <VariantList
+  					<VariantList
   						onSelectOption={this.handleSelectOption}
   						onSelectVariant={this.handleSelectVariant}
   						product={product}
@@ -282,7 +282,7 @@ class ProductDetail extends Component {
   						selectedVariantId={pdpSelectedVariantId}
   						currencyCode={currencyCode}
   						variants={product.variants}
-  					/> */}
+  					/>
   					<ProductDetailAddToCart
   						onClick={this.handleAddToCartClick}
   						selectedOptionId={pdpSelectedOptionId}

@@ -9,7 +9,6 @@ import Layout from "components/Layout";
 import withOrder from "containers/order/withOrder";
 import OrderCard from "components/OrderCard";
 import { withApollo } from "lib/apollo/withApollo";
-
 import { locales } from "translations/config";
 import fetchPrimaryShop from "staticUtils/shop/fetchPrimaryShop";
 import fetchTranslations from "staticUtils/translations/fetchTranslations";
@@ -20,6 +19,45 @@ const styles = (theme) => ({
   },
   title: {
     marginBottom: theme.spacing(3)
+  },
+  breadcrumbGrid: {		      
+    padding: theme.spacing(1),  
+    ["@media (min-width:960px)"]: {
+      marginLeft: theme.spacing(5),
+    },
+    ["@media (max-width:959px)"]: {
+      marginLeft: theme.spacing(0)
+    },    
+    
+    ["@media (min-width:600px)"]: {
+      marginBottom: theme.spacing(0.5),
+		marginTop: theme.spacing(0.5),  
+    },
+    ["@media (max-width:959px)"]: {      
+		  marginTop: "-1px",  
+    },          
+	},
+  page: {
+    backgroundColor: "#202124",
+    ["@media (min-width:600px)"]: {
+      height: '43px',   
+    },
+    ["@media (max-width:599px)"]: {
+      height: '33px',   
+    },    		
+	},
+  Dividers:{
+    ["@media (min-width:600px)"]: {
+      height: '60px',   
+    }, },
+
+  TitleThancks:{
+    ["@media (min-width:px)"]: {
+      fontSize: '16px'
+    },
+    ["@media (min-width:600px)"]: {
+      fontSize: '16px'
+    },
   }
 });
 
@@ -35,11 +73,12 @@ class CheckoutComplete extends Component {
       name: PropTypes.string.isRequired,
       description: PropTypes.string
     }),
-    theme: PropTypes.object.isRequired
+    theme: PropTypes.object.isRequired,
+    router: PropTypes.object, 
   };
 
   render() {
-    const { classes, isLoadingOrder, order, shop } = this.props;
+    const { classes, isLoadingOrder, order, shop, router } = this.props;    
 
     if (isLoadingOrder) {
       return (
@@ -64,7 +103,12 @@ class CheckoutComplete extends Component {
     }
 
     return (
-      <Layout shop={shop}>
+      <Layout shop={shop}
+      router={router}
+      routerLabel={'Single order page'}
+      routerType={1}
+      >                  
+
         <Helmet>
           <title>{shop && shop.name} | Checkout</title>
           <meta name="description" content={shop && shop.description} />
@@ -73,13 +117,7 @@ class CheckoutComplete extends Component {
           <Grid item xs={false} md={3} /> {/* MUI grid doesn't have an offset. Use blank grid item instead. */}
           <Grid item xs={12} md={6}>
             <Grid item className={classes.orderThankYou} xs={12} md={12}>
-              <Typography className={classes.title} variant="h6">Thank you for your order</Typography>
-              <Typography variant="body1">
-                {"Your order ID is:"} <strong>{order.referenceId}</strong>
-              </Typography>
-              <Typography variant="body1">
-                {"We've sent a confirmation email to:"} <strong>{order.email}</strong>
-              </Typography>
+              <Typography className={classes.TitleThancks}>GRACIAS POR TU COMPRA</Typography>
             </Grid>
             <Grid item xs={12} md={12}>
               <OrderCard isExpanded={true} order={order} />

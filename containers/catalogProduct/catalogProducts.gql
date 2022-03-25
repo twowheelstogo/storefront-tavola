@@ -17,7 +17,7 @@ query catalogItems($shopId: ID!, $tagId:ID) {
             title
             slug
             tagIds
-            description
+            description 
             vendor
             isLowQuantity
             isSoldOut

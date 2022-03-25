@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from "react";
+import React, { Component, Fragment, useEffect } from "react";
 import { withComponents } from "@reactioncommerce/components-context";
 import { Grid, AppBar, Toolbar, Box } from "@material-ui/core";
 import PropTypes from "prop-types";
@@ -9,6 +9,8 @@ import { NavigationMobile, NavigationToggleMobile } from "components/NavigationM
 import Hidden from "@material-ui/core/Hidden";
 import inject from "hocs/inject";
 import Router from "translations/i18nRouter";
+import Tags from "containers/tag/withTag.js";
+import Slider from "react-slick";
 
 const styles = (theme) => ({
   root: {
@@ -40,7 +42,7 @@ const styles = (theme) => ({
       marginLeft: "auto",
       marginRight: "auto",
       marginTop: "10px",
-      marginBottom: "6px"
+      marginBottom: "6px",
     },
     ["@media (min-width:600px)"]: {
       marginTop: "1%",
@@ -63,29 +65,30 @@ const styles = (theme) => ({
     },
     ["@media (max-width:599px) and (min-width:499px) "]: {
       marginLeft: "1%",
-      marginTop: "5px"
+      marginTop: "5px",
     },
     ["@media (max-width:498px) and (min-width:450px) "]: {
       marginLeft: "2%",
-      marginTop: "5px"
+      marginTop: "5px",
     },
     ["@media (max-width:449px)"]: {
       marginLeft: "3%",
-      marginTop: "5px"
-    }
+      marginTop: "5px",
+    },
   },
   Menu: {
+    color: "white",
     ["@media (max-width:449px)"]: {
       marginLeft: "-4%",
-      marginTop: "16px"
+      marginTop: "16px",
     },
     ["@media (max-width:498px) and (min-width:450px) "]: {
       marginLeft: "-3%",
-      marginTop: "16px"
+      marginTop: "16px",
     },
     ["@media (max-width:599px) and (min-width:499px) "]: {
       marginLeft: "-2%",
-      marginTop: "21px"
+      marginTop: "21px",
     },
     ["@media (min-width:600px)"]: {
       display: "flex",
@@ -137,14 +140,38 @@ const styles = (theme) => ({
   LogoDesktop: {
     width: theme.palette.Logo.WidthDesktop,
     height: theme.palette.Logo.HeightDesktop,
-    cursor: "pointer"
+    cursor: "pointer",
   },
   LogoMobile: {
     width: theme.palette.Logo.WidthMobile,
-    height: theme.palette.Logo.HeightMobile
-  }
+    height: theme.palette.Logo.HeightMobile,
+  },
+  hero: {
+    position: "relative",
+    overflow: "hidden",
+    top: 0,
+    left: 0,
+    width: "auto",
+    margin: 0,
+    height: "375px",
+    display: "flex",
+    [theme.breakpoints.up("md")]: {
+      height: "540px",
+    },
+  },
+  message: {
+    color: theme.palette.colors.TextThemeTitle,
+    fontSize: "36px",
+    ["@media (min-width:600px)"]: {
+      letterSpacing: ".0119em",
+    },
+    ["@media (max-width:599px)"]: {
+      width: "300px",
+      lineHeight: "42px",
+      textAlign: "center",
+    },
+  },
 });
-
 
 class NavigationHeader extends Component {
   constructor(props) {
@@ -179,13 +206,6 @@ class NavigationHeader extends Component {
   };
 
   render() {
-    //urlLogo: Contiene la url de logo
-    //urlLogoSize: Es un array donde estan las dimensiones del logo, [width,height], ejemplo:["10px","15px"]
-    //ColoresBusqueda: color 1 es el color de letra, color 2 es color de fondo y color 3 es el del icono, array de colores,["black", "red", "blue"]
-    //ColoresIcono, son los colores del icono, entrada: nombre o hexa del color,ejemplo: #FFFFF
-    //MetodoBusqueda, debe de ser un metodo y debe de contener como parametro la busqueda
-    //FondoColorMenu, fondo de color de las opciones del menu para version movil y escritorio
-    //ColorIconoMenu, fondo del icono del menu cuando para versiones moviles
     const {
       classes,
       Logo,
@@ -200,11 +220,20 @@ class NavigationHeader extends Component {
       components: { IconsActions },
       components: { SlideHero },
       withHero,
-      catalogItems
+      catalogItems,
+      tags,
     } = this.props;
 
+    const settings = {
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+    };
+
     return (
-      <>
+      <Fragment>
         {isWidthUp("sm", width) ? (
           <>
             <Grid style={{ width: "100%" }} container spacing={5} key={1}>
@@ -214,23 +243,16 @@ class NavigationHeader extends Component {
                   <Toolbar>
                     {/* LOGO */}
                     <Grid item xs={12} sm={3} md={3} lg={3} xl={3} key={3} className={classes.Logo}>
-                      <img
-                        src={Logo.urlLogo}
-                        className={classes.LogoDesktop}
-                        onClick={this.handleOnClick2}
-                      />
+                      <img src={Logo.urlLogo} className={classes.LogoDesktop} onClick={this.handleOnClick2} />
                     </Grid>
                     {/* Bara de busqueda */}
                     <Grid item xs={8} sm={8} md={9} lg={9} xl={8} key={4} className={classes.searchbar}>
-                      <SearchBar Metodo={MetodoBusqueda}
-                        catalogItems={catalogItems}
-                      />
+                      <SearchBar Metodo={MetodoBusqueda} catalogItems={catalogItems} />
                     </Grid>
 
                     {/* Iconos */}
                     <Grid item xs={2} sm={2} md={2} lg={3} xl={3} key={5} className={classes.Iconos}>
-                      <IconsActions
-                        width={width} cart={cart} />
+                      <IconsActions width={width} cart={cart} />
                     </Grid>
                   </Toolbar>
                 </AppBar>
@@ -253,7 +275,48 @@ class NavigationHeader extends Component {
                 </Grid>
               </Grid>
             </Grid>
-            {withHero ? <SlideHero title={MessageCover} subtitle={""} background={ImageCoverUrl} type={"jpg"} /> : null}
+            {/* new version Slider */}
+         {withHero ? (
+              <Slider {...settings}>
+                <Tags group="slider">
+                  {({ tags }) => {
+                    return tags && tags.length ? (
+                      <>
+                        {tags.map((e) => {
+                          return (
+                            <div
+                              className={`${classes.hero} talign`}
+                              style={{
+                                height: 500,
+                              }}
+                            >
+                              <div
+                                style={{
+                                  opacity: "0.5",
+                                  position: "absolute",
+                                  backgroundImage: `url(${e.heroMediaUrl})`,
+                                  backgroundPosition: "center",
+                                  backgroundSize: "cover",
+                                  backgroundRepeat: "no-repeat",
+                                }}
+                                className="fit"
+                              ></div>
+                              <h1 className="valign tac">{e && e.displayTitle.toUpperCase()}</h1>
+                            </div>
+                          );
+                        })}
+                      </>
+                    ) : (
+                      <div>NO HAY CATEGORIAS</div>
+                    );
+                  }}
+                </Tags>
+              </Slider>
+            ) : null} 
+
+            {/* old version SlideHero */}
+
+            {/*    {withHero ? <SlideHero title={MessageCover} subtitle={""} background={ImageCoverUrl} type={"jpg"} /> : null} */}
           </>
         ) : (
           <>
@@ -270,9 +333,7 @@ class NavigationHeader extends Component {
               {/* Contenedor Navigation Menu */}
               <Grid key={3} item xs={4} className={classes.Menu}>
                 <Hidden mdUp>
-                  <NavigationToggleMobile
-                    onClick={this.handleNavigationToggleClick}
-                  />
+                  <NavigationToggleMobile onClick={this.handleNavigationToggleClick} />
                 </Hidden>
                 <NavigationMobile shop={shop} Logo={Logo.urlLogo} />
               </Grid>
@@ -284,26 +345,59 @@ class NavigationHeader extends Component {
 
               {/* Iconos */}
               <Grid key={5} item xs={4} md={2} lg={2} className={classes.Iconos}>
-                <IconsActions
-                  width={width}
-                  cart={cart} />
+                <IconsActions width={width} cart={cart} />
               </Grid>
             </Grid>
 
             {/* Bara de busqueda */}
             <Grid container style={{ width: "100%" }}>
               <Grid item key={6} xs={11} className={classes.searchbar}>
-                <SearchBar size={"small"} Metodo={MetodoBusqueda}
-                  catalogItems={catalogItems}
-                />
+                <SearchBar size={"small"} Metodo={MetodoBusqueda} catalogItems={catalogItems} />
               </Grid>
             </Grid>
-
-            {/* Espacio Extra */}
-            {withHero ? <SlideHero title={MessageCover} subtitle={""} background={ImageCoverUrl} type={"jpg"} /> : null}
+            {/* new version slider */}
+            {withHero ? (
+              <Tags group="slider">
+                {({ tags }) => {
+                  return tags && tags.length ? (
+                    <Slider {...settings}>
+                      {tags.map((e) => {
+                        return (
+                          <div
+                            className={`${classes.hero} talign`}
+                            style={{
+                              height: 500,
+                            }}
+                          >
+                            <div
+                              style={{
+                                opacity: "0.5",
+                                position: "absolute",
+                                backgroundImage: `url(${e.heroMediaUrl})`,
+                                backgroundPosition: "center",
+                                backgroundSize: "contain",
+                                backgroundRepeat: "no-repeat",
+                              }}
+                              className="fit"
+                            ></div>
+                            <h1 className="valign tac">{e && e.displayTitle.toUpperCase()}</h1>
+                          </div>
+                        );
+                      })}
+                    </Slider>
+                  ) : (
+                    <div>NO HAY CATEGORIAS</div>
+                  );
+                }}
+              </Tags>
+            ) : (
+              "null"
+            )}
+            {/* old version Slider */}
+            {/*   {withHero ? <SlideHero title={MessageCover} subtitle={""} background={ImageCoverUrl} type={"jpg"} /> : null} */}
           </>
         )}
-      </>
+      </Fragment>
     );
   }
 }

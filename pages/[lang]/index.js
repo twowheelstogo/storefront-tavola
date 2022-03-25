@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import inject from "hocs/inject";
 import Helmet from "react-helmet";
 import withCatalogItems from "containers/catalog/withCatalogItems";
-import ProductGrid from "components/ProductGrid";
+import HomePage from "components/HomePage"
 import Layout from "components/Layout";
 import { inPageSizes } from "lib/utils/pageSizes";
 import { withApollo } from "lib/apollo/withApollo";
-
+import fetchAllTags from "staticUtils/tags/fetchAllTags";
 import { locales } from "translations/config";
 import fetchPrimaryShop from "staticUtils/shop/fetchPrimaryShop";
 import fetchTranslations from "staticUtils/translations/fetchTranslations";
@@ -54,11 +54,11 @@ class ProductGridPage extends Component {
       isLoadingCatalogItems,
       routingStore: { query },
       shop,
-      uiStore
+      uiStore,
+      tags
     } = this.props;
     const pageSize = query && inPageSizes(query.limit) ? parseInt(query.limit, 10) : uiStore.pageSize;
     const sortBy = query && query.sortby ? query.sortby : uiStore.sortBy;
-
     let pageTitle;
     if (shop) {
       pageTitle = shop.name;
@@ -68,17 +68,21 @@ class ProductGridPage extends Component {
     }
 
     return (
-      <Layout shop={shop}>
+      <Layout withHero shop={shop} 
+      catalogItems={catalogItems}
+      routerType={-1}
+      >
         <Helmet
           title={pageTitle}
           meta={[{ name: "descrition", content: shop && shop.description }]}
         />
-        <ProductGrid
+        <HomePage
           catalogItems={catalogItems}
-          currencyCode={(shop && shop.currency && shop.currency.code) || "USD"}
+          currencyCode={(shop && shop.currency && shop.currency.code) || "GTQ"}
           isLoadingCatalogItems={isLoadingCatalogItems}
           pageInfo={catalogItemsPageInfo}
           pageSize={pageSize}
+          tags={tags}
           setPageSize={this.setPageSize}
           setSortBy={this.setSortBy}
           sortBy={sortBy}
@@ -97,13 +101,14 @@ class ProductGridPage extends Component {
 export async function getStaticProps({ params: { lang } }) {
   const primaryShop = await fetchPrimaryShop(lang);
   const translations = await fetchTranslations(lang, ["common"]);
-
-  if (!primaryShop?.shop) {
+  const tags = await fetchAllTags(lang);
+  if (!primaryShop) {
     return {
       props: {
         shop: null,
         ...translations
       },
+      fetchAllTags: null,
       // eslint-disable-next-line camelcase
       unstable_revalidate: 1 // Revalidate immediately
     };
@@ -112,7 +117,8 @@ export async function getStaticProps({ params: { lang } }) {
   return {
     props: {
       ...primaryShop,
-      ...translations
+      ...translations,
+      ...tags
     },
     // eslint-disable-next-line camelcase
     unstable_revalidate: 120 // Revalidate each two minutes

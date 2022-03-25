@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     position: "absolute",
     width: 380,
-    backgroundColor: theme.palette.colors.TextThemeTitle, 
+    backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
@@ -22,8 +22,7 @@ const useStyles = makeStyles((theme) => ({
     transform: "translate(-50%, -50%)",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    border: "1px solid white" ,    
+    justifyContent: "center"
   }
 }));
 
@@ -58,8 +57,7 @@ const EntryModal = ({ onClose, resetToken }) => {
   };
 
   return (
-    <Modal    
-    open={Boolean(entryModal)} onClose={closeModal} aria-labelledby="entry-modal" aria-describedby="entry-modal">
+    <Modal open={Boolean(entryModal)} onClose={closeModal} aria-labelledby="entry-modal" aria-describedby="entry-modal">
       <div className={classes.paper}>{getModalComponent()}</div>
     </Modal>
   );

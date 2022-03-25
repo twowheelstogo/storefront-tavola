@@ -158,32 +158,10 @@ class CartItemDetail extends Component {
                 <div style={{
                     fontSize: '18px',
                     fontWeight: 700,
-                    paddingBottom: '5px'
-                }}>Duo Estandar</div>
+                    paddingBottom: '50px'
+                }}></div>
                 <OptionProductTitle>
-                    Duos estandar
                 </OptionProductTitle>
-                <OptionProductSelect>
-                    Muffin de vainilla
-                </OptionProductSelect>
-                <OptionProductTitle>
-                    Bebidas duos
-                </OptionProductTitle>
-                <OptionProductSelect>
-                    Café americano
-                </OptionProductSelect>
-                <OptionProductTitle>
-                    Elige tipo de leche
-                </OptionProductTitle>
-                <OptionProductSelect>
-                    Entera
-                </OptionProductSelect>
-                <OptionProductTitle>
-                    Elige el tipo de azúcar
-                </OptionProductTitle>
-                <OptionProductSelect>
-                    Sin azúcar
-                </OptionProductSelect>
             </Detail>
         );
     }

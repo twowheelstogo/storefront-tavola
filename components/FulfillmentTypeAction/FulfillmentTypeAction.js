@@ -13,8 +13,8 @@ class FulfillmentTypeAction extends Component {
 	}
 
 	renderDeliveryMethods() {
-		const { deliveryMethods, components: { CardItems }, fulfillmentGroup } = this.props;
-		return <CardItems
+		const { deliveryMethods, components: { CartItems }, fulfillmentGroup } = this.props;
+		return <CartItems
 			items={deliveryMethods.filter((method) => method.enabled)}
 			onSelect={this.setSelectedDeliveryMethodName}
 			itemSelected={deliveryMethods.find((item) => item.name == fulfillmentGroup.type)} />;

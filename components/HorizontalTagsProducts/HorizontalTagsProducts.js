@@ -1,67 +1,58 @@
 import React from "react";
 import styled from "styled-components";
-import ScrollSpyTabs from "./tags";
+import { Grid } from "@material-ui/core";
+/* import ScrollSpyTabs from "./tags"; */
 import { withComponents } from "@reactioncommerce/components-context";
-import Tags from "containers/tag/withTag.js"
+import Tags from "containers/tag/withTag.js";
+import ScrollSpyTabsNew from "./tags-new";
 
 const HorizontalTagsProducts = (props) => {
-    const {
-        tags,
-        currencyCode,
-        isLoadingCatalogItems,
-        pageInfo,
-        pageSize,
-        setPageSize,
-        setSortBy,
-        components: {HorizontalProductCard},
-        sortBy,
-    } = props;
-console.info("Default tags", tags);
-    const categoryProducts = (tags || []).map((items) => items);
- if (categoryProducts.length === 0) return <h1>NO EXISTEN NINGUN PRODUCTO EN LA TIENDA</h1>
+  const {
+    tags,
+    currencyCode,
+    isLoadingCatalogItems,
+    pageInfo,
+    pageSize,
+    setPageSize,
+    setSortBy,
+    components: { HorizontalProductCard },
+    sortBy,
+  } = props;
+  const categoryProducts = (tags || []).map((items) => items);
+/*   console.log(categoryProducts ) */
+  if (categoryProducts.length === 0)
     return (
-        <div
-            style={{
-                fontFamily: "roboto, sans-serif",
-                fontSize: 15,
-                backgroundColor: "#fff"
-            }}
-        >
-            <Tags group="menu">
-              {({ tags }) => {
-                  console.info("Custom Tags", tags);
-                  return tags && tags.length 
-                   ? (
-
-                    <ScrollSpyTabs
-                        tabsInScroll={tags.map((e) => {
-
-                                return {
-                                    text:e.displayTitle,
-                                    component: (
-                                        <div>Hello</div>
-                                    )
-                                };
-                        })}
-                    />
-                ) : (
-                    <div>NO HAY CATEGORIAS</div>
-                ) 
-              }}
-            </Tags>
-            
-        </div>
-    )
+      <Grid container justifyContent="center" alignContent="center">
+        <Grid>
+          <h1> NO EXISTEN NINGUN PRODUCTO EN LA TIENDA </h1>
+        </Grid>
+      </Grid>
+    );
+  return (
+    <div
+      style={{
+        fontFamily: "roboto, sans-serif",
+        fontSize: 15,
+        backgroundColor: "#fff",
+      }}
+    >
+     {
+       tags ? (
+        <Tags group="menu">
+        {({ tags: tagsMenu }) => {
+          return tagsMenu && tagsMenu.length ? (
+           <ScrollSpyTabsNew tags={tagsMenu} globalTags={tags} />
+          ) : (
+            <div>NO HAY CATEGORIAS</div>
+          );
+        }}
+      </Tags>
+       ):(
+         "no existen tags"
+       )
+     }
+    </div>
+  );
 };
 
 export default withComponents(HorizontalTagsProducts);
-{/* <HorizontalProductCard 
-    tags={e}
-    currencyCode
-    isLoadingCatalogItems
-    pageInfo
-    pageSize
-    setPageSize
-    setSortBy
-    sortBy 
-/> */}
