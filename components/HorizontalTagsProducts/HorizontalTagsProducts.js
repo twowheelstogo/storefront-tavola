@@ -17,6 +17,7 @@ const HorizontalTagsProducts = (props) => {
     setSortBy,
     components: { HorizontalProductCard },
     sortBy,
+    uiStore
   } = props;
   const categoryProducts = (tags || []).map((items) => items);
 /*   console.log(categoryProducts ) */
@@ -41,7 +42,7 @@ const HorizontalTagsProducts = (props) => {
         <Tags group="menu">
         {({ tags: tagsMenu }) => {
           return tagsMenu && tagsMenu.length ? (
-           <ScrollSpyTabsNew tags={tagsMenu} globalTags={tags} />
+           <ScrollSpyTabsNew tags={tagsMenu} globalTags={tags} uiStore={uiStore} />
           ) : (
             <div>NO HAY CATEGORIAS</div>
           );

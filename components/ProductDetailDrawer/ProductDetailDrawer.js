@@ -1,96 +1,66 @@
 import React, { Fragment } from "react";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   SwipeableDrawer,
-  List,
-  Divider,
   Typography,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Button,
   IconButton,
+  Button,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  FormGroup,
+  FormControl,
+  Checkbox,
 } from "@material-ui/core";
-import styled from "styled-components";
 import { withStyles } from "@material-ui/core/styles";
 import { withComponents } from "@reactioncommerce/components-context";
-import ProductDetailAccordion from "components/ProductDetailAccordion";
-import CancelIcon from '@material-ui/icons/Cancel';
-const styles = (theme) => ({
-  imageProduct: {
-    width: "100%",
-  },
-  textPrice: {
-    fontStyle: "normal",
-    fontWeight: 800,
-    fontSize: "16px",
-    lineHeight: "17px",
-    display: "flex",
-    justifyContent: "flex-end",
-  },
+import CancelIcon from "@material-ui/icons/Cancel";
+import ProductDetailAddToCart from "components/ProductDetailAddToCart";
+import priceByCurrencyCode from "lib/utils/priceByCurrencyCode";
+import Collapse from "rc-collapse";
+import {
+  StyledSubtitle,
+  StyledTitle,
+  CardContainerHorizontal,
+  CardContent,
+  Div,
+  styles,
+  useStyles,
+} from "./ProductDetailDrawerStyles";
+const Panel = Collapse.Panel;
 
-  drawerOpen: {
-    backgroundColor: "red",
-  },
+function ProductDetailDrawer({ values, uiStore, currencyCode, product }) {
+  console.info("uistore", uiStore.SelectedOptions);
 
-  drawerclose: {
-    backgroundColor: "yellow",
-  },
-});
+  const determineProductPrice = () => {
+    let selectedTotal = 0.0;
+    for (const [variantId, optionIds] of Object.entries(
+      uiStore.SelectedOptions
+    )) {
+      const variant = product.variants.find((v) => v._id === variantId);
+      if (!variant) {
+        console.info("Error the variant not exists");
+        continue;
+      }
+      for (const option of variant.options || []) {
+        if (!optionIds.includes(option._id)) continue;
 
-const StyledTitle = styled.div`
-  font-size: 18px;
-  font-weight: 700;
-  color: #000000;
-  padding-left: 10px;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
+        // pricing[currencyCode]
+        console.info("determineProductPrice", option);
+        // priceByCurrencyCode
+      }
+    }
+  };
+  const handleSelectOption = (variant, option) => {
+    if ((uiStore.SelectedOptions[variant._id] ||[]).includes(option._id)) {
+      uiStore.unSetSelectedOption(variant._id, option._id);
+    } else {
+      uiStore.setSelectedOption(variant._id, option._id);
+    }
+    console.info("handleSelectOption", uiStore.SelectedOptions);
+    // ReCalculate the Selected Total
+    determineProductPrice();
+  };
 
-const CardContainerHorizontal = styled.div`
-  border: ${({ withBorder, boderColor }) => (withBorder ? boderColor : "none")};
-  display: flex;
-  height: 150px;
-  cursor: pointer;
-  &:hover {
-    background-color: #eeeeee;
-    transition: background-color 0.5s;
-  }
-`;
-
-const StyledSubtitle = styled.div`
-  font-size: 14px;
-  color: #979797;
-  padding-left: 10px;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
-
-const Div = styled.div``;
-
-const CardContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 5px;
-  flex: 1 1 auto;
-`;
-
-const useStyles = makeStyles({
-  list: {
-    width: 300,
-  },
-  fullList: {
-    width: "auto",
-  },
-});
-
-function ProductDetailDrawer({ values }) {
   const classes = useStyles();
   const [state, setState] = React.useState({ right: false });
 
@@ -102,7 +72,8 @@ function ProductDetailDrawer({ values }) {
     setState({ ...state, [anchor]: open });
   };
 
-  const DrawerViewList = ({ values }) => {
+  const DrawerViewList = ({ values}) => {
+    console.log(values); 
     return (
       <Fragment>
         <div role="presentation" style={{ width: 400, background: "white" }}>
@@ -141,43 +112,81 @@ function ProductDetailDrawer({ values }) {
           <Typography variant="h6" style={{ padding: "10px 0px 0px 20px", color: "#979797", fontSize: 16 }}>
             {values.description}
           </Typography>
-          <ProductDetailAccordion variant={values.variants}/>
+
+          {values.variants.map((e) => (
+            <Collapse accordion={true}>
+              <Panel header={`${e.title}`} headerClass="my-header-class">
+                {e.multipleOption ? (
+                  <div>
+                    {e.options &&
+                      e.options.map((op) => (
+                        <FormControl component="fieldset">
+                          <FormGroup>
+                            <FormControlLabel control={<Checkbox name={op.title} onClick={(ev) =>handleSelectOption(e, op,ev)}/>} label={op.title} />
+                          </FormGroup>
+                        </FormControl>
+                      ))}
+                  </div>
+                ) : (
+                  <div>
+                    {e.options &&
+                      e.options.map((op) => (
+                        <FormControl component="fieldset">
+                          <RadioGroup aria-label="gender" name="gender1" >
+                            <FormControlLabel value={op.title} control={<Radio />} label={op.title} />
+                          </RadioGroup>
+                        </FormControl>
+                      ))}
+                  </div>
+                )}
+              </Panel>
+            </Collapse>
+          ))}
+          <Button
+            variant="container"
+            style={{ background: "#1D0D13", color: "white", position: "absolute", left: "15%", bottom: 20 }}
+          >
+            {" "}
+            Añadir Al Carrito - {` price all cart`}
+          </Button>
+          <ProductDetailAddToCart />
         </div>
       </Fragment>
     );
   };
 
+ /*  console.info("Load", uiStore); */
   return (
-      <React.Fragment key={"right"}>
-        <CardContainerHorizontal
-          withBorder
-          onClick={toggleDrawer("right", true)}
-          boderColor={"2px solid rgba(151, 151, 151, 0.5)"}
-        >
-          {values.primaryImage !== null ? (
-            <img src={values.primaryImage.URLs.medium} className={classes.imageProduct}></img>
-          ) : (
-            <img src="/images/placeholder.gif" />
-          )}
-          <CardContent>
-            <Div>
-              <StyledTitle>{values.title}</StyledTitle>
-              <StyledSubtitle>{values.description}</StyledSubtitle>
-            </Div>
-            <Div>
-              <Typography className={classes.textPrice}>{values.pricing[0].displayPrice}</Typography>
-            </Div>
-          </CardContent>
-        </CardContainerHorizontal>
-        <SwipeableDrawer
-          anchor={"right"}
-          open={state["right"]}
-          onClose={toggleDrawer("right", false)}
-          onOpen={toggleDrawer("right", true)}
-        >
-          <DrawerViewList values={values} />
-        </SwipeableDrawer>
-      </React.Fragment>
+    <React.Fragment key={"right"}>
+      <CardContainerHorizontal
+        withBorder
+        onClick={toggleDrawer("right", true)}
+        boderColor={"2px solid rgba(151, 151, 151, 0.5)"}
+      >
+        {values.primaryImage !== null ? (
+          <img src={values.primaryImage.URLs.medium} className={classes.imageProduct}></img>
+        ) : (
+          <img src="/images/placeholder.gif" />
+        )}
+        <CardContent>
+          <Div>
+            <StyledTitle>{values.title}</StyledTitle>
+            <StyledSubtitle>{values.description}</StyledSubtitle>
+          </Div>
+          <Div>
+            <Typography className={classes.textPrice}>{values.pricing[0].displayPrice}</Typography>
+          </Div>
+        </CardContent>
+      </CardContainerHorizontal>
+      <SwipeableDrawer
+        anchor={"right"}
+        open={state["right"]}
+        onClose={toggleDrawer("right", false)}
+        onOpen={toggleDrawer("right", true)}
+      >
+        <DrawerViewList values={values} />
+      </SwipeableDrawer>
+    </React.Fragment>
   );
 }
 

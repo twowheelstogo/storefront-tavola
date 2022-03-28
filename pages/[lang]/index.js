@@ -86,6 +86,7 @@ class ProductGridPage extends Component {
           setPageSize={this.setPageSize}
           setSortBy={this.setSortBy}
           sortBy={sortBy}
+          uiStore={uiStore}
         />
       </Layout>
     );

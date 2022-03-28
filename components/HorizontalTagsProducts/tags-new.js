@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ScrollSpyTabsNew({ tags, globalTags }) {
+export default function ScrollSpyTabsNew({ tags, globalTags,uiStore }) {
   const classes = useStyles();
   const [value, setValue] = React.useState(tags && tags[0]._id);
   const handleChange = (event, newValue) => {
@@ -97,6 +97,7 @@ export default function ScrollSpyTabsNew({ tags, globalTags }) {
                         setPageSize
                         setSortBy
                         sortBy
+                        uiStore={uiStore}
                       />
                     </div>
                   </div>

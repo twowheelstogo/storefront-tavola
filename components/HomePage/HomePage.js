@@ -13,9 +13,10 @@ const HomePage = props => {
         setPageSize,
         components:{CatalogLayout},
         setSortBy,
-        sortBy
+        sortBy,
+        uiStore
     } = props;
-
+    console.log('home page', props)
     return (
         <Fragment>
             <CatalogLayout
@@ -28,6 +29,7 @@ const HomePage = props => {
                 setPageSize={setPageSize}
                 setSortBy={setSortBy}
                 sortBy={sortBy} 
+                uiStore={uiStore}
             />
         </Fragment>
     );

@@ -87,7 +87,8 @@
           "max-len": "off",
           "quote-props": "off",
           "react/prop-types": "off",
-          "react/jsx-max-props-per-line": "off"
+          "react/jsx-max-props-per-line": "off",
+          "parser": "babel-eslint"
         }
       }
     ]

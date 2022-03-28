@@ -14,6 +14,7 @@ const CatalogLayout = props => {
         setPageSize,
         setSortBy,
         sortBy,
+        uiStore
     } = props;
 
 
@@ -31,23 +32,12 @@ const CatalogLayout = props => {
                 isLoadingCatalogItems={isLoadingCatalogItems}
                 pageInfo={pageInfo}
                 pageSize={pageSize}
-                tags={tags}
                 setPageSize={setPageSize}
                 setSortBy={setSortBy}
                 sortBy={sortBy} 
                 id = "catalog"
+                uiStore={uiStore}
             />
-            {/* <HorizontalProductCard
-                tags={tags}
-                currencyCode={currencyCode}
-                isLoadingCatalogItems={isLoadingCatalogItems}
-                pageInfo={pageInfo}
-                pageSize={pageSize}
-                tags={tags}
-                setPageSize={setPageSize}
-                setSortBy={setSortBy}
-                sortBy={sortBy}
-            /> */}
         </Fragment>
     )
 

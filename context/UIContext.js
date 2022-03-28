@@ -18,6 +18,21 @@ export const UIProvider = ({ children }) => {
   const [sortByCurrencyCode, setSortByCurrencyCode] = useState("USD"); // eslint-disable-line no-unused-vars
   const [openCartTimeout, setOpenCartTimeout] = useState();
   const [entryModal, setEntryModal] = useState(null);
+  const [SelectedOptions, setPdpSelectedOption] = useState({});
+
+  const setSelectedOption = (variantId, optionId) => {
+    if (!SelectedOptions[variantId]) SelectedOptions[variantId] = [];
+    SelectedOptions[variantId].push(optionId);
+    setPdpSelectedOption(SelectedOptions);
+  };
+  
+  const unSetSelectedOption = (variantId, optionId) => {
+    if (SelectedOptions[variantId]) {
+      SelectedOptions[variantId] = SelectedOptions[variantId].filter((f) => f !== optionId);
+      if (!SelectedOptions[variantId].length) delete SelectedOptions[variantId];
+      setPdpSelectedOption(SelectedOptions);
+    }
+  };
 
   const setPDPSelectedVariantId = (variantId, optionId) => {
     setPdpSelectedVariantId(variantId);
@@ -100,7 +115,11 @@ export const UIProvider = ({ children }) => {
         setOrderStatusSelectValue,
         setPageSize,
         setSortBy,
-        setEntryModal
+        setEntryModal,
+        
+        SelectedOptions,
+        setSelectedOption,
+        unSetSelectedOption,
       }}
     >
       {children}

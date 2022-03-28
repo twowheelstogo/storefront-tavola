@@ -13,6 +13,7 @@ const CatalogLayout = props => {
         setPageSize,
         setSortBy,
         sortBy,
+        uiStore
     } = props;
 
 
@@ -34,6 +35,7 @@ const CatalogLayout = props => {
                 setSortBy={setSortBy}
                 sortBy={sortBy} 
                 id = "catalog"
+                uiStore={uiStore}
             />
         </Fragment>
     )
