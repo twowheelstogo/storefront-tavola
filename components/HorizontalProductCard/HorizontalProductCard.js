@@ -97,9 +97,9 @@ const HorizontalProductCard = (props) => {
           {catalogProducts.length !== 0 && (
             <Div>
               <Grid container direction="row">
-                {catalogProducts.map((values) => (
-                  <Grid item xs={12} sm={6} md={4} lg={4} key={values._id} className={classes.gridSpacing}>
-                    <ProductDetailDrawer props={props} values={values} uiStore={uiStore} />
+                {catalogProducts.map((product) => (
+                  <Grid item xs={12} sm={6} md={4} lg={4} key={product._id} className={classes.gridSpacing}>
+                    <ProductDetailDrawer {...props} product={product} />
                   </Grid>
                 ))}
               </Grid>

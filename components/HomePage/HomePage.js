@@ -16,7 +16,8 @@ const HomePage = props => {
         sortBy,
         uiStore
     } = props;
-    console.log('home page', props)
+    // console.log('home page', props)
+    // console.info("HomePage -> currencyCode", currencyCode)
     return (
         <Fragment>
             <CatalogLayout

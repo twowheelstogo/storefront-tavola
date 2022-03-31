@@ -42,7 +42,7 @@ const HorizontalTagsProducts = (props) => {
         <Tags group="menu">
         {({ tags: tagsMenu }) => {
           return tagsMenu && tagsMenu.length ? (
-           <ScrollSpyTabsNew tags={tagsMenu} globalTags={tags} uiStore={uiStore} />
+           <ScrollSpyTabsNew currencyCode={currencyCode} tags={tagsMenu} globalTags={tags} uiStore={uiStore} />
           ) : (
             <div>NO HAY CATEGORIAS</div>
           );

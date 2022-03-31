@@ -42,14 +42,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ScrollSpyTabsNew({ tags, globalTags,uiStore }) {
+export default function ScrollSpyTabsNew({ tags, globalTags,uiStore,currencyCode }) {
   const classes = useStyles();
   const [value, setValue] = React.useState(tags && tags[0]._id);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  console.info("global tags", globalTags);
-  console.info("tags", tags);
+  // console.info("global tags", globalTags);
+  // console.info("tags", tags);
+  console.info("ScrollSpyTabsNew -> currencyCode", currencyCode);
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -90,7 +91,7 @@ export default function ScrollSpyTabsNew({ tags, globalTags,uiStore }) {
                     <div>
                       <HorizontalProductCard
                         catalogProducts={catalogProducts}
-                        currencyCode
+                        currencyCode={currencyCode}
                         isLoadingCatalogItems
                         pageInfo
                         pageSize

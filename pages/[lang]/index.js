@@ -55,7 +55,7 @@ class ProductGridPage extends Component {
       routingStore: { query },
       shop,
       uiStore,
-      tags
+      tags,
     } = this.props;
     const pageSize = query && inPageSizes(query.limit) ? parseInt(query.limit, 10) : uiStore.pageSize;
     const sortBy = query && query.sortby ? query.sortby : uiStore.sortBy;
