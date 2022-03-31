@@ -37,7 +37,7 @@ class ProductDetailDrawer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      right: false
+      right: false,
     };
   }
   determineProductPrice() {
@@ -46,9 +46,7 @@ class ProductDetailDrawer extends Component {
     const { product, uiStore, currencyCode } = this.props;
 
     let selectedTotal = 0.0;
-    for (const [variantId, optionIds] of Object.entries(
-      uiStore.SelectedOptions
-    )) {
+    for (const [variantId, optionIds] of Object.entries(uiStore.SelectedOptions)) {
       const variant = product.variants.find((v) => v._id === variantId);
       if (!variant) {
         console.info("Error the variant not exists");
@@ -57,14 +55,16 @@ class ProductDetailDrawer extends Component {
       for (const option of variant.options || []) {
         if (!optionIds.includes(option._id)) continue;
 
-        const pricing = (option.pricing || []).find((p) => (p.currency||{}).code === currencyCode);
-        console.info("currencyCode", currencyCode)
-        console.info("pricing",option.pricing, pricing);
-        if(!pricing) {
+        const pricing = (option.pricing || []).find((p) => (p.currency || {}).code === currencyCode);
+        console.info("currencyCode", currencyCode);
+        console.info("pricing", option.pricing, pricing);
+
+        if (!pricing) {
           console.info("Error the pricing option not exists");
           continue;
         }
-        selectedTotal += (pricing.price || 0);
+        selectedTotal += pricing.price || 0;
+
       }
     }
     console.info("determineProductPrice", selectedTotal);
@@ -81,24 +81,20 @@ class ProductDetailDrawer extends Component {
     // ReCalculate the Selected Total
     this.determineProductPrice();
   }
-  
+
   toggleDrawer(anchor, open) {
     return (event) => {
-      if (
-        event &&
-        event.type === "keydown" &&
-        (event.key === "Tab" || event.key === "Shift")
-      ) {
+      if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
         return;
       }
 
-      this.setState({  [anchor]: open });
+      this.setState({ [anchor]: open });
     };
   }
 
   DrawerViewList() {
-    const { product, uiStore, currencyCode,classes } = this.props;
-    console.info('DrawerViewList ---> product', product);
+    const { product, uiStore, currencyCode, classes } = this.props;
+    console.info("DrawerViewList ---> product", product);
     return (
       <Fragment>
         <div role="presentation" style={{ width: 400, background: "white" }}>
@@ -128,18 +124,11 @@ class ProductDetailDrawer extends Component {
               <CancelIcon />
             </IconButton>
           </div>
-          <Typography
-            variant="h4"
-            component="h2"
-            style={{ padding: "20px 0px 0px 20px", fontSize: 30 }}
-          >
+          <Typography variant="h4" component="h2" style={{ padding: "20px 0px 0px 20px", fontSize: 30 }}>
             {product.title}
           </Typography>
-          <Typography
-            variant="h6"
-            style={{ padding: "5px 0px 0px 20px", fontSize: 18 }}
-          >
-            {/* {(product.pricing[0] || "").displayPrice} */}
+          <Typography variant="h6" style={{ padding: "5px 0px 0px 20px", fontSize: 18 }}>
+            {(product.pricing[0] || "").displayPrice}
           </Typography>
           <Typography
             variant="h6"
@@ -162,15 +151,18 @@ class ProductDetailDrawer extends Component {
                         <FormControl component="fieldset">
                           <FormGroup>
                             <FormControlLabel
+                              style={{marginRight:100}}
                               control={
-                                <Checkbox
-                                  name={op.title}
-                                  onClick={(ev) =>
-                                    this.handleSelectOption(e, op, ev)
-                                  }
-                                />
+                                <Checkbox name={op.title} onClick={(ev) => this.handleSelectOption(e, op, ev)} />
                               }
-                              label={op.title}
+                              label={
+                                <div style={{display: 'flex'}}>
+                                  <Typography style={{float: 'left'}}>{op.title}</Typography>
+                                  <div  style={{float: 'left'}}>
+                                    <Typography style={{position: 'absolute'}}>{(op.pricing[0] || "").displayPrice}</Typography>
+                                  </div>
+                                </div>
+                              }
                             />
                           </FormGroup>
                         </FormControl>
@@ -182,11 +174,7 @@ class ProductDetailDrawer extends Component {
                       e.options.map((op) => (
                         <FormControl component="fieldset">
                           <RadioGroup aria-label="gender" name="gender1">
-                            <FormControlLabel
-                              value={op.title}
-                              control={<Radio />}
-                              label={op.title}
-                            />
+                            <FormControlLabel value={op.title} control={<Radio />} label={op.title} />
                           </RadioGroup>
                         </FormControl>
                       ))}
@@ -214,7 +202,7 @@ class ProductDetailDrawer extends Component {
     );
   }
   render() {
-    const { product, uiStore, currencyCode,classes } = this.props;
+    const { product, uiStore, currencyCode, classes } = this.props;
     return (
       <React.Fragment key={"right"}>
         <CardContainerHorizontal
@@ -223,10 +211,7 @@ class ProductDetailDrawer extends Component {
           boderColor={"2px solid rgba(151, 151, 151, 0.5)"}
         >
           {product.primaryImage !== null ? (
-            <img
-              src={product.primaryImage.URLs.medium}
-              className={classes.imageProduct}
-            ></img>
+            <img src={product.primaryImage.URLs.medium} className={classes.imageProduct}></img>
           ) : (
             <img src="/images/placeholder.gif" />
           )}
@@ -237,7 +222,7 @@ class ProductDetailDrawer extends Component {
             </Div>
             <Div>
               <Typography className={classes.textPrice}>
-            {/*     {(product.pricing[0] || "").displayPrice} */}
+                {/*     {(product.pricing[0] || "").displayPrice} */}
               </Typography>
             </Div>
           </CardContent>
@@ -248,187 +233,11 @@ class ProductDetailDrawer extends Component {
           onClose={this.toggleDrawer("right", false)}
           onOpen={this.toggleDrawer("right", true)}
         >
-          {/* <DrawerViewList product={product} /> */}
           {this.DrawerViewList()}
         </SwipeableDrawer>
       </React.Fragment>
     );
   }
 }
-
-
-// class ProductDetailDrawer extends Component{
-
-//   handleSelectOption = (variant, option) => {
-//     if ((uiStore.SelectedOptions[variant._id] ||[]).includes(option._id)) {
-//       uiStore.unSetSelectedOption(variant._id, option._id);
-//     } else {
-//       uiStore.setSelectedOption(variant._id, option._id);
-//     }
-//     console.info("handleSelectOption", uiStore.SelectedOptions);
-//     // ReCalculate the Selected Total
-//     determineProductPrice();
-//   };
-
-
-//   toggleDrawer = (anchor, open) => (event) => {
-//     if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
-//       return;
-//     }
-
-//  /*    setState({ ...state, [anchor]: open }); */
-//   };
-
-
-
-//   determineProductPrice = () => {
-//     let selectedTotal = 0.0;
-//     for (const [variantId, optionIds] of Object.entries(
-//       uiStore.SelectedOptions
-//     )) {
-//       const variant = product.variants.find((v) => v._id === variantId);
-//       if (!variant) {
-//         console.info("Error the variant not exists");
-//         continue;
-//       }
-//       for (const option of variant.options || []) {
-//         if (!optionIds.includes(option._id)) continue;
-
-//         // pricing[currencyCode]
-//         console.info("determineProductPrice", option);
-//         // priceByCurrencyCode
-//       }
-//     }
-//   };
-
-
-//   DrawerViewList = ({ product}) => {
-//     console.log(product); 
-//     return (
-//       <Fragment>
-//         <div role="presentation" style={{ width: 400, background: "white" }}>
-//           <div style={{ position: "relative" }}>
-//             {product.primaryImage !== null ? (
-//               <img
-//                 src={product.primaryImage.URLs.medium}
-//                 style={{ width: "100%" }}
-//                 className={`${classes.imageProduct} db`}
-//               ></img>
-//             ) : (
-//               <img src="/images/placeholder.gif" />
-//             )}
-//             <IconButton
-//               size="small"
-//               style={{
-//                 position: "absolute",
-//                 width: 40,
-//                 height: "auto",
-//                 color: "#FFF",
-//                 cursor: "select",
-//                 top: 10,
-//                 left: 10,
-//               }}
-//               onClick={toggleDrawer("right", false)}
-//             >
-//               <CancelIcon />
-//             </IconButton>
-//           </div>
-//           <Typography variant="h4" component="h2" style={{ padding: "20px 0px 0px 20px", fontSize: 30 }}>
-//             {product.title}
-//           </Typography>
-//           <Typography variant="h6" style={{ padding: "5px 0px 0px 20px", fontSize: 18 }}>
-//             {product.pricing[0].displayPrice}
-//           </Typography>
-//           <Typography variant="h6" style={{ padding: "10px 0px 0px 20px", color: "#979797", fontSize: 16 }}>
-//             {product.description} this changes
-//           </Typography>
-
-//           {product.variants.map((e) => (
-//             <Collapse accordion={true}>
-//               <Panel header={`${e.title}`} headerClass="my-header-class">
-//                 {e.multipleOption ? (
-//                   <div>
-//                     {e.options &&
-//                       e.options.map((op) => (
-//                         <FormControl component="fieldset">
-//                           <FormGroup>
-//                             <FormControlLabel control={<Checkbox name={op.title} onClick={(ev) =>handleSelectOption(e, op,ev)}/>} label={op.title} />
-//                           </FormGroup>
-//                         </FormControl>
-//                       ))}
-//                   </div>
-//                 ) : (
-//                   <div>
-//                     {e.options &&
-//                       e.options.map((op) => (
-//                         <FormControl component="fieldset">
-//                           <RadioGroup aria-label="gender" name="gender1" >
-//                             <FormControlLabel value={op.title} control={<Radio />} label={op.title} />
-//                           </RadioGroup>
-//                         </FormControl>
-//                       ))}
-//                   </div>
-//                 )}
-//               </Panel>
-//             </Collapse>
-//           ))}
-//           <Button
-//             variant="container"
-//             style={{ background: "#1D0D13", color: "white", position: "absolute", left: "15%", bottom: 20 }}
-//           >
-//             {" "}
-//             Añadir Al Carrito - {` price all cart`}
-//           </Button>
-//           <ProductDetailAddToCart />
-//         </div>
-//       </Fragment>
-//     );
-//   };
-
-//   render(){
-//     const {
-//       product,
-//       uiStore,
-//       currencyCode,
-//       product
-//     } = this.props;
-//     const classes = useStyles();
-//     console.info("uistore", uiStore.SelectedOptions);
-
-//     return(
-//      <React.Fragment key={"right"}>
-//       <CardContainerHorizontal
-//         withBorder
-//         onClick={toggleDrawer("right", true)}
-//         boderColor={"2px solid rgba(151, 151, 151, 0.5)"}
-//       >
-//         {product.primaryImage !== null ? (
-//           <img src={product.primaryImage.URLs.medium} className={classes.imageProduct}></img>
-//         ) : (
-//           <img src="/images/placeholder.gif" />
-//         )}
-//         <CardContent>
-//           <Div>
-//             <StyledTitle>{product.title}</StyledTitle>
-//             <StyledSubtitle>{product.description}</StyledSubtitle>
-//           </Div>
-//           <Div>
-//             <Typography className={classes.textPrice}>{product.pricing[0].displayPrice}</Typography>
-//           </Div>
-//         </CardContent>
-//       </CardContainerHorizontal>
-//       <SwipeableDrawer
-//         anchor={"right"}
-//         open={state["right"]}
-//         onClose={toggleDrawer("right", false)}
-//         onOpen={toggleDrawer("right", true)}
-//       >
-//         <DrawerViewList product={product} />
-//       </SwipeableDrawer>
-//     </React.Fragment>
-
-//     )
-//   }
-// }
 
 export default withComponents(withStyles(styles)(ProductDetailDrawer));

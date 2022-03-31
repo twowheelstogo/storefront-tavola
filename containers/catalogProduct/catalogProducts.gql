@@ -36,6 +36,7 @@ query catalogItems($shopId: ID!, $tagId:ID) {
               }
             }
             pricing {
+              maxFreeQty
               compareAtPrice {
                 displayAmount
               }

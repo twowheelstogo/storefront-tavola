@@ -60,6 +60,7 @@ query Products(
         minPrice
         maxPrice
         displayPrice
+        maxFreeQty
       }
       shop {
         _id
@@ -69,6 +70,7 @@ query Products(
         title
         pricing{
           price
+          maxFreeQty
         }
         options {
           _id
