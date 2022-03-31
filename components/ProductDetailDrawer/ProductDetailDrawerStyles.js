@@ -22,7 +22,6 @@ const styles = (theme) => ({
     backgroundColor: "yellow",
   },
   optionForm: {
-    backgroundColor: "blue",
     paddingLeft: 0,
     "& .MuiFormControlLabel-label": {
       width: "100%",

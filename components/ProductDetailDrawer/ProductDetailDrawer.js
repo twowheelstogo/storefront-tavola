@@ -177,13 +177,12 @@ class ProductDetailDrawer extends Component {
                                 <Checkbox name={op.title} onClick={(ev) => this.handleSelectOption(e, op, ev)} />
                               }
                               label={
-                                <div style={{ position: "relative", backgroundColor: "red", width: "100%" }}>
-                                  <div style={{ width: "100%" }}>
-                                    <Typography style={{ display: "inline-block" }}>
-                                      <p>{op.title}</p>
-                                      <p>{op.pricing[0].displayPrice}</p>
+                                <div style={{width: "100%" }}>
+                                  <div style={{ width: "100%",display:'flex' }}>
+                                    <Typography style={{ width:100}}>
+                                      <p style={{display:'contents'}}> {op.title}</p>
                                     </Typography>
-                                    <Typography style={{ display: "inline-block" }}>
+                                    <Typography style={{display:'inline-block'}}>
                                       {(op.pricing[0] || "").displayPrice}
                                     </Typography>
                                   </div>
