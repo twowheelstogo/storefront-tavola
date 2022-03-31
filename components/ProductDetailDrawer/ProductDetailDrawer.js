@@ -10,13 +10,18 @@ import {
   FormGroup,
   FormControl,
   Checkbox,
+  TextField,
+  ButtonBase,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { withComponents } from "@reactioncommerce/components-context";
 import CancelIcon from "@material-ui/icons/Cancel";
+import Quantityinput from "components/QuantityInput";
 import ProductDetailAddToCart from "components/ProductDetailAddToCart";
 import priceByCurrencyCode from "lib/utils/priceByCurrencyCode";
 import Collapse from "rc-collapse";
+import inject from "hocs/inject";
+
 import {
   StyledSubtitle,
   StyledTitle,
@@ -38,38 +43,43 @@ class ProductDetailDrawer extends Component {
     super(props);
     this.state = {
       right: false,
+      selectedTotal: 0.0,
     };
   }
-  determineProductPrice() {
+  determineProductPrice = () => {
     // this.props.attr => false
     // const { attr } = this.props
     const { product, uiStore, currencyCode } = this.props;
 
     let selectedTotal = 0.0;
-    for (const [variantId, optionIds] of Object.entries(uiStore.SelectedOptions)) {
+    for (const [variantId, optionQtys] of Object.entries(uiStore.SelectedOptions)) {
       const variant = product.variants.find((v) => v._id === variantId);
       if (!variant) {
         console.info("Error the variant not exists");
         continue;
       }
-      for (const option of variant.options || []) {
-        if (!optionIds.includes(option._id)) continue;
-
+      for (const [optionId, qty] of Object.entries(optionQtys)) {
+        const option = (variant.options || []).find((o) => o._id === optionId);
+        if (!option) {
+          console.info("Error the option not exists");
+          continue;
+        }
         const pricing = (option.pricing || []).find((p) => (p.currency || {}).code === currencyCode);
-        console.info("currencyCode", currencyCode);
-        console.info("pricing", option.pricing, pricing);
-
+        console.info("currencyCode", currencyCode, "qty", qty, "pricing", pricing);
         if (!pricing) {
           console.info("Error the pricing option not exists");
           continue;
         }
-        selectedTotal += pricing.price || 0;
-
+        console.info("Calculate", pricing.maxFreeQty, (pricing.maxFreeQty || 0) <= (qty || 1));
+        if ((pricing.maxFreeQty || 0) <= (qty || 1)) {
+          selectedTotal += (pricing.price || 0) * (qty || 1);
+        }
       }
     }
     console.info("determineProductPrice", selectedTotal);
-    return selectedTotal;
-  }
+    // return selectedTotal;
+    this.setState({ selectedTotal });
+  };
   handleSelectOption(variant, option) {
     const { product, uiStore, currencyCode } = this.props;
     if ((uiStore.SelectedOptions[variant._id] || []).includes(option._id)) {
@@ -79,6 +89,11 @@ class ProductDetailDrawer extends Component {
     }
     console.info("handleSelectOption", uiStore.SelectedOptions);
     // ReCalculate the Selected Total
+    this.determineProductPrice();
+  }
+  handleQtyChaged(variant, option, event) {
+    console.info("Qty Changed", variant._id, option._id, (event.target || {}).value);
+    this.props.uiStore.setQtySelectedOption(variant._id, option._id, (event.target || {}).value);
     this.determineProductPrice();
   }
 
@@ -94,7 +109,7 @@ class ProductDetailDrawer extends Component {
 
   DrawerViewList() {
     const { product, uiStore, currencyCode, classes } = this.props;
-    console.info("DrawerViewList ---> product", product);
+    // console.info("DrawerViewList ---> product", product);
     return (
       <Fragment>
         <div role="presentation" style={{ width: 400, background: "white" }}>
@@ -130,6 +145,9 @@ class ProductDetailDrawer extends Component {
           <Typography variant="h6" style={{ padding: "5px 0px 0px 20px", fontSize: 18 }}>
             {(product.pricing[0] || "").displayPrice}
           </Typography>
+          <Typography variant="h6" style={{ padding: "5px 0px 0px 20px", fontSize: 18 }}>
+            (test) Selected TOTAL : {this.state.selectedTotal}
+          </Typography>
           <Typography
             variant="h6"
             style={{
@@ -148,23 +166,49 @@ class ProductDetailDrawer extends Component {
                   <div>
                     {e.options &&
                       e.options.map((op) => (
-                        <FormControl component="fieldset">
+                        <FormControl
+                          className={classes.optionForm}
+                          component="fieldset"
+                          style={{ position: "relative", width: "100%" }}
+                        >
                           <FormGroup>
                             <FormControlLabel
-                              style={{marginRight:100}}
                               control={
                                 <Checkbox name={op.title} onClick={(ev) => this.handleSelectOption(e, op, ev)} />
                               }
                               label={
-                                <div style={{display: 'flex'}}>
-                                  <Typography style={{float: 'left'}}>{op.title}</Typography>
-                                  <div  style={{float: 'left'}}>
-                                    <Typography style={{position: 'absolute'}}>{(op.pricing[0] || "").displayPrice}</Typography>
+                                <div style={{ position: "relative", backgroundColor: "red", width: "100%" }}>
+                                  <div style={{ width: "100%" }}>
+                                    <Typography style={{ display: "inline-block" }}>
+                                      <p>{op.title}</p>
+                                      <p>{op.pricing[0].displayPrice}</p>
+                                    </Typography>
+                                    <Typography style={{ display: "inline-block" }}>
+                                      {(op.pricing[0] || "").displayPrice}
+                                    </Typography>
+                                  </div>
+                                  <div
+                                    style={{ width: 110, position: "absolute", right: 0, top: "50%", marginTop: -20 }}
+                                  >
+                                    <Quantityinput
+                                      defaultValue={(uiStore.SelectedOptions[e._id] || {})[op._id] || 1}
+                                      onChange={(ev) => this.handleQtyChaged(e, op, { target: { value: ev } })}
+                                    />
                                   </div>
                                 </div>
                               }
                             />
                           </FormGroup>
+                          <div>
+                            {/* <h6>(test) Def Qty: {(uiStore.SelectedOptions[e._id] || {})[op._id] || 1}</h6> */}
+                            {/* <TextField
+                              type="number"
+                              label="Qantity"
+                              variant="outlined"
+                              defaultValue={(uiStore.SelectedOptions[e._id] || {})[op._id] || 1}
+                              onChange={(ev) => this.handleQtyChaged(e, op, ev)}
+                            /> */}
+                          </div>
                         </FormControl>
                       ))}
                   </div>
@@ -240,4 +284,4 @@ class ProductDetailDrawer extends Component {
   }
 }
 
-export default withComponents(withStyles(styles)(ProductDetailDrawer));
+export default withComponents(withStyles(styles)(inject("uiStore")(ProductDetailDrawer)));

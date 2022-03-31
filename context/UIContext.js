@@ -22,14 +22,24 @@ export const UIProvider = ({ children }) => {
 
   const setSelectedOption = (variantId, optionId) => {
     if (!SelectedOptions[variantId]) SelectedOptions[variantId] = [];
-    SelectedOptions[variantId].push(optionId);
+    SelectedOptions[variantId][optionId] = (SelectedOptions[variantId][optionId] || 0) + 1;
+    // SelectedOptions[variantId].push(optionId);
     setPdpSelectedOption(SelectedOptions);
   };
-  
+  const setQtySelectedOption = (variantId, optionId, qty) => {
+    if (!SelectedOptions[variantId]) SelectedOptions[variantId] = [];
+    SelectedOptions[variantId][optionId] = qty || 0;
+    if (SelectedOptions[variantId][optionId] <= 0) delete SelectedOptions[variantId][optionId];
+    if (!Object.keys(SelectedOptions[variantId])) delete SelectedOptions[variantId];
+    setPdpSelectedOption(SelectedOptions);
+  };
+
   const unSetSelectedOption = (variantId, optionId) => {
     if (SelectedOptions[variantId]) {
-      SelectedOptions[variantId] = SelectedOptions[variantId].filter((f) => f !== optionId);
-      if (!SelectedOptions[variantId].length) delete SelectedOptions[variantId];
+      // SelectedOptions[variantId] = SelectedOptions[variantId].filter((f) => f !== optionId);
+      SelectedOptions[variantId][optionId] = (SelectedOptions[variantId][optionId] || 0) - 1;
+      if (SelectedOptions[variantId][optionId] <= 0) delete SelectedOptions[variantId][optionId];
+      if (!Object.keys(SelectedOptions[variantId])) delete SelectedOptions[variantId];
       setPdpSelectedOption(SelectedOptions);
     }
   };
@@ -116,9 +126,10 @@ export const UIProvider = ({ children }) => {
         setPageSize,
         setSortBy,
         setEntryModal,
-        
+
         SelectedOptions,
         setSelectedOption,
+        setQtySelectedOption,
         unSetSelectedOption,
       }}
     >
@@ -128,5 +139,5 @@ export const UIProvider = ({ children }) => {
 };
 
 UIProvider.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };

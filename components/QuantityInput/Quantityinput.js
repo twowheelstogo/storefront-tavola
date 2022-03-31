@@ -38,6 +38,10 @@ class QuantityInput extends Component {
         /**
          * Prepopulate the input's value.
          */
+         defaultValue: PropTypes.number,
+        /**
+         * Prepopulate the input's value.
+         */
         value: PropTypes.number
     };
 
@@ -49,10 +53,11 @@ class QuantityInput extends Component {
     constructor(props) {
         super(props);
 
-        const value = props.value || 0;
+        const value = props.value || props.defaultValue || 0;
 
         this.state = {
-            initialValue: props.value,
+            defaultValue: props.defaultValue,
+            // initialValue: props.value,
             value
         };
     }
@@ -91,7 +96,8 @@ class QuantityInput extends Component {
 
     render() {
         const { className, classes: { incrementButton, buttonResponsive }} = this.props;
-        const { value } = this.state;
+        const { value, defaultValue } = this.state;
+        console.log('defaultValue ------> Quantity Input', defaultValue)
         return (
             <div>
                 <DesignGroupItems>
@@ -108,10 +114,11 @@ class QuantityInput extends Component {
                     <TextField
                         id="addToCartQuantityInput"
                         onChange={this.handleQuantityInputChange}
+                        defaultValue={defaultValue}
                         value={value}
                         InputProps={{
                             disableUnderline: true,
-                            style:{paddingLeft:'50%',width:'100px'}
+                            style:{paddingLeft:'50%',width:'40px'}
                         }}
                     />
                     <ButtonBase

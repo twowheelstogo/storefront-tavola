@@ -21,6 +21,13 @@ const styles = (theme) => ({
   drawerclose: {
     backgroundColor: "yellow",
   },
+  optionForm: {
+    backgroundColor: "blue",
+    paddingLeft: 0,
+    "& .MuiFormControlLabel-label": {
+      width: "100%",
+    },
+  },
 });
 
 const useStyles = makeStyles({
@@ -31,7 +38,6 @@ const useStyles = makeStyles({
     width: "auto",
   },
 });
-
 
 const StyledTitle = styled.div`
   font-size: 18px;
@@ -75,13 +81,4 @@ const CardContent = styled.div`
   flex: 1 1 auto;
 `;
 
-
-export {
-    StyledSubtitle,
-    StyledTitle,
-    CardContainerHorizontal,
-    CardContent,
-    Div,
-    styles,
-    useStyles
-}
+export { StyledSubtitle, StyledTitle, CardContainerHorizontal, CardContent, Div, styles, useStyles };
