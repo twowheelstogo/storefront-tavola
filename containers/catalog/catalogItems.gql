@@ -47,6 +47,8 @@ query catalogItemsQuery(
               minOption
               pricing {
                 maxFreeQty
+                maxQty
+                minQty
                 compareAtPrice {
                   displayAmount
                 }
@@ -68,6 +70,8 @@ query catalogItemsQuery(
                 index
                 pricing {
                   maxFreeQty
+                  maxQty
+                  minQty
                   compareAtPrice {
                     displayAmount
                   }
@@ -170,6 +174,8 @@ query catalogItemsQuery(
             }
             pricing {
               maxFreeQty
+              maxQty
+              minQty
               compareAtPrice {
                 displayAmount
               }

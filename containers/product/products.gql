@@ -60,6 +60,8 @@ query Products(
         minPrice
         maxPrice
         displayPrice
+        maxQty
+        minQty
         maxFreeQty
       }
       shop {
@@ -71,6 +73,8 @@ query Products(
         pricing{
           price
           maxFreeQty
+          maxQty
+          minQty
         }
         options {
           _id
