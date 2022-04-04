@@ -45,6 +45,7 @@ class ProductDetailDrawer extends Component {
     this.state = {
       right: false,
       selectedTotal: 0.0,
+      errors: [],
     };
   }
   getPricing = (op) => {
@@ -56,6 +57,7 @@ class ProductDetailDrawer extends Component {
     // this.props.attr => false
     // const { attr } = this.props
     const { product, uiStore, currencyCode } = this.props;
+    const errors = [];
 
     let selectedTotal = 0.0;
     for (const [variantId, optionQtys] of Object.entries(uiStore.SelectedOptions)) {
@@ -64,34 +66,58 @@ class ProductDetailDrawer extends Component {
         console.info("Error the variant not exists");
         continue;
       }
+      const vPricing = this.getPricing(variant);
+      let vMaxFreeQty = vPricing.maxFreeQty || 0;
+      const options = [];
+      const qtyTotal = 0;
+      // options
       for (const [optionId, qty] of Object.entries(optionQtys)) {
         const option = (variant.options || []).find((o) => o._id === optionId);
         if (!option) {
           console.info("Error the option not exists");
           continue;
         }
-        const pricing = this.getPricing(option);
-        console.info("currencyCode", currencyCode, "qty", qty, "pricing", pricing);
-        if (!pricing) {
+        const oPricing = this.getPricing(option);
+        console.info("currencyCode", currencyCode, "qty", qty, "pricing", oPricing);
+        if (!oPricing) {
           console.info("Error the pricing option not exists");
           continue;
         }
-        const maxFreeQty = pricing.maxFreeQty || 0;
+        const oMaxFreeQty = oPricing.maxFreeQty || 0;
         const currentQty = qty || 1;
-        let finalQty = currentQty - maxFreeQty;
-        if (finalQty >= 1) finalQty = 1;
+        qtyTotal += currentQty;
+        // let finalQty = currentQty - oMaxFreeQty;
+        // if (finalQty >= 1) finalQty = 1;
         // cocacol 1 freeQty free
         // 2 currentQty
         // final Qty = currentQty -freeQty
-        console.info("maxFreeQty", maxFreeQty, "currentQty", currentQty, "finalQty", finalQty);
-        if (maxFreeQty <= currentQty) {
-          selectedTotal += (pricing.price || 0) * finalQty;
-        }
+        // console.info("maxFreeQty", oMaxFreeQty, "currentQty", currentQty, "finalQty", finalQty);
+        // if (oMaxFreeQty <= currentQty) {
+        //   selectedTotal += (oPricing.price || 0) * finalQty;
+        // }
+        options.push({ oMaxFreeQty, price: oPricing.price || 0, currentQty });
+      }
+      // Sort
+      options = options.sort((a, b) => a.price - b.price);
+      for (const op of options) {
+        // if (vMaxFreeQty <= 0 || op.currentQty >= vMaxFreeQty) {
+        let finalQty = op.currentQty - vMaxFreeQty - op.oMaxFreeQty;
+        if (finalQty <= 0) finalQty = 0;
+        selectedTotal += op.price * finalQty;
+        //
+        vMaxFreeQty -= op.currentQty - op.oMaxFreeQty;
+        if (vMaxFreeQty < 0) vMaxFreeQty = 0;
+        // }
+      }
+      if (vPricing.maxQty && vPricing.maxQty > qtyTotal) {
+        errors.push({
+          msg: `Test:. for the variant ${variant.title} has a max qty ${vPricing.maxQty} and the current qty is ${qtyTotal}`,
+        });
       }
     }
     console.info("determineProductPrice", selectedTotal);
     // return selectedTotal;
-    this.setState({ selectedTotal });
+    this.setState({ selectedTotal, errors });
   };
   handleSelectOption(variant, option) {
     const { product, uiStore, currencyCode } = this.props;
@@ -133,7 +159,7 @@ class ProductDetailDrawer extends Component {
           </Typography>
           <Typography style={{ display: "inline-block" }}>
             {pricing.displayPrice}
-            {pricing.maxFreeQty ? (
+            {/*   {pricing.maxFreeQty ? (
               <b>
                 {" "}
                 {pricing.maxFreeQty}{" "}
@@ -143,12 +169,12 @@ class ProductDetailDrawer extends Component {
               </b>
             ) : (
               ""
-            )}
+            )} */}
           </Typography>
         </div>
-        <div>
+        {/*    <div>
           Test: <b>MaxQty : {pricing.maxQty}</b> - <b>MinQty : {pricing.minQty}</b>
-        </div>
+        </div> */}
       </div>
     );
   }
@@ -245,7 +271,7 @@ class ProductDetailDrawer extends Component {
                                         max={optionPricing.maxQty || variantPricing.maxQty}
                                         min={optionPricing.minQty || variantPricing.minQty}
                                         ref={(qtyInput) => (this.qtyInput[`${e._id}:${op._id}`] = qtyInput)}
-                                        value={(uiStore.SelectedOptions[e._id] || {})[op._id] || 1}
+                                        value={(uiStore.SelectedOptions[e._id] || {})[op._id] || 0}
                                         onChange={(ev) => this.handleQtyChaged(e, op, { target: { value: ev } })}
                                       />
                                     </div>
@@ -300,6 +326,44 @@ class ProductDetailDrawer extends Component {
       </Fragment>
     );
   }
+  handleAddToCartClick = async (quantity) => {
+  	const {
+  		addItemsToCart,
+  		currencyCode,
+  		product,
+  		uiStore: { openCartWithTimeout, pdpSelectedOptionId, pdpSelectedVariantId },
+  		width
+  	} = this.props;
+
+  	// Get selected variant or variant option
+  	const selectedVariant = variantById(product.variants, pdpSelectedVariantId);
+  	const selectedOption = variantById(selectedVariant.options, pdpSelectedOptionId);
+  	const selectedVariantOrOption = selectedOption || selectedVariant;
+
+  	if (selectedVariantOrOption) {
+  		// Get the price for the currently selected variant or variant option
+  		const price = priceByCurrencyCode(currencyCode, selectedVariantOrOption.pricing);
+
+  		// Call addItemsToCart with an object matching the GraphQL `CartItemInput` schema
+  		await addItemsToCart([
+  			{
+  				price: {
+  					amount: price.price,
+  					currencyCode
+  				},
+  				productConfiguration: {
+  					productId: product.productId, // Pass the productId, not to be confused with _id
+  					productVariantId: selectedVariantOrOption.variantId // Pass the variantId, not to be confused with _id
+  				},
+  				quantity
+  			}
+  		]);
+  	}
+  	if (isWidthUp("md", width)) {
+  		// Open the cart, and close after a 3 second delay
+  		openCartWithTimeout(3000);
+  	}
+  };
   render() {
     const { product, uiStore, currencyCode, classes } = this.props;
     return (
