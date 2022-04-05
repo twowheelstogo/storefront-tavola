@@ -121,7 +121,7 @@ class ProductDetail extends Component {
   		const price = priceByCurrencyCode(currencyCode, selectedVariantOrOption.pricing);
 
   		// Call addItemsToCart with an object matching the GraphQL `CartItemInput` schema
-  		await addItemsToCart([
+  		await addItemsToCart({items:[
   			{
   				price: {
   					amount: price.price,
@@ -133,7 +133,7 @@ class ProductDetail extends Component {
   				},
   				quantity
   			}
-  		]);
+  		]});
   	}
   	if (isWidthUp("md", width)) {
   		// Open the cart, and close after a 3 second delay

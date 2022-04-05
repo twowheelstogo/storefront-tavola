@@ -18,20 +18,62 @@ export const UIProvider = ({ children }) => {
   const [sortByCurrencyCode, setSortByCurrencyCode] = useState("USD"); // eslint-disable-line no-unused-vars
   const [openCartTimeout, setOpenCartTimeout] = useState();
   const [entryModal, setEntryModal] = useState(null);
-  const [SelectedOptions, setPdpSelectedOption] = useState({});
+  // Custom
+  const [selectedCartCatalogId, setPdpSelectedCartCatalogId] = useState(null);
+  const [selectedCatalogs, setPdpSelectedCatalogs] = useState({});
+  // const [SelectedOptions, setPdpSelectedOption] = useState({});
+
+  const selectedCartCatalog = (cartCatalogId) => {
+    const initCartCatalogId = cartCatalogId || selectedCartCatalogId;
+    // 
+    if (!selectedCatalogs[initCartCatalogId]) {
+      selectedCatalogs[initCartCatalogId] = { options: {}, qty:1 };
+      setPdpSelectedCatalogs(selectedCatalogs);
+    }
+    if(selectedCartCatalogId !== initCartCatalogId){
+      setPdpSelectedCartCatalogId(initCartCatalogId);
+    }
+    return initCartCatalogId;
+  };
+
+  const updateSelectedCartCatalogs = (_SelectedCatalogs) => {
+    const SelectedCatalogsFinal = _SelectedCatalogs || selectedCatalogs;
+    for (const [cartCatalogId, catalog] of Object.entries(SelectedCatalogsFinal)) {
+      for (const [variantId, options] of Object.entries(catalog.options)) {
+        for (const [optionId, qty] of Object.entries(options)) {
+          if (qty <= 0) delete options[optionId];
+        }
+        if (!Object.keys(options).length) delete catalog.options[variantId];
+      }
+      if (!Object.keys(catalog.options).length) delete SelectedCatalogsFinal[cartCatalogId];
+    }
+    setPdpSelectedCatalogs(SelectedCatalogsFinal);
+  };
+
+  const updateSelectedCartCatalog = (SelectedOptions) => {
+    const selectedCartCatalogId = selectedCartCatalog();
+    selectedCatalogs[selectedCartCatalogId].options = SelectedOptions;
+    updateSelectedCartCatalogs(selectedCatalogs);
+  };
+
+  const SelectedOptions = () => {
+    const selectedCartCatalogId = selectedCartCatalog();
+    return selectedCatalogs[selectedCartCatalogId].options;
+  };
 
   const setSelectedOption = (variantId, optionId) => {
     if (!SelectedOptions[variantId]) SelectedOptions[variantId] = [];
     SelectedOptions[variantId][optionId] = (SelectedOptions[variantId][optionId] || 0) + 1;
-    // SelectedOptions[variantId].push(optionId);
-    setPdpSelectedOption(SelectedOptions);
+    // setPdpSelectedOption(SelectedOptions);
+    updateSelectedCartCatalog(SelectedOptions);
   };
   const setQtySelectedOption = (variantId, optionId, qty) => {
     if (!SelectedOptions[variantId]) SelectedOptions[variantId] = [];
     SelectedOptions[variantId][optionId] = qty || 0;
     if (SelectedOptions[variantId][optionId] <= 0) delete SelectedOptions[variantId][optionId];
     if (!Object.keys(SelectedOptions[variantId])) delete SelectedOptions[variantId];
-    setPdpSelectedOption(SelectedOptions);
+    // setPdpSelectedOption(SelectedOptions);
+    updateSelectedCartCatalog(SelectedOptions);
   };
 
   const unSetSelectedOption = (variantId, optionId) => {
@@ -40,7 +82,8 @@ export const UIProvider = ({ children }) => {
       SelectedOptions[variantId][optionId] = (SelectedOptions[variantId][optionId] || 0) - 1;
       if (SelectedOptions[variantId][optionId] <= 0) delete SelectedOptions[variantId][optionId];
       if (!Object.keys(SelectedOptions[variantId])) delete SelectedOptions[variantId];
-      setPdpSelectedOption(SelectedOptions);
+      // setPdpSelectedOption(SelectedOptions);
+      updateSelectedCartCatalog(SelectedOptions);
     }
   };
 
@@ -126,7 +169,13 @@ export const UIProvider = ({ children }) => {
         setPageSize,
         setSortBy,
         setEntryModal,
-
+        // Custom
+        // Catalog
+        selectedCartCatalog,
+        selectedCatalogs,
+        updateSelectedCartCatalogs,
+        updateSelectedCartCatalog,
+        // Options
         SelectedOptions,
         setSelectedOption,
         setQtySelectedOption,

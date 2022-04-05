@@ -159,9 +159,7 @@ export default function useCart() {
   );
 
   const handleAddItemsToCart = async (data, isCreating) => {
-    const input = {
-      items: data.items
-    };
+    const input = { ...data };
 
     if (!isCreating && (!viewer || !viewer._id) && cartStore.hasAnonymousCartCredentials) {
       // Given an anonymous user, with a cart, add token and cartId to input
@@ -251,7 +249,7 @@ export default function useCart() {
   }
 
   return {
-    addItemsToCart: (items) => handleAddItemsToCart({ items }, !cart || !cart._id),
+    addItemsToCart: (data) => handleAddItemsToCart(data, !cart || !cart._id),
     addOrCreateCartLoading,
     cart: processedCartData,
     checkoutMutations: {

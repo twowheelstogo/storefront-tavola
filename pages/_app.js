@@ -1,6 +1,7 @@
 import NextApp from "next/app";
 import React from "react";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+//import { SnackbarProvider } from "notistack";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ContextProviders } from "context/ContextProviders";
 import { ComponentsProvider } from "@reactioncommerce/components-context";

@@ -12,15 +12,18 @@ import {
   Checkbox,
   TextField,
   ButtonBase,
+  Snackbar,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { withComponents } from "@reactioncommerce/components-context";
 import CancelIcon from "@material-ui/icons/Cancel";
 import Quantityinput from "components/QuantityInput";
 import ProductDetailAddToCart from "components/ProductDetailAddToCart";
+import CloseIcon from "@material-ui/icons/Close";
 import priceByCurrencyCode from "lib/utils/priceByCurrencyCode";
 import Collapse from "rc-collapse";
 import inject from "hocs/inject";
+import Random from "@idigi/random";
 
 import {
   StyledSubtitle,
@@ -46,7 +49,11 @@ class ProductDetailDrawer extends Component {
       right: false,
       selectedTotal: 0.0,
       errors: [],
+      cartCatalogId: props.cartCatalogId || Random.id(),
     };
+  }
+  componentDidMount() {
+    this.props.uiStore.selectedCartCatalog(this.state.cartCatalogId);
   }
   getPricing = (op) => {
     return { maxQty: 1, minQty: 0, maxFreeQty: 0, ...(op.pricing || [])[0] };
@@ -58,8 +65,10 @@ class ProductDetailDrawer extends Component {
     // const { attr } = this.props
     const { product, uiStore, currencyCode } = this.props;
     const errors = [];
-
     let selectedTotal = 0.0;
+    ///|\\\|///|\\\|///|\\\
+    ///      Selected Options
+    ///|\\\|///|\\\|///|\\\
     for (const [variantId, optionQtys] of Object.entries(uiStore.SelectedOptions)) {
       const variant = product.variants.find((v) => v._id === variantId);
       if (!variant) {
@@ -70,7 +79,9 @@ class ProductDetailDrawer extends Component {
       let vMaxFreeQty = vPricing.maxFreeQty || 0;
       const options = [];
       const qtyTotal = 0;
-      // options
+      ///|\\\|///|\\\|///|\\\
+      ///      Init Options
+      ///|\\\|///|\\\|///|\\\
       for (const [optionId, qty] of Object.entries(optionQtys)) {
         const option = (variant.options || []).find((o) => o._id === optionId);
         if (!option) {
@@ -99,6 +110,9 @@ class ProductDetailDrawer extends Component {
       }
       // Sort
       options = options.sort((a, b) => a.price - b.price);
+      ///|\\\|///|\\\|///|\\\
+      ///      Calculate Price
+      ///|\\\|///|\\\|///|\\\
       for (const op of options) {
         // if (vMaxFreeQty <= 0 || op.currentQty >= vMaxFreeQty) {
         let finalQty = op.currentQty - vMaxFreeQty - op.oMaxFreeQty;
@@ -109,15 +123,25 @@ class ProductDetailDrawer extends Component {
         if (vMaxFreeQty < 0) vMaxFreeQty = 0;
         // }
       }
-      if (vPricing.maxQty && vPricing.maxQty > qtyTotal) {
+      ///|\\\|///|\\\|///|\\\
+      ///      Validations
+      ///|\\\|///|\\\|///|\\\
+      if (vPricing.maxQty && vPricing.maxQty < qtyTotal) {
         errors.push({
-          msg: `Test:. for the variant ${variant.title} has a max qty ${vPricing.maxQty} and the current qty is ${qtyTotal}`,
+          msg: `Test: for the variant ${variant.title} has a max qty ${vPricing.maxQty} and the current qty is ${qtyTotal}`,
         });
       }
     }
     console.info("determineProductPrice", selectedTotal);
     // return selectedTotal;
     this.setState({ selectedTotal, errors });
+    this.showNotif();
+    return !errors.length;
+  };
+  showNotif = () => {
+    if (!this.state.errors.length) return;
+    console.error("Errors :", this.state.errors);
+    // call the snapbar
   };
   handleSelectOption(variant, option) {
     const { product, uiStore, currencyCode } = this.props;
@@ -178,6 +202,56 @@ class ProductDetailDrawer extends Component {
       </div>
     );
   }
+  handleAddToCartClick = async (e) => {
+    if (!this.determineProductPrice()) return;
+    console.info("Sounds Working");
+    const {
+      addItemsToCart,
+      currencyCode,
+      product,
+      uiStore: { openCartWithTimeout, pdpSelectedOptionId, pdpSelectedVariantId, SelectedOptions, selectedCatalogs },
+      width,
+    } = this.props;
+
+    // // Get selected variant or variant option
+    // const selectedVariant = variantById(product.variants, pdpSelectedVariantId);
+    // const selectedOption = variantById(selectedVariant.options, pdpSelectedOptionId);
+    // const selectedVariantOrOption = selectedOption || selectedVariant;
+
+    // if (selectedVariantOrOption) {
+    //   // Get the price for the currently selected variant or variant option
+    //   const price = priceByCurrencyCode(currencyCode, selectedVariantOrOption.pricing);
+
+    // Call addItemsToCart with an object matching the GraphQL `CartItemInput` schema
+    await addItemsToCart({
+      catalogs: Object.entries(selectedCatalogs).map(([cartCatalogId, catalog]) => ({
+        cartCatalogId,
+        productId: product.productId,
+        quantity: catalog.qty,
+      })),
+      items: Object.entries(SelectedOptions)
+        .map(([variantId, options]) =>
+          Object.entries(options).map(([optionId, quantity]) => ({
+            cartCatalogId: this.state.cartCatalogId,
+            price: {
+              // amount: price.price,
+              currencyCode,
+            },
+            productConfiguration: {
+              productId: product.productId, // Pass the productId, not to be confused with _id
+              productVariantId: optionId, // Pass the variantId, not to be confused with _id
+            },
+            quantity,
+          })),
+        )
+        .flat(),
+    });
+    // }
+    // if (isWidthUp("md", width)) {
+    //   // Open the cart, and close after a 3 second delay
+    //   openCartWithTimeout(3000);
+    // }
+  };
   DrawerViewList() {
     const { product, uiStore, currencyCode, classes } = this.props;
     // console.info("DrawerViewList ---> product", product);
@@ -317,53 +391,16 @@ class ProductDetailDrawer extends Component {
               left: "15%",
               bottom: 20,
             }}
+            onClick={this.handleAddToCartClick}
           >
             {" "}
             Añadir Al Carrito - {` price all cart`}
           </Button>
-          <ProductDetailAddToCart />
+          {/* <ProductDetailAddToCart onClick={this.handleAddToCartClick} /> */}
         </div>
       </Fragment>
     );
   }
-  handleAddToCartClick = async (quantity) => {
-  	const {
-  		addItemsToCart,
-  		currencyCode,
-  		product,
-  		uiStore: { openCartWithTimeout, pdpSelectedOptionId, pdpSelectedVariantId },
-  		width
-  	} = this.props;
-
-  	// Get selected variant or variant option
-  	const selectedVariant = variantById(product.variants, pdpSelectedVariantId);
-  	const selectedOption = variantById(selectedVariant.options, pdpSelectedOptionId);
-  	const selectedVariantOrOption = selectedOption || selectedVariant;
-
-  	if (selectedVariantOrOption) {
-  		// Get the price for the currently selected variant or variant option
-  		const price = priceByCurrencyCode(currencyCode, selectedVariantOrOption.pricing);
-
-  		// Call addItemsToCart with an object matching the GraphQL `CartItemInput` schema
-  		await addItemsToCart([
-  			{
-  				price: {
-  					amount: price.price,
-  					currencyCode
-  				},
-  				productConfiguration: {
-  					productId: product.productId, // Pass the productId, not to be confused with _id
-  					productVariantId: selectedVariantOrOption.variantId // Pass the variantId, not to be confused with _id
-  				},
-  				quantity
-  			}
-  		]);
-  	}
-  	if (isWidthUp("md", width)) {
-  		// Open the cart, and close after a 3 second delay
-  		openCartWithTimeout(3000);
-  	}
-  };
   render() {
     const { product, uiStore, currencyCode, classes } = this.props;
     return (

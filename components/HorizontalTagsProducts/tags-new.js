@@ -42,15 +42,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ScrollSpyTabsNew({ tags, globalTags,uiStore,currencyCode }) {
+export default function ScrollSpyTabsNew(props) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(tags && tags[0]._id);
+  const [value, setValue] = React.useState(props.tags && props.tags[0]._id);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   // console.info("global tags", globalTags);
   // console.info("tags", tags);
-  console.info("ScrollSpyTabsNew -> currencyCode", currencyCode);
+  console.info("ScrollSpyTabsNew -> currencyCode", props.currencyCode);
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -59,8 +59,8 @@ export default function ScrollSpyTabsNew({ tags, globalTags,uiStore,currencyCode
           onChange={handleChange}
           aria-label="wrapped label tabs example"
         >
-          {tags &&
-            tags.map((input) => (
+          {props.tags &&
+            props.tags.map((input) => (
               <Tab
                 key={input._id}
                 value={input._id}
@@ -70,10 +70,10 @@ export default function ScrollSpyTabsNew({ tags, globalTags,uiStore,currencyCode
         </Tabs>
       </AppBar>
 
-      {tags &&
-        tags.map((input) => (
+      {props.tags &&
+        props.tags.map((input) => (
           <TabPanel key={input._id} value={value} index={input._id}>
-            {globalTags
+            {props.globalTags
               .filter((ntag) =>
                 (ntag.metafields || []).find((f) =>
                   (f.value || "").split(",").includes(input.slug)
@@ -82,7 +82,7 @@ export default function ScrollSpyTabsNew({ tags, globalTags,uiStore,currencyCode
               .map((tag) => {
                 console.log('tags en el tags',tag)
                 const catalogProducts =
-                  (globalTags.find((g) => g._id === tag._id) || {})
+                  (props.globalTags.find((g) => g._id === tag._id) || {})
                     .catalogProducts || [];
                     console.log('catalog productos',catalogProducts)
                 return (
@@ -90,15 +90,16 @@ export default function ScrollSpyTabsNew({ tags, globalTags,uiStore,currencyCode
                     <h1>{tag.displayTitle}</h1>
                     <div>
                       <HorizontalProductCard
+                        {...props}
                         catalogProducts={catalogProducts}
-                        currencyCode={currencyCode}
+                        // currencyCode={currencyCode}
                         isLoadingCatalogItems
                         pageInfo
                         pageSize
                         setPageSize
                         setSortBy
                         sortBy
-                        uiStore={uiStore}
+                        // uiStore={uiStore}
                       />
                     </div>
                   </div>

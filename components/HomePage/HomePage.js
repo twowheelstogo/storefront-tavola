@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { withComponents } from "@reactioncommerce/components-context";
+import withCart from "containers/cart/withCart";
+import inject from "hocs/inject";
 
 const HomePage = props => {
     const {
@@ -21,16 +23,17 @@ const HomePage = props => {
     return (
         <Fragment>
             <CatalogLayout
-                catalogItems={catalogItems}
-                currencyCode={currencyCode}
-                isLoadingCatalogItems={isLoadingCatalogItems}
-                pageInfo={pageInfo}
-                pageSize={pageSize}
-                tags={tags}
-                setPageSize={setPageSize}
-                setSortBy={setSortBy}
-                sortBy={sortBy} 
-                uiStore={uiStore}
+                {...props}
+                // catalogItems={catalogItems}
+                // currencyCode={currencyCode}
+                // isLoadingCatalogItems={isLoadingCatalogItems}
+                // pageInfo={pageInfo}
+                // pageSize={pageSize}
+                // tags={tags}
+                // setPageSize={setPageSize}
+                // setSortBy={setSortBy}
+                // sortBy={sortBy} 
+                // uiStore={uiStore}
             />
         </Fragment>
     );
@@ -46,4 +49,5 @@ HomePage.propTypes = {
     // onChangeCartItemsQuantity: PropTypes.func.isRequired
 };
 
-export default withComponents(HomePage);
+ export default withComponents(withCart(HomePage));
+// export default withApollo()(inject("routingStore", "catalogItems", "uiStore")(withCart(HomePage)));

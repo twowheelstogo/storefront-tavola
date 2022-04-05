@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import inject from "hocs/inject";
 import Helmet from "react-helmet";
 import withCatalogItems from "containers/catalog/withCatalogItems";
-import HomePage from "components/HomePage"
+import HomePage from "components/HomePage";
 import Layout from "components/Layout";
 import { inPageSizes } from "lib/utils/pageSizes";
 import { withApollo } from "lib/apollo/withApollo";
@@ -20,16 +20,16 @@ class ProductGridPage extends Component {
     routingStore: PropTypes.object,
     shop: PropTypes.shape({
       currency: PropTypes.shape({
-        code: PropTypes.string.isRequired
-      })
+        code: PropTypes.string.isRequired,
+      }),
     }),
     tag: PropTypes.object,
     uiStore: PropTypes.shape({
       pageSize: PropTypes.number.isRequired,
       setPageSize: PropTypes.func.isRequired,
       setSortBy: PropTypes.func.isRequired,
-      sortBy: PropTypes.string.isRequired
-    })
+      sortBy: PropTypes.string.isRequired,
+    }),
   };
 
   componentDidMount() {
@@ -68,25 +68,20 @@ class ProductGridPage extends Component {
     }
 
     return (
-      <Layout withHero shop={shop} 
-      catalogItems={catalogItems}
-      routerType={-1}
-      >
-        <Helmet
-          title={pageTitle}
-          meta={[{ name: "descrition", content: shop && shop.description }]}
-        />
+      <Layout withHero shop={shop} catalogItems={catalogItems} routerType={-1}>
+        <Helmet title={pageTitle} meta={[{ name: "descrition", content: shop && shop.description }]} />
         <HomePage
-          catalogItems={catalogItems}
+          {...this.props}
+          // catalogItems={catalogItems}
           currencyCode={(shop && shop.currency && shop.currency.code) || "GTQ"}
           isLoadingCatalogItems={isLoadingCatalogItems}
           pageInfo={catalogItemsPageInfo}
           pageSize={pageSize}
-          tags={tags}
+          // tags={tags}
           setPageSize={this.setPageSize}
           setSortBy={this.setSortBy}
           sortBy={sortBy}
-          uiStore={uiStore}
+          // uiStore={uiStore}
         />
       </Layout>
     );
@@ -107,11 +102,11 @@ export async function getStaticProps({ params: { lang } }) {
     return {
       props: {
         shop: null,
-        ...translations
+        ...translations,
       },
       fetchAllTags: null,
       // eslint-disable-next-line camelcase
-      unstable_revalidate: 1 // Revalidate immediately
+      unstable_revalidate: 1, // Revalidate immediately
     };
   }
 
@@ -119,10 +114,10 @@ export async function getStaticProps({ params: { lang } }) {
     props: {
       ...primaryShop,
       ...translations,
-      ...tags
+      ...tags,
     },
     // eslint-disable-next-line camelcase
-    unstable_revalidate: 120 // Revalidate each two minutes
+    unstable_revalidate: 120, // Revalidate each two minutes
   };
 }
 
@@ -134,7 +129,7 @@ export async function getStaticProps({ params: { lang } }) {
 export async function getStaticPaths() {
   return {
     paths: locales.map((locale) => ({ params: { lang: locale } })),
-    fallback: false
+    fallback: false,
   };
 }
 

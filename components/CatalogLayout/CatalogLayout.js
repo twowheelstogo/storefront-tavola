@@ -27,16 +27,17 @@ const CatalogLayout = props => {
     return (
         <Fragment>
             <HorizontalTagsProducts 
-                tags={tags}
-                currencyCode={currencyCode}
-                isLoadingCatalogItems={isLoadingCatalogItems}
-                pageInfo={pageInfo}
-                pageSize={pageSize}
-                setPageSize={setPageSize}
-                setSortBy={setSortBy}
-                sortBy={sortBy} 
+                {...props}
+                // tags={tags}
+                // currencyCode={currencyCode}
+                // isLoadingCatalogItems={isLoadingCatalogItems}
+                // pageInfo={pageInfo}
+                // pageSize={pageSize}
+                // setPageSize={setPageSize}
+                // setSortBy={setSortBy}
+                // sortBy={sortBy} 
                 id = "catalog"
-                uiStore={uiStore}
+                // uiStore={uiStore}
             />
         </Fragment>
     )
