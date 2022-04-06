@@ -13,6 +13,9 @@ import {
   TextField,
   ButtonBase,
   Snackbar,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { withComponents } from "@reactioncommerce/components-context";
@@ -24,6 +27,7 @@ import priceByCurrencyCode from "lib/utils/priceByCurrencyCode";
 import Collapse from "rc-collapse";
 import inject from "hocs/inject";
 import Random from "@idigi/random";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import {
   StyledSubtitle,
@@ -307,79 +311,87 @@ class ProductDetailDrawer extends Component {
           {product.variants.map((e) => {
             const variantPricing = this.getPricing(e);
             return (
-              <Collapse accordion={true}>
-                <Panel
-                  header={`${e.title} (Test: MaxQty: ${variantPricing.maxQty}. MinQty: ${variantPricing.minQty})`}
-                  headerClass="my-header-class"
-                >
-                  {e.multipleOption ? (
-                    <div>
-                      {e.options &&
-                        e.options.map((op) => {
-                          const optionPricing = this.getPricing(op);
-                          return (
-                            <FormControl
-                              className={classes.optionForm}
-                              component="fieldset"
-                              style={{ position: "relative", width: "100%" }}
-                            >
-                              <FormGroup>
-                                {(optionPricing.maxQty || 1) <= 1 && (variantPricing.maxQty || 1) <= 1 ? (
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        name={op.title}
-                                        checked={!!(uiStore.SelectedOptions[e._id] || {})[op._id]}
-                                        onClick={(ev) => this.handleSelectOption(e, op, ev)}
-                                      />
-                                    }
-                                    label={this.renderOptionInfo(e, op)}
-                                  />
-                                ) : (
-                                  <div>
-                                    <div>{this.renderOptionInfo(e, op)}</div>
-                                    <div
-                                      style={{ width: 110, position: "absolute", right: 0, top: "50%", marginTop: -20 }}
-                                    >
-                                      <Quantityinput
-                                        max={optionPricing.maxQty || variantPricing.maxQty}
-                                        min={optionPricing.minQty || variantPricing.minQty}
-                                        ref={(qtyInput) => (this.qtyInput[`${e._id}:${op._id}`] = qtyInput)}
-                                        value={(uiStore.SelectedOptions[e._id] || {})[op._id] || 0}
-                                        onChange={(ev) => this.handleQtyChaged(e, op, { target: { value: ev } })}
-                                      />
+              <Accordion defaultExpanded={true}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                  <Typography>{`${e.title} (Test: MaxQty: ${variantPricing.maxQty}. MinQty: ${variantPricing.minQty})`}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>
+                    {e.multipleOption ? (
+                      <div>
+                        {e.options &&
+                          e.options.map((op) => {
+                            const optionPricing = this.getPricing(op);
+                            return (
+                              <FormControl
+                                className={classes.optionForm}
+                                component="fieldset"
+                                style={{ position: "relative", width: "100%" }}
+                              >
+                                <FormGroup>
+                                  {(optionPricing.maxQty || 1) <= 1 && (variantPricing.maxQty || 1) <= 1 ? (
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          name={op.title}
+                                          checked={!!(uiStore.SelectedOptions[e._id] || {})[op._id]}
+                                          onClick={(ev) => this.handleSelectOption(e, op, ev)}
+                                        />
+                                      }
+                                      label={this.renderOptionInfo(e, op)}
+                                    />
+                                  ) : (
+                                    <div>
+                                      <div>{this.renderOptionInfo(e, op)}</div>
+                                      <div
+                                        style={{
+                                          width: 110,
+                                          position: "absolute",
+                                          right: 0,
+                                          top: "50%",
+                                          marginTop: -20,
+                                        }}
+                                      >
+                                        <Quantityinput
+                                          max={optionPricing.maxQty || variantPricing.maxQty}
+                                          min={optionPricing.minQty || variantPricing.minQty}
+                                          ref={(qtyInput) => (this.qtyInput[`${e._id}:${op._id}`] = qtyInput)}
+                                          value={(uiStore.SelectedOptions[e._id] || {})[op._id] || 0}
+                                          onChange={(ev) => this.handleQtyChaged(e, op, { target: { value: ev } })}
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
-                              </FormGroup>
-                              <div>
-                                {/* <h6>(test) Def Qty: {(uiStore.SelectedOptions[e._id] || {})[op._id] || 1}</h6> */}
-                                {/* <TextField
+                                  )}
+                                </FormGroup>
+                                <div>
+                                  {/* <h6>(test) Def Qty: {(uiStore.SelectedOptions[e._id] || {})[op._id] || 1}</h6> */}
+                                  {/* <TextField
                           type="number"
                           label="Qantity"
                           variant="outlined"
                           defaultValue={(uiStore.SelectedOptions[e._id] || {})[op._id] || 1}
                           onChange={(ev) => this.handleQtyChaged(e, op, ev)}
                         /> */}
-                              </div>
+                                </div>
+                              </FormControl>
+                            );
+                          })}
+                      </div>
+                    ) : (
+                      <div>
+                        {e.options &&
+                          e.options.map((op) => (
+                            <FormControl component="fieldset">
+                              <RadioGroup aria-label="gender" name="gender1">
+                                <FormControlLabel value={op.title} control={<Radio />} label={op.title} />
+                              </RadioGroup>
                             </FormControl>
-                          );
-                        })}
-                    </div>
-                  ) : (
-                    <div>
-                      {e.options &&
-                        e.options.map((op) => (
-                          <FormControl component="fieldset">
-                            <RadioGroup aria-label="gender" name="gender1">
-                              <FormControlLabel value={op.title} control={<Radio />} label={op.title} />
-                            </RadioGroup>
-                          </FormControl>
-                        ))}
-                    </div>
-                  )}
-                </Panel>
-              </Collapse>
+                          ))}
+                      </div>
+                    )}
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
             );
           })}
           <Button
