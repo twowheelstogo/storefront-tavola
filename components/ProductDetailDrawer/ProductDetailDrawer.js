@@ -28,7 +28,7 @@ import Collapse from "rc-collapse";
 import inject from "hocs/inject";
 import Random from "@idigi/random";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-
+import { withSnackbar } from "notistack";
 import {
   StyledSubtitle,
   StyledTitle,
@@ -144,7 +144,9 @@ class ProductDetailDrawer extends Component {
   };
   showNotif = () => {
     if (!this.state.errors.length) return;
-    console.error("Errors :", this.state.errors);
+    const { enqueueSnackbar } = this.props;
+    console.error("Errors :", enqueueSnackbar, this.state.errors);
+    this.state.errors.map((e) => enqueueSnackbar(e.msg || "Errrors"));
     // call the snapbar
   };
   handleSelectOption(variant, option) {
@@ -452,4 +454,4 @@ class ProductDetailDrawer extends Component {
   }
 }
 
-export default withComponents(withStyles(styles)(inject("uiStore")(ProductDetailDrawer)));
+export default withComponents(withSnackbar(withStyles(styles)(inject("uiStore")(ProductDetailDrawer))));
