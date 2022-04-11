@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Grid } from "@material-ui/core";
-/* import ScrollSpyTabs from "./tags"; */
 import { withComponents } from "@reactioncommerce/components-context";
 import Tags from "containers/tag/withTag.js";
 import ScrollSpyTabsNew from "./tags-new";
@@ -20,7 +19,6 @@ const HorizontalTagsProducts = (props) => {
     uiStore
   } = props;
   const categoryProducts = (tags || []).map((items) => items);
-/*   console.log(categoryProducts ) */
   if (categoryProducts.length === 0)
     return (
       <Grid container justifyContent="center" alignContent="center">
@@ -37,21 +35,21 @@ const HorizontalTagsProducts = (props) => {
         backgroundColor: "#fff",
       }}
     >
-     {
-       tags ? (
-        <Tags group="menu">
-        {({ tags: tagsMenu }) => {
-          return tagsMenu && tagsMenu.length ? (
-           <ScrollSpyTabsNew {...props}  tags={tagsMenu} globalTags={tags}  />
-          ) : (
-            <div>NO HAY CATEGORIAS</div>
-          );
-        }}
-      </Tags>
-       ):(
-         "no existen tags"
-       )
-     }
+      {
+        tags ? (
+          <Tags group="menu">
+            {({ tags: tagsMenu }) => {
+              return tagsMenu && tagsMenu.length ? (
+                <ScrollSpyTabsNew {...props} tags={tagsMenu} globalTags={tags} />
+              ) : (
+                <div>NO HAY CATEGORIAS</div>
+              );
+            }}
+          </Tags>
+        ) : (
+          "NO EXISTEN NINGUNA CATEGORIA"
+        )
+      }
     </div>
   );
 };

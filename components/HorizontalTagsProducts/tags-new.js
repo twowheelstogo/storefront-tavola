@@ -11,7 +11,6 @@ import HorizontalProductCard from "components/HorizontalProductCard"
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"
@@ -40,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
-  tabStyle:{
+  tabStyle: {
     background: theme.palette.primary.dark,
     color: theme.palette.background.colorTabs
   }
@@ -53,7 +52,6 @@ export default function ScrollSpyTabsNew(props) {
     setValue(newValue);
   };
 
-  console.info("ScrollSpyTabsNew -> currencyCode", props.currencyCode);
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -62,8 +60,10 @@ export default function ScrollSpyTabsNew(props) {
           onChange={handleChange}
           aria-label="wrapped label tabs example"
           className={classes.tabStyle}
-          TabIndicatorProps= {{
-            style:{background:"#C88E2B"}
+          scrollButtons="auto"
+          variant="scrollable"
+          TabIndicatorProps={{
+            style: { background: "#C88E2B"}
           }}
         >
           {props.tags &&
@@ -76,7 +76,6 @@ export default function ScrollSpyTabsNew(props) {
             ))}
         </Tabs>
       </AppBar>
-
       {props.tags &&
         props.tags.map((input) => (
           <TabPanel key={input._id} value={value} index={input._id}>
@@ -87,11 +86,9 @@ export default function ScrollSpyTabsNew(props) {
                 )
               )
               .map((tag) => {
-                console.log('tags en el tags',tag)
                 const catalogProducts =
                   (props.globalTags.find((g) => g._id === tag._id) || {})
                     .catalogProducts || [];
-                    console.log('catalog productos',catalogProducts)
                 return (
                   <div>
                     <h1>{tag.displayTitle}</h1>
@@ -99,14 +96,12 @@ export default function ScrollSpyTabsNew(props) {
                       <HorizontalProductCard
                         {...props}
                         catalogProducts={catalogProducts}
-                        // currencyCode={currencyCode}
                         isLoadingCatalogItems
                         pageInfo
                         pageSize
                         setPageSize
                         setSortBy
                         sortBy
-                        // uiStore={uiStore}
                       />
                     </div>
                   </div>
@@ -116,6 +111,4 @@ export default function ScrollSpyTabsNew(props) {
         ))}
     </div>
   );
-
-
 }

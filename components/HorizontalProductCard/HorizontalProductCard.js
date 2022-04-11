@@ -86,7 +86,7 @@ const HorizontalProductCard = (props) => {
   const {
     catalogProducts,
     classes,
-    components: { ProgressiveImage, ProductDetailDrawer },
+    components: { ProgressiveImage },
     uiStore,
   } = props;
   const theme = useTheme();
@@ -123,7 +123,6 @@ const HorizontalProductCard = (props) => {
                         </Div>
                       </CardContent>
                     </CardContainerHorizontal>
-                    {/* <ProductDetailDrawer {...props} product={product} /> */}
                   </Grid>
                 ))}
               </Grid>
