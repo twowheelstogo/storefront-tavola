@@ -48,7 +48,6 @@ class ProductDetailDrawer extends Component {
       errors: [],
       cartCatalogId: Random.id(),
       product: {},
-      // product: props.catalogItems.find((catalog) => catalog.productId === props.uiStore.catalogDrawerProduct) || {},
     };
   }
   componentDidMount() {
@@ -56,13 +55,9 @@ class ProductDetailDrawer extends Component {
   }
   getPricing = (op) => {
     return { maxQty: 1, minQty: 0, maxFreeQty: 0, ...(op.pricing || [])[0] };
-    // return { maxQty: 1, minQty: 0, maxFreeQty: 0, ...Object.entries((op.pricing || [])[0]||{}).filter(([_,v]) => v!==null).reduce((p, [k,v]) => ({...p, [k]:v}), {}) };
-    //(option.pricing || []).find((p) => (p.currency || {}).code === currencyCode);
   };
   renderTitle = (e) => e.title || e.optionTitle || e.attributeLabel;
   determineProductPrice = () => {
-    // this.props.attr => false
-    // const { attr } = this.props
     const { uiStore, currencyCode } = this.props;
     const errors = [];
     let selectedTotal = 0.0;
@@ -97,15 +92,6 @@ class ProductDetailDrawer extends Component {
         const oMaxFreeQty = oPricing.maxFreeQty || 0;
         const currentQty = qty || 1;
         qtyTotal += currentQty;
-        // let finalQty = currentQty - oMaxFreeQty;
-        // if (finalQty >= 1) finalQty = 1;
-        // cocacol 1 freeQty free
-        // 2 currentQty
-        // final Qty = currentQty -freeQty
-        // console.info("maxFreeQty", oMaxFreeQty, "currentQty", currentQty, "finalQty", finalQty);
-        // if (oMaxFreeQty <= currentQty) {
-        //   selectedTotal += (oPricing.price || 0) * finalQty;
-        // }
         options.push({ oMaxFreeQty, price: oPricing.price || 0, currentQty });
       }
       // Sort
@@ -128,9 +114,8 @@ class ProductDetailDrawer extends Component {
       ///|\\\|///|\\\|///|\\\
       if (vPricing.maxQty && vPricing.maxQty < qtyTotal) {
         errors.push({
-          msg: `Test: for the variant ${this.renderTitle(variant)} has a max qty ${
-            vPricing.maxQty
-          } and the current qty is ${qtyTotal}`,
+          msg: `Test: for the variant ${this.renderTitle(variant)} has a max qty ${vPricing.maxQty
+            } and the current qty is ${qtyTotal}`,
         });
       }
     }
@@ -193,15 +178,6 @@ class ProductDetailDrawer extends Component {
       width,
     } = this.props;
 
-    // // Get selected variant or variant option
-    // const selectedVariant = variantById(this.state.product.variants, pdpSelectedVariantId);
-    // const selectedOption = variantById(selectedVariant.options, pdpSelectedOptionId);
-    // const selectedVariantOrOption = selectedOption || selectedVariant;
-
-    // if (selectedVariantOrOption) {
-    //   // Get the price for the currently selected variant or variant option
-    //   const price = priceByCurrencyCode(currencyCode, selectedVariantOrOption.pricing);
-
     // Call addItemsToCart with an object matching the GraphQL `CartItemInput` schema
     const variants = this.state.product.variants.reduce(
       (p, variant) => ({
@@ -238,11 +214,6 @@ class ProductDetailDrawer extends Component {
     };
     console.info("addItemsToCart", req);
     await addItemsToCart(req);
-    // }
-    // if (isWidthUp("md", width)) {
-    //   // Open the cart, and close after a 3 second delay
-    //   openCartWithTimeout(3000);
-    // }
   };
   renderContent = () => {
     const { uiStore, currencyCode, classes } = this.props;
@@ -307,8 +278,6 @@ class ProductDetailDrawer extends Component {
                 <Typography style={{ color: "#1D0D13", fontSize: "18px", fontWeight: 800 }}>{`${this.renderTitle(
                   e,
                 )}`}</Typography>
-                {/*(Test: MaxQty: ${variantPricing.maxQty}. MinQty: ${
-            variantPricing.minQty })*/}
               </AccordionSummary>
               <AccordionDetails style={{ padding: "25px 20px" }}>
                 <Typography>
@@ -359,16 +328,6 @@ class ProductDetailDrawer extends Component {
                                   </div>
                                 )}
                               </FormGroup>
-                              <div>
-                                {/* <h6>(test) Def Qty: {(uiStore.SelectedOptions[e.variantId] || {})[op.variantId] || 1}</h6> */}
-                                {/* <TextField
-                  type="number"
-                  label="Qantity"
-                  variant="outlined"
-                  defaultValue={(uiStore.SelectedOptions[e.variantId] || {})[op.variantId] || 1}
-                  onChange={(ev) => this.handleQtyChaged(e, op, ev)}
-                /> */}
-                              </div>
                             </FormControl>
                           );
                         })}
@@ -421,7 +380,6 @@ class ProductDetailDrawer extends Component {
             background: "#1D0D13",
             color: "white",
             marginTop: 50,
-            // position: "absolute",
             left: "15%",
             bottom: 20,
           }}
@@ -430,7 +388,6 @@ class ProductDetailDrawer extends Component {
           {" "}
           Añadir Al Carrito - {` price all cart`}
         </Button>
-        {/* <ProductDetailAddToCart onClick={this.handleAddToCartClick} /> */}
       </div>
     );
   };
@@ -461,9 +418,6 @@ class ProductDetailDrawer extends Component {
           anchor={"right"}
           open={this.props.uiStore.isDrawerProductOpen}
           onClose={() => this.props.uiStore.toggleDrawerProduct(false)}
-          // onOpen={() => {
-          //   console.info("Try To onOpen");
-          // }}
         >
           {!this.state.product.productId ? <div>Nothing was selected </div> : this.renderContent()}
         </SwipeableDrawer>

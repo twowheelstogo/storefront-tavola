@@ -78,17 +78,15 @@ const CardContainerHorizontal = styled.div`
     background-color: #eeeeee;
     transition: background-color 0.5s;
   }
-`; 
+`;
 export {
-    CardContent,
-    ProductPaddingHorizontal,
-    Div,
-    CardContainerVertical,
-    StyledSubtitleVertical,
-    StyledSubtitle,
-    StyledTitleVertical,
-    ProductMediaWrapper,
-
-
-    StyledTitle, CardContainerHorizontal
+  CardContent,
+  ProductPaddingHorizontal,
+  Div,
+  CardContainerVertical,
+  StyledSubtitleVertical,
+  StyledSubtitle,
+  StyledTitleVertical,
+  ProductMediaWrapper,
+  StyledTitle, CardContainerHorizontal
 }
