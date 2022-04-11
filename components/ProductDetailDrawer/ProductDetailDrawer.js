@@ -351,7 +351,7 @@ class ProductDetailDrawer extends Component {
                                       <Quantityinput
                                         max={optionPricing.maxQty || variantPricing.maxQty}
                                         min={optionPricing.minQty || variantPricing.minQty}
-                                        ref={(refs) => (this.refs[`${e.variantId}:${op.variantId}`] = refs)}
+                                        ref={(ref) => (this.refs[`${e.variantId}:${op.variantId}`] = ref)}
                                         value={(uiStore.SelectedOptions[e.variantId] || {})[op.variantId] || 0}
                                         onChange={(ev) => this.handleQtyChaged(e, op, { target: { value: ev } })}
                                       />
@@ -436,18 +436,24 @@ class ProductDetailDrawer extends Component {
   };
   init = () => {
     const { uiStore, catalogItems, cartCatalogId } = this.props;
-    const product = {...catalogItems.find((catalog) => catalog.productId === uiStore.catalogDrawerProduct)}
+    const product = {
+      ...(
+        (catalogItems.find((catalog) => catalog.node.product.productId === uiStore.catalogDrawerProduct) || {}).node ||
+        {}
+      ).product,
+    };
+    this.refs = {};
     this.setState({
       selectedTotal: 0.0,
       errors: [],
       cartCatalogId: cartCatalogId || Random.id(),
-      product
+      product,
     });
-    console.info("SwipeableDrawer", uiStore.catalogDrawerProduct, catalogItems,product);
+    console.info("SwipeableDrawer", uiStore.catalogDrawerProduct, product);
   };
   render() {
     const { uiStore } = this.props;
-    
+
     if (uiStore.catalogDrawerProduct && uiStore.catalogDrawerProduct !== this.state.product.productId) this.init();
     return (
       <React.Fragment>
@@ -459,7 +465,7 @@ class ProductDetailDrawer extends Component {
           //   console.info("Try To onOpen");
           // }}
         >
-          {!uiStore.catalogDrawerProduct ? <div>Nothing was selected </div> : this.renderContent()}
+          {!this.state.product.productId ? <div>Nothing was selected </div> : this.renderContent()}
         </SwipeableDrawer>
       </React.Fragment>
     );
