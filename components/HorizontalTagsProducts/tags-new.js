@@ -40,6 +40,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
+  tabStyle:{
+    background: theme.palette.primary.dark,
+    color: theme.palette.background.colorTabs
+  }
 }));
 
 export default function ScrollSpyTabsNew(props) {
@@ -48,8 +52,7 @@ export default function ScrollSpyTabsNew(props) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  // console.info("global tags", globalTags);
-  // console.info("tags", tags);
+
   console.info("ScrollSpyTabsNew -> currencyCode", props.currencyCode);
   return (
     <div className={classes.root}>
@@ -58,6 +61,10 @@ export default function ScrollSpyTabsNew(props) {
           value={value}
           onChange={handleChange}
           aria-label="wrapped label tabs example"
+          className={classes.tabStyle}
+          TabIndicatorProps= {{
+            style:{background:"#C88E2B"}
+          }}
         >
           {props.tags &&
             props.tags.map((input) => (

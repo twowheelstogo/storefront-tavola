@@ -38,6 +38,7 @@ const theme = createMuiTheme({
       //es el color principal de la pagina
       theme_: "#1D0D13",
       Main: "#1D0D13",
+      colorTabs: "#C88E2B",
       //el main es para los que cambian de color en el centro
       Modal: "#1D0D13",
       //Fondo del mensaje mi carrito de cart carrito

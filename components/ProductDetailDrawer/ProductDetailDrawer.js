@@ -64,6 +64,7 @@ class ProductDetailDrawer extends Component {
     // return { maxQty: 1, minQty: 0, maxFreeQty: 0, ...Object.entries((op.pricing || [])[0]||{}).filter(([_,v]) => v!==null).reduce((p, [k,v]) => ({...p, [k]:v}), {}) };
     //(option.pricing || []).find((p) => (p.currency || {}).code === currencyCode);
   };
+  renderTitle = (e) => e.title || e.optionTitle || e.attributeLabel;
   determineProductPrice = () => {
     // this.props.attr => false
     // const { attr } = this.props
@@ -74,7 +75,7 @@ class ProductDetailDrawer extends Component {
     ///      Selected Options
     ///|\\\|///|\\\|///|\\\
     for (const [variantId, optionQtys] of Object.entries(uiStore.SelectedOptions)) {
-      const variant = product.variants.find((v) => v._id === variantId);
+      const variant = product.variants.find((v) => v.variantId === variantId);
       if (!variant) {
         console.info("Error the variant not exists");
         continue;
@@ -87,7 +88,7 @@ class ProductDetailDrawer extends Component {
       ///      Init Options
       ///|\\\|///|\\\|///|\\\
       for (const [optionId, qty] of Object.entries(optionQtys)) {
-        const option = (variant.options || []).find((o) => o._id === optionId);
+        const option = (variant.options || []).find((o) => o.variantId === optionId);
         if (!option) {
           console.info("Error the option not exists");
           continue;
@@ -132,7 +133,9 @@ class ProductDetailDrawer extends Component {
       ///|\\\|///|\\\|///|\\\
       if (vPricing.maxQty && vPricing.maxQty < qtyTotal) {
         errors.push({
-          msg: `Test: for the variant ${variant.title} has a max qty ${vPricing.maxQty} and the current qty is ${qtyTotal}`,
+          msg: `Test: for the variant ${this.renderTitle(variant)} has a max qty ${
+            vPricing.maxQty
+          } and the current qty is ${qtyTotal}`,
         });
       }
     }
@@ -146,27 +149,27 @@ class ProductDetailDrawer extends Component {
     if (!this.state.errors.length) return;
     const { enqueueSnackbar } = this.props;
     console.error("Errors :", enqueueSnackbar, this.state.errors);
-    this.state.errors.map((e) => enqueueSnackbar(e.msg || "Errrors"));
+    this.state.errors.map((e) => enqueueSnackbar(e.msg || "Errrors", { variant: "error" }));
     // call the snapbar
   };
   handleSelectOption(variant, option) {
     const { product, uiStore, currencyCode } = this.props;
-    if ((uiStore.SelectedOptions[variant._id] || [])[option._id]) {
-      uiStore.unSetSelectedOption(variant._id, option._id);
-      if (this.qtyInput[`${variant._id}:${option._id}`])
-        this.qtyInput[`${variant._id}:${option._id}`].setState({ value: 0 });
+    if ((uiStore.SelectedOptions[variant.variantId] || [])[option.variantId]) {
+      uiStore.unSetSelectedOption(variant.variantId, option.variantId);
+      if (this.qtyInput[`${variant.variantId}:${option.variantId}`])
+        this.qtyInput[`${variant.variantId}:${option.variantId}`].setState({ value: 0 });
     } else {
-      uiStore.setSelectedOption(variant._id, option._id);
-      if (this.qtyInput[`${variant._id}:${option._id}`])
-        this.qtyInput[`${variant._id}:${option._id}`].setState({ value: 1 });
+      uiStore.setSelectedOption(variant.variantId, option.variantId);
+      if (this.qtyInput[`${variant.variantId}:${option.variantId}`])
+        this.qtyInput[`${variant.variantId}:${option.variantId}`].setState({ value: 1 });
     }
     console.info("handleSelectOption", uiStore.SelectedOptions);
     // ReCalculate the Selected Total
     this.determineProductPrice();
   }
   handleQtyChaged(variant, option, event) {
-    console.info("Qty Changed", variant._id, option._id, (event.target || {}).value);
-    this.props.uiStore.setQtySelectedOption(variant._id, option._id, (event.target || {}).value);
+    console.info("Qty Changed", variant.variantId, option.variantId, (event.target || {}).value);
+    this.props.uiStore.setQtySelectedOption(variant.variantId, option.variantId, (event.target || {}).value);
     this.determineProductPrice();
   }
 
@@ -181,30 +184,17 @@ class ProductDetailDrawer extends Component {
   }
   renderOptionInfo(e, op) {
     const pricing = this.getPricing(op);
+    console.info(pricing)
     return (
-      <div style={{ width: "100%" }}>
+      <div style={{ width: "100%", paddingTop: "10px", paddingBottom: "10px" }}>
         <div style={{ width: "100%", display: "flex" }}>
-          <Typography style={{ width: 100 }}>
-            <p style={{ display: "contents" }}> {op.title}</p>
+          <Typography style={{ width: 100}}>
+            <p style={{ display: "contents" }}> {this.renderTitle(op)}</p>
           </Typography>
-          <Typography style={{ display: "inline-block" }}>
-            {pricing.displayPrice}
-            {/*   {pricing.maxFreeQty ? (
-              <b>
-                {" "}
-                {pricing.maxFreeQty}{" "}
-                <small>
-                  <sup>Free Qty</sup>
-                </small>
-              </b>
-            ) : (
-              ""
-            )} */}
+          <Typography style={{ display: "inline-block",marginRight: 100  }}>
+            {pricing.price != 0 && <div>{pricing.displayPrice}</div>}
           </Typography>
         </div>
-        {/*    <div>
-          Test: <b>MaxQty : {pricing.maxQty}</b> - <b>MinQty : {pricing.minQty}</b>
-        </div> */}
       </div>
     );
   }
@@ -229,9 +219,10 @@ class ProductDetailDrawer extends Component {
     //   const price = priceByCurrencyCode(currencyCode, selectedVariantOrOption.pricing);
 
     // Call addItemsToCart with an object matching the GraphQL `CartItemInput` schema
-    await addItemsToCart({
+    const variants = product.variants.reduce((p, variant) => ({...p, [variant.variantId]: {...variant, options: (variant.options||[]).reduce((po, option) => ({...po, [option.variantId]:option}),{}) }}),{})
+    const req = {
       catalogs: Object.entries(selectedCatalogs).map(([cartCatalogId, catalog]) => ({
-        cartCatalogId,
+        _id: cartCatalogId,
         productId: product.productId,
         quantity: catalog.qty,
       })),
@@ -240,7 +231,7 @@ class ProductDetailDrawer extends Component {
           Object.entries(options).map(([optionId, quantity]) => ({
             cartCatalogId: this.state.cartCatalogId,
             price: {
-              // amount: price.price,
+              amount: ((variants[variantId].options[optionId]||{}).pricing||[]).concat([{price:0}])[0].price,
               currencyCode,
             },
             productConfiguration: {
@@ -251,7 +242,9 @@ class ProductDetailDrawer extends Component {
           })),
         )
         .flat(),
-    });
+    };
+    console.info('addItemsToCart', req)
+    await addItemsToCart(req);
     // }
     // if (isWidthUp("md", width)) {
     //   // Open the cart, and close after a 3 second delay
@@ -313,11 +306,13 @@ class ProductDetailDrawer extends Component {
           {product.variants.map((e) => {
             const variantPricing = this.getPricing(e);
             return (
-              <Accordion defaultExpanded={true}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                  <Typography>{`${e.title} (Test: MaxQty: ${variantPricing.maxQty}. MinQty: ${variantPricing.minQty})`}</Typography>
+              <Accordion defaultExpanded={true} style={{margin:0}}>
+                <AccordionSummary style={{background: '#F6F6F6'}} expandIcon={<ExpandMoreIcon style={{background: "#1D0D13", color: "white", borderRadius: '20px'}}/>} aria-controls="panel1a-content" id="panel1a-header">
+                  <Typography style={{color: '#1D0D13',fontSize:'18px',fontWeight: 800}}>{`${this.renderTitle(e)}`}</Typography>
+               {/*(Test: MaxQty: ${variantPricing.maxQty}. MinQty: ${
+                    variantPricing.minQty })*/}
                 </AccordionSummary>
-                <AccordionDetails>
+                <AccordionDetails style={{padding:"25px 20px"}}>
                   <Typography>
                     {e.multipleOption ? (
                       <div>
@@ -335,8 +330,9 @@ class ProductDetailDrawer extends Component {
                                     <FormControlLabel
                                       control={
                                         <Checkbox
-                                          name={op.title}
-                                          checked={!!(uiStore.SelectedOptions[e._id] || {})[op._id]}
+                                          type="radio"
+                                          name={this.renderTitle(op)}
+                                          checked={!!(uiStore.SelectedOptions[e.variantId] || {})[op.variantId]}
                                           onClick={(ev) => this.handleSelectOption(e, op, ev)}
                                         />
                                       }
@@ -357,8 +353,8 @@ class ProductDetailDrawer extends Component {
                                         <Quantityinput
                                           max={optionPricing.maxQty || variantPricing.maxQty}
                                           min={optionPricing.minQty || variantPricing.minQty}
-                                          ref={(qtyInput) => (this.qtyInput[`${e._id}:${op._id}`] = qtyInput)}
-                                          value={(uiStore.SelectedOptions[e._id] || {})[op._id] || 0}
+                                          ref={(qtyInput) => (this.qtyInput[`${e.variantId}:${op.variantId}`] = qtyInput)}
+                                          value={(uiStore.SelectedOptions[e.variantId] || {})[op.variantId] || 0}
                                           onChange={(ev) => this.handleQtyChaged(e, op, { target: { value: ev } })}
                                         />
                                       </div>
@@ -366,12 +362,12 @@ class ProductDetailDrawer extends Component {
                                   )}
                                 </FormGroup>
                                 <div>
-                                  {/* <h6>(test) Def Qty: {(uiStore.SelectedOptions[e._id] || {})[op._id] || 1}</h6> */}
+                                  {/* <h6>(test) Def Qty: {(uiStore.SelectedOptions[e.variantId] || {})[op.variantId] || 1}</h6> */}
                                   {/* <TextField
                           type="number"
                           label="Qantity"
                           variant="outlined"
-                          defaultValue={(uiStore.SelectedOptions[e._id] || {})[op._id] || 1}
+                          defaultValue={(uiStore.SelectedOptions[e.variantId] || {})[op.variantId] || 1}
                           onChange={(ev) => this.handleQtyChaged(e, op, ev)}
                         /> */}
                                 </div>
@@ -381,14 +377,31 @@ class ProductDetailDrawer extends Component {
                       </div>
                     ) : (
                       <div>
-                        {e.options &&
-                          e.options.map((op) => (
-                            <FormControl component="fieldset">
-                              <RadioGroup aria-label="gender" name="gender1">
-                                <FormControlLabel value={op.title} control={<Radio />} label={op.title} />
-                              </RadioGroup>
-                            </FormControl>
-                          ))}
+                        {e.options ? (
+                          <FormControl component="fieldset">
+                            <RadioGroup
+                              aria-label={e.variantId}
+                              name={e.variantId}
+                              value={Object.keys({ ...uiStore.SelectedOptions[e.variantId], [e.options[0].variantId]: 1 })[0]}
+                              onChange={(ev, id) => {
+                                console.info("Checked", id, ev);
+                                e.options.map((op) =>
+                                  this.handleQtyChaged(e, op, { target: { value: id === op.variantId ? 1 : 0 } }),
+                                );
+                                /// checked={!!(uiStore.SelectedOptions[e.variantId] || {})[op.variantId]}
+                              }}
+                            >
+                              {e.options.map((op, index) => (
+                                <React.Fragment>
+                                  <FormControlLabel value={op.variantId} control={<Radio />} label= {this.renderOptionInfo(e, op)} />
+                                 
+                                </React.Fragment>
+                              ))}
+                            </RadioGroup>
+                          </FormControl>
+                        ) : (
+                          <React.Fragment />
+                        )}
                       </div>
                     )}
                   </Typography>
@@ -401,7 +414,8 @@ class ProductDetailDrawer extends Component {
             style={{
               background: "#1D0D13",
               color: "white",
-              position: "absolute",
+              marginTop: 50,
+              // position: "absolute",
               left: "15%",
               bottom: 20,
             }}

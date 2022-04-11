@@ -122,7 +122,7 @@ const HorizontalProductCard = (props) => {
                           <CardContainerVertical withBorder boderColor={"2px solid rgba(151, 151, 151, 0.5)"}>
                             <ProductMediaWrapper>
                               <ProgressiveImage
-                                fit={"cover"}
+                                fit={""}
                                 altText={"description"}
                                 presrc={
                                   values.primaryImage !== null

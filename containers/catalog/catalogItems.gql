@@ -34,6 +34,7 @@ query catalogItemsQuery(
         ... on CatalogItemProduct {
           product {
             _id
+            productId
             title
             slug
             variants {

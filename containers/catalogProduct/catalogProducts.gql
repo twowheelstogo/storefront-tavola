@@ -14,6 +14,7 @@ query catalogItems($shopId: ID!, $tagId:ID) {
         ... on CatalogItemProduct {
           product {
             _id
+            productId
             title
             slug
             tagIds

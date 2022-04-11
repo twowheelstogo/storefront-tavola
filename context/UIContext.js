@@ -21,6 +21,7 @@ export const UIProvider = ({ children }) => {
   // Custom
   const [selectedCartCatalogId, setPdpSelectedCartCatalogId] = useState(null);
   const [selectedCatalogs, setPdpSelectedCatalogs] = useState({});
+  const [xxxxx, toggleDetailDrawer] = useState({});
   // const [SelectedOptions, setPdpSelectedOption] = useState({});
 
   const selectedCartCatalog = (cartCatalogId) => {
