@@ -58,6 +58,27 @@ const CardContent = styled.div`
 `;
 
 
+const StyledTitle = styled.div`
+  font-size: 18px;
+  font-weight: 700;
+  color: #000000;
+  padding-left: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+const CardContainerHorizontal = styled.div`
+  border: ${({ withBorder, boderColor }) => (withBorder ? boderColor : "none")};
+  display: flex;
+  height: 150px;
+  cursor: pointer;
+  &:hover {
+    background-color: #eeeeee;
+    transition: background-color 0.5s;
+  }
+`; 
 export {
     CardContent,
     ProductPaddingHorizontal,
@@ -66,5 +87,8 @@ export {
     StyledSubtitleVertical,
     StyledSubtitle,
     StyledTitleVertical,
-    ProductMediaWrapper
+    ProductMediaWrapper,
+
+
+    StyledTitle, CardContainerHorizontal
 }

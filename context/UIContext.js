@@ -21,17 +21,38 @@ export const UIProvider = ({ children }) => {
   // Custom
   const [selectedCartCatalogId, setPdpSelectedCartCatalogId] = useState(null);
   const [selectedCatalogs, setPdpSelectedCatalogs] = useState({});
-  const [xxxxx, toggleDetailDrawer] = useState({});
+  // Drawer
+  const [catalogDrawerProduct, setPdpCatalogDrawerProduct] = useState(null);
+  const [isDrawerProductOpen, togglePdpDrawerProduct] = useState(false);
   // const [SelectedOptions, setPdpSelectedOption] = useState({});
+
+  const openDrawerProduct = (opts) => {
+    // const {cartCatalogId}
+  };
+
+  const toggleDrawerProduct = (_toggle) => {
+    if (_toggle !== undefined && _toggle === isDrawerProductOpen) return;
+    const toggle = _toggle || !isDrawerProductOpen;
+    // if(toggle){ closeCart(); }
+    togglePdpDrawerProduct(toggle);
+  };
+  const setCatalogDrawerProduct = (catalogId, openDrawer = true) => {
+    if (catalogId) {
+      setPdpCatalogDrawerProduct(catalogId);
+    }
+    if (openDrawer) {
+      toggleDrawerProduct(true);
+    }
+  };
 
   const selectedCartCatalog = (cartCatalogId) => {
     const initCartCatalogId = cartCatalogId || selectedCartCatalogId;
-    // 
+    //
     if (!selectedCatalogs[initCartCatalogId]) {
-      selectedCatalogs[initCartCatalogId] = { options: {}, qty:1 };
+      selectedCatalogs[initCartCatalogId] = { options: {}, qty: 1, draft: true };
       setPdpSelectedCatalogs(selectedCatalogs);
     }
-    if(selectedCartCatalogId !== initCartCatalogId){
+    if (selectedCartCatalogId !== initCartCatalogId) {
       setPdpSelectedCartCatalogId(initCartCatalogId);
     }
     return initCartCatalogId;
@@ -181,6 +202,12 @@ export const UIProvider = ({ children }) => {
         setSelectedOption,
         setQtySelectedOption,
         unSetSelectedOption,
+        // Drawer Product
+        isDrawerProductOpen,
+        toggleDrawerProduct,
+        // Drawer Catalog
+        catalogDrawerProduct,
+        setCatalogDrawerProduct,
       }}
     >
       {children}

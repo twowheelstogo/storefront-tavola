@@ -13,6 +13,8 @@ import {
   StyledSubtitle,
   StyledTitleVertical,
   ProductMediaWrapper,
+  StyledTitle,
+  CardContainerHorizontal,
 } from "./HorizontalProductStyle";
 
 const styles = (theme) => ({
@@ -85,7 +87,7 @@ const HorizontalProductCard = (props) => {
     catalogProducts,
     classes,
     components: { ProgressiveImage, ProductDetailDrawer },
-    uiStore
+    uiStore,
   } = props;
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("xs"));
@@ -99,7 +101,29 @@ const HorizontalProductCard = (props) => {
               <Grid container direction="row">
                 {catalogProducts.map((product) => (
                   <Grid item xs={12} sm={6} md={4} lg={4} key={product._id} className={classes.gridSpacing}>
-                    <ProductDetailDrawer {...props} product={product} />
+                    <CardContainerHorizontal
+                      withBorder
+                      onClick={() => uiStore.setCatalogDrawerProduct(product.productId)}
+                      boderColor={"2px solid rgba(151, 151, 151, 0.5)"}
+                    >
+                      {product.primaryImage !== null ? (
+                        <img src={product.primaryImage.URLs.medium} className={classes.imageProduct}></img>
+                      ) : (
+                        <img src="/images/placeholder.gif" />
+                      )}
+                      <CardContent>
+                        <Div>
+                          <StyledTitle>{product.title}</StyledTitle>
+                          <StyledSubtitle>{product.description}</StyledSubtitle>
+                        </Div>
+                        <Div>
+                          <Typography className={classes.textPrice}>
+                            {/*     {(product.pricing[0] || "").displayPrice} */}
+                          </Typography>
+                        </Div>
+                      </CardContent>
+                    </CardContainerHorizontal>
+                    {/* <ProductDetailDrawer {...props} product={product} /> */}
                   </Grid>
                 ))}
               </Grid>
