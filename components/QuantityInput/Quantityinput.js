@@ -102,7 +102,6 @@ class QuantityInput extends Component {
       classes: { incrementButton, buttonResponsive },
     } = this.props;
     const { value, defaultValue } = this.state;
-    console.log("defaultValue ------> Quantity Input", defaultValue);
     return (
       <div>
         <DesignGroupItems>

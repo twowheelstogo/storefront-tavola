@@ -62,6 +62,16 @@ const Cart = styled.div`
   overflow: hidden;
 `;
 
+const Catalogs = styled.div`
+  max-height: ${applyTheme("MiniCart.listHeightToBeginScrolling")};
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: ${applyTheme("MiniCart.listPaddingBottom")};
+  padding-left: ${applyTheme("MiniCart.listPaddingLeft")};
+  padding-right: ${applyTheme("MiniCart.listPaddingRight")};
+  padding-top: ${applyTheme("MiniCart.listPaddingTop")};
+`;
 const Items = styled.div`
   max-height: ${applyTheme("MiniCart.listHeightToBeginScrolling")};
   width: 100%;
@@ -163,6 +173,11 @@ class MiniCartComponent extends Component {
      */
          CartCheckoutButton: CustomPropTypes.component,
          /**
+     * Pass either the Reaction CartCatalogs component or your own component that
+     * accepts compatible props.
+     */
+         CartCatalogs: CustomPropTypes.component.isRequired,
+         /**
      * Pass either the Reaction CartItems component or your own component that
      * accepts compatible props.
      */
@@ -214,26 +229,27 @@ class MiniCartComponent extends Component {
 
    render() {
       const {
-         cart: { checkout: { summary }, items },
+         cart: { checkout: { summary }, items,catalogs },
          className,
          classes,
          checkoutButtonText,
-         components: { Button, CartCheckoutButton, CartItems, MiniCartSummary },
+         components: { Button, CartCheckoutButton, CartCatalogs, CartItems, MiniCartSummary },
          footerMessageText,
          onCheckoutButtonClick,
          ...props
       } = this.props;
-
       return (
          <Cart className={classes.Cart_}>
             <div className={classes.Inicio}>
                <div className={classes.Titulo}>Mi Carrito</div>
             </div>
 
-            <Items>
-               <CartItems items={items} {...props} isMiniCart />
-               {/* <CartItem*/}
-            </Items>
+            <Catalogs>
+               <CartCatalogs catalogs={catalogs} {...props} isMiniCart />
+            </Catalogs>
+            {/* <Items>
+                  <CartItems items={items} {...props} isMiniCart />
+            </Items> */}
             <Footer count={items.length}>
                <Grid xs={12} md={12} lg={12}>
                   <Grid xs={12} md={12} lg={12} container style={{ marginLeft: "auto", marginRight: "auto" }}>

@@ -4,6 +4,7 @@ import useStores from "hooks/useStores";
 import useShop from "hooks/shop/useShop";
 import useViewer from "hooks/viewer/useViewer";
 import cartItemsConnectionToArray from "lib/utils/cartItemsConnectionToArray";
+import cartCatalogsConnectionToArray from "lib/utils/cartCatalogsConnectionToArray";
 import {
   createCartMutation,
   addCartItemsMutation,
@@ -12,6 +13,7 @@ import {
   setEmailOnAnonymousCartMutation,
   setFulfillmentOptionCartMutation,
   setShippingAddressCartMutation,
+  updateCartCatalogsQuantityMutation,
   updateCartItemsQuantityMutation,
   updateFulfillmentOptionsForGroup
 } from "./mutations.gql";
@@ -82,8 +84,12 @@ export default function useCart() {
     return {};
   }, [cartData, cartDataAnonymous, shouldSkipAccountCartByAccountIdQuery, shouldSkipAnonymousCartByCartIdQuery]);
 
-  const pageInfo = useMemo(() => {
+  const pageInfoItems = useMemo(() => {
     if (cart && cart.items) return cart.items.pageInfo;
+    return {};
+  }, [cart]);
+  const pageInfoCatalogs = useMemo(() => {
+    if (cart && cart.catalogs) return cart.catalogs.pageInfo;
     return {};
   }, [cart]);
 
@@ -244,7 +250,8 @@ export default function useCart() {
   if (cart) {
     processedCartData = {
       ...cart,
-      items: cartItemsConnectionToArray(cart.items)
+      catalogs: cartCatalogsConnectionToArray(cart.catalogs),
+      items: cartItemsConnectionToArray(cart.items),
     };
   }
 
@@ -291,12 +298,47 @@ export default function useCart() {
         return response;
       }
     },
-    hasMoreCartItems: (pageInfo && pageInfo.hasNextPage) || false,
+    hasMoreCartItems: (pageInfoItems && pageInfoItems.hasNextPage) || false,
+    hasMoreCartCatalogs: (pageInfoCatalogs && pageInfoCatalogs.hasNextPage) || false,
     isLoadingCart: isLoadingViewer || isLoading,
+    loadMoreCartCatalogs: () => {
+      fetchMore({
+        variables: {
+          itemsAfterCursor: (pageInfoCatalogs && pageInfoCatalogs.endCursor) || null
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          const { cart: fetchMoreCart } = fetchMoreResult;
+
+          // Check for additional catalogs from result
+          if (
+            fetchMoreCart &&
+            fetchMoreCart.catalogs &&
+            Array.isArray(fetchMoreCart.catalogs.edges) &&
+            fetchMoreCart.catalogs.edges.length
+          ) {
+            // Merge previous cart catalogs with next cart catalogs
+            return {
+              ...fetchMoreResult,
+              cart: {
+                ...fetchMoreCart,
+                catalogs: {
+                  __typename: previousResult.cart.catalogs.__typename,
+                  pageInfo: fetchMoreCart.catalogs.pageInfo,
+                  edges: [...previousResult.cart.catalogs.edges, ...fetchMoreCart.catalogs.edges]
+                }
+              }
+            };
+          }
+
+          // Send the previous result if the new result contains no additional data
+          return previousResult;
+        }
+      });
+    },
     loadMoreCartItems: () => {
       fetchMore({
         variables: {
-          itemsAfterCursor: (pageInfo && pageInfo.endCursor) || null
+          itemsAfterCursor: (pageInfoItems && pageInfoItems.endCursor) || null
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           const { cart: fetchMoreCart } = fetchMoreResult;
@@ -324,6 +366,31 @@ export default function useCart() {
 
           // Send the previous result if the new result contains no additional data
           return previousResult;
+        }
+      });
+    },
+    onChangeCartCatalogsQuantity: async (cartCatalogs) => {
+      await apolloClient.mutate({
+        mutation: updateCartCatalogsQuantityMutation,
+        variables: {
+          input: {
+            cartId: cartStore.anonymousCartId || cartStore.accountCartId,
+            catalogs: (Array.isArray(cartCatalogs) && cartCatalogs) || [cartCatalogs],
+            cartToken: cartStore.anonymousCartToken || null
+          }
+        },
+        update: (cache, { data: mutationData }) => {
+          if (mutationData && mutationData.updateCartCatalogsQuantity) {
+            const { cart: cartPayload } = mutationData.updateCartCatalogsQuantity;
+
+            if (cartPayload) {
+              // Update Apollo cache
+              cache.writeQuery({
+                query: cartPayload.account ? accountCartByAccountIdQuery : anonymousCartByCartIdQuery,
+                data: { cart: cartPayload }
+              });
+            }
+          }
         }
       });
     },

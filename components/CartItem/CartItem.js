@@ -250,10 +250,6 @@ class CartItem extends Component {
             totalText
         } = this.props;
         
-
-        console.log('this is components info',this.props);
-
-
         const { displayAmount: displaySubtotal } = subtotal || {};
         const { displayAmount: displayCompareAtPrice } = compareAtPrice || {};
         const {
@@ -265,7 +261,7 @@ class CartItem extends Component {
 
         return (
             <Item style={{ borderBottom: '1px solid #dcdcdc'}} className={className}>
-                {this.renderImage()}
+           {/*      {this.renderImage()} */}
                 <ItemContent>
                     <ItemContentDetail>
                         <ItemContentDetailInner>
@@ -283,10 +279,8 @@ class CartItem extends Component {
                                     inventoryQuantity={currentQuantity}
                                     isLowInventoryQuantity={isLowQuantity}
                                 />
-                            
                             </ItemContentDetailInfo>
                         </ItemContentDetailInner>
-                       
                     </ItemContentDetail>
                 </ItemContent>
                 <ItemContentPrice isMiniCart={isMiniCart}>

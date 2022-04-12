@@ -17,7 +17,7 @@ const styles = ({ palette, zIndex }) => ({
     color: palette.colors.BotonColor,
     borderColor: palette.secondary.botones,
     fontWeight: "800",
-    fontSize: "18px"
+    fontSize: "18px",
   },
   Compra: {
     color: palette.colors.buttonBorderColor,
@@ -31,12 +31,12 @@ const styles = ({ palette, zIndex }) => ({
     },
   },
   popper: {
-    marginTop: "0.5rem",
+    marginTop: "0.9rem",
     marginRight: "1rem",
-    zIndex: zIndex.modal
+    zIndex: zIndex.modal,
   },
   cart: {
-    backgroundColor: palette.common.white
+    backgroundColor: palette.common.white,
   },
   emptyCart: {
     display: "flex",
@@ -44,7 +44,7 @@ const styles = ({ palette, zIndex }) => ({
     alignItems: "center",
     width: 360,
     height: 320,
-    border: palette.borders.default
+    border: palette.borders.default,
   },
   badge: {
     width: 20,
@@ -60,22 +60,27 @@ const styles = ({ palette, zIndex }) => ({
     background: palette.primary.main,
     color: palette.primary.light,
   },
+  icon: { zIndex: 999999 },
 });
 
 class MiniCart extends Component {
   static propTypes = {
     cart: PropTypes.shape({
-      items: PropTypes.arrayOf(PropTypes.object),
+      catalogs: PropTypes.arrayOf(PropTypes.object),
       checkout: PropTypes.shape({
         itemTotal: PropTypes.shape({
-          displayAmount: PropTypes.string
+          displayAmount: PropTypes.string,
         }),
         taxTotal: PropTypes.shape({
-          displayAmount: PropTypes.string
-        })
-      })
+          displayAmount: PropTypes.string,
+        }),
+      }),
     }),
     classes: PropTypes.object.isRequired,
+    hasMoreCartCatalogs: PropTypes.bool,
+    loadMoreCartCatalogs: PropTypes.func,
+    onChangeCartCatalogsQuantity: PropTypes.func,
+    onRemoveCartCatalogs: PropTypes.func,
     hasMoreCartItems: PropTypes.bool,
     loadMoreCartItems: PropTypes.func,
     onChangeCartItemsQuantity: PropTypes.func,
@@ -83,9 +88,9 @@ class MiniCart extends Component {
     uiStore: PropTypes.shape({
       isCartOpen: PropTypes.bool.isRequired,
       openCart: PropTypes.func.isRequired,
-      closeCart: PropTypes.func.isRequired
-    })
-  }
+      closeCart: PropTypes.func.isRequired,
+    }),
+  };
 
   constructor(props) {
     super(props);
@@ -96,66 +101,92 @@ class MiniCart extends Component {
   }
 
   state = {
-    anchorElement: null
+    anchorElement: null,
   };
 
-  anchorElement = null
+  anchorElement = null;
 
   handlePopperOpen = () => {
-    const { uiStore: { openCart } } = this.props;
+    const {
+      uiStore: { openCart },
+    } = this.props;
     openCart();
-  }
+  };
 
   handleClick = () => Router.push("/");
 
   handleCheckoutButtonClick = () => {
     this.handleLeavePopper();
     Router.push("/cart/checkout");
-  }
+  };
 
   handlePopperClose = () => {
     const { closeCart } = this.props.uiStore;
     closeCart(0);
-  }
+  };
 
   handleEnterPopper = () => {
     const { openCart } = this.props.uiStore;
     openCart();
-  }
+  };
 
   handleLeavePopper = () => {
     const { closeCart } = this.props.uiStore;
     closeCart();
-  }
+  };
 
   handleOnClick = () => {
     const { closeCart } = this.props.uiStore;
     closeCart();
     Router.push("/cart");
-  }
+  };
 
+  handleCatalogQuantityChange = (quantity, cartCatalogId) => {
+    const { onChangeCartCatalogsQuantity } = this.props;
+
+    onChangeCartCatalogsQuantity({ quantity, cartCatalogId });
+  };
   handleItemQuantityChange = (quantity, cartItemId) => {
     const { onChangeCartItemsQuantity } = this.props;
 
     onChangeCartItemsQuantity({ quantity, cartItemId });
-  }
+  };
 
+  handleRemoveCatalog = async (itemId) => {
+    const { onRemoveCartCatalogs } = this.props;
+    await onRemoveCartCatalogs(itemId);
+  };
   handleRemoveItem = async (itemId) => {
     const { onRemoveCartItems } = this.props;
     await onRemoveCartItems(itemId);
   };
 
   renderMiniCart() {
-    const { cart, classes, hasMoreCartItems, loadMoreCartItems,
-      components: { MiniCartComponent, CartItems, CartEmptyMessage, Button } } = this.props;
-
-    if (cart && Array.isArray(cart.items) && cart.items.length) {
+    const {
+      cart,
+      classes,
+      hasMoreCartCatalogs,
+      loadMoreCartCatalogs,
+      hasMoreCartItems,
+      loadMoreCartItems,
+      components: { MiniCartComponent, CartCatalogs, CartItems, CartEmptyMessage, Button },
+    } = this.props;
+    if (cart && Array.isArray(cart.catalogs) && cart.catalogs.length) {
       return (
         <MiniCartComponent
           cart={cart}
           onCheckoutButtonClick={this.handleCheckoutButtonClick}
           components={{
             QuantityInput: "div",
+            CartCatalogs: (cartCatalogProps) => (
+              <CartCatalogs
+                {...cartCatalogProps}
+                hasMoreCartCatalogs={hasMoreCartCatalogs}
+                onRemoveCatalogFromCart={this.handleRemoveCatalog}
+                onChangeCartCatalogQuantity={this.handleCatalogQuantityChange}
+                onLoadMoreCartCatalogs={loadMoreCartCatalogs}
+              />
+            ),
             CartItems: (cartItemProps) => (
               <CartItems
                 {...cartItemProps}
@@ -166,10 +197,10 @@ class MiniCart extends Component {
               />
             ),
             CartCheckoutButton: (cartCheckoutProps) => (
-              <Button
-                className={classes.BotonPrincipal}
-                {...cartCheckoutProps} isFullWidth>{"Proceder a la compra - " + cart.checkout.summary.itemTotal.displayAmount}</Button>
-            )
+              <Button className={classes.BotonPrincipal} {...cartCheckoutProps} isFullWidth>
+                {"Proceder a la compra - " + cart.checkout.summary.itemTotal.displayAmount}
+              </Button>
+            ),
           }}
         />
       );
@@ -187,29 +218,30 @@ class MiniCart extends Component {
   render() {
     const { cart, classes, uiStore } = this.props;
     const { isCartOpen } = uiStore;
-    const id = (isCartOpen) ? "simple-popper" : null;
-
+    const id = isCartOpen ? "simple-popper" : null;
+    console.log(cart);
     return (
       <Fragment>
         <div ref={this.setPopoverAnchorEl}>
-          <IconButton color="inherit"
+          <IconButton
+            color="inherit"
             onMouseEnter={this.handlePopperOpen}
             onMouseLeave={this.handlePopperClose}
             onClick={this.handleOnClick}
+            className={classes.icon}
           >
-            {(cart && cart.totalItemQuantity > 0)
-              ? (
-                <Badge
-                  badgeContent={cart.totalItemQuantity}
-                  classes={{
-                    badge: classes.badge
-                  }}
-                >
-                  <ShoppingOutline className={classes.Compra} />
-                </Badge>
-              ) : (
+            {cart && cart.totalCatalogQuantity > 0 ? (
+              <Badge
+                badgeContent={cart.totalCatalogQuantity}
+                classes={{
+                  badge: classes.badge,
+                }}
+              >
                 <ShoppingOutline className={classes.Compra} />
-              )}
+              </Badge>
+            ) : (
+              <ShoppingOutline className={classes.Compra} />
+            )}
           </IconButton>
         </div>
 
@@ -224,9 +256,7 @@ class MiniCart extends Component {
         >
           {({ TransitionProps }) => (
             <Fade {...TransitionProps}>
-              <div className={classes.cart}>
-                {this.renderMiniCart()}
-              </div>
+              <div className={classes.cart}>{this.renderMiniCart()}</div>
             </Fade>
           )}
         </Popper>

@@ -51,7 +51,6 @@ class AddressForm extends Component {
             onChange,
             validator
         } = this.props;
-        console.log(this.props)
         const addressInputId = `addressInput_${this.uniqueInstanceIdentifier}`;
         const referenceInputId = `referenceInput_${this.uniqueInstanceIdentifier}`;
         const descriptionInputId = `descriptionInput_${this.uniqueInstanceIdentifier}`;

@@ -91,7 +91,6 @@ const HorizontalProductCard = (props) => {
   } = props;
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("xs"));
-  console.log("catalogProducts", catalogProducts);
   return (
     <Fragment>
       {matches !== true ? (

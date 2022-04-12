@@ -95,6 +95,9 @@
  import BreadcrumbsSwitch from "components/BreadcrumbsSwitch";
  import OrderDetails from "components/OrderDetails";
  import ProductDetailDrawer from "components/ProductDetailDrawer";
+ import CartCatalogs from "components/CartCatalogs";
+ import CartCatalog from "components/CartCatalog";
+ import CartCatalogsList from "components/CartCatalogsList";
  // Providing locales data
  const AddressFormWithLocales = withLocales(AddressForm);
  
@@ -172,5 +175,8 @@
    Breadcrumbs,
    BreadcrumbsSwitch,
    OrderDetails,
-   ProductDetailDrawer
+   ProductDetailDrawer,
+   CartCatalog,
+   CartCatalogs,
+   CartCatalogsList
  };

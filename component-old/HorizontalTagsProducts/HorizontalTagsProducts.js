@@ -16,7 +16,6 @@ const HorizontalTagsProducts = (props) => {
         components: {HorizontalProductCard},
         sortBy,
     } = props;
-console.info("Default tags", tags);
     const categoryProducts = (tags || []).map((items) => items);
  if (categoryProducts.length === 0) return <h1>NO EXISTEN NINGUN PRODUCTO EN LA TIENDA</h1>
     return (
@@ -29,7 +28,6 @@ console.info("Default tags", tags);
         >
             <Tags group="menu">
               {({ tags }) => {
-                  console.info("Custom Tags", tags);
                   return tags && tags.length 
                    ? (
 

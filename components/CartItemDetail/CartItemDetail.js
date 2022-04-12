@@ -8,6 +8,8 @@ const Detail = styled.div`
 `;
 
 const Title = styled.h3`
+  font-size: 17px; 
+  font-weight: 800;
   ${addTypographyStyles("CartItemDetailTitle", "headingTextBold")}
   margin-top: ${applyTheme("CartItemDetailTitle.marginTop")};
   margin-bottom: ${applyTheme("CartItemDetailTitle.marginBottom")};
@@ -50,6 +52,13 @@ const Attributes = styled.div`
 const Attr = styled.p`
   ${addTypographyStyles("CartItemDetailAttributes", "labelText")}
   margin: 0;
+  font-size: 14px;
+  font-weight: 500; 
+`;
+
+const SelectedProductText = styled.p`
+font-size: 14px;
+font-weight: 500;
 `;
 
 class CartItemDetail extends Component {
@@ -116,20 +125,28 @@ class CartItemDetail extends Component {
             // For now, due to strange implementation of attributes/options in the product data,
             // we allow labels without values and values without labels.
             return (
-                <Attr key={label || value}>
-                    {label ? <span>{ }</span> : null} {value}
+                <Attr key={value}>
+                    {value}
                 </Attr>
             );
         });
     }
 
     renderInlineAttributes() {
-        const { attributes } = this.props;
+        const { attributes,quantityProduct } = this.props;
+        console.info('renderInlineAttributes ---> ', this.props)
         if (!attributes || !attributes.length) return null;
 
         const values = attributes.map(({ value }) => value).filter((value) => !!value);
         return (
-            <Attr>{values.join(", ")}</Attr>
+            <div >
+                <Attr style={{display:'inline-block',width:100}}>{(values[1]||"No tiene nombre")}</Attr>
+                {quantityProduct && quantityProduct>1 ?
+                <SelectedProductText style={{display:'inline-block'}}>Total Seleccionado{  (` ( ${quantityProduct} )` || "")} </SelectedProductText>
+                 :""
+                }
+            </div>
+
         );
     }
 
@@ -151,17 +168,8 @@ class CartItemDetail extends Component {
         const { className, productURLPath, productSlug, title } = this.props;
         return (
             <Detail className={className}>
-                <Title>
-                    <div>{title}</div>
-                </Title>
+                <Title>{title}</Title>
                 {this.renderAttributes()}
-                <div style={{
-                    fontSize: '18px',
-                    fontWeight: 700,
-                    paddingBottom: '50px'
-                }}></div>
-                <OptionProductTitle>
-                </OptionProductTitle>
             </Detail>
         );
     }

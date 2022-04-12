@@ -100,14 +100,11 @@ class ProductDetailDrawer extends Component {
       ///      Calculate Price
       ///|\\\|///|\\\|///|\\\
       for (const op of options) {
-        // if (vMaxFreeQty <= 0 || op.currentQty >= vMaxFreeQty) {
         let finalQty = op.currentQty - vMaxFreeQty - op.oMaxFreeQty;
         if (finalQty <= 0) finalQty = 0;
         selectedTotal += op.price * finalQty;
-        //
         vMaxFreeQty -= op.currentQty - op.oMaxFreeQty;
         if (vMaxFreeQty < 0) vMaxFreeQty = 0;
-        // }
       }
       ///|\\\|///|\\\|///|\\\
       ///      Validations
@@ -119,8 +116,6 @@ class ProductDetailDrawer extends Component {
         });
       }
     }
-    console.info("determineProductPrice", selectedTotal);
-    // return selectedTotal;
     this.setState({ selectedTotal, errors });
     this.showNotif();
     return !errors.length;
@@ -143,18 +138,15 @@ class ProductDetailDrawer extends Component {
       if (this.refs[`${variant.variantId}:${option.variantId}`])
         this.refs[`${variant.variantId}:${option.variantId}`].setState({ value: 1 });
     }
-    console.info("handleSelectOption", uiStore.SelectedOptions);
     // ReCalculate the Selected Total
     this.determineProductPrice();
   }
   handleQtyChaged(variant, option, event) {
-    console.info("Qty Changed", variant.variantId, option.variantId, (event.target || {}).value);
     this.props.uiStore.setQtySelectedOption(variant.variantId, option.variantId, (event.target || {}).value);
     this.determineProductPrice();
   }
   renderOptionInfo(e, op) {
     const pricing = this.getPricing(op);
-    console.info(pricing);
     return (
       <div style={{ width: "100%", paddingTop: "10px", paddingBottom: "10px" }}>
         <div style={{ width: "100%", display: "flex" }}>
@@ -170,7 +162,6 @@ class ProductDetailDrawer extends Component {
   }
   handleAddToCartClick = async (e) => {
     if (!this.determineProductPrice()) return;
-    console.info("Sounds Working");
     const {
       addItemsToCart,
       currencyCode,
@@ -212,7 +203,6 @@ class ProductDetailDrawer extends Component {
         )
         .flat(),
     };
-    console.info("addItemsToCart", req);
     await addItemsToCart(req);
   };
   renderContent = () => {
@@ -346,11 +336,9 @@ class ProductDetailDrawer extends Component {
                               })[0]
                             }
                             onChange={(ev, id) => {
-                              console.info("Checked", id, ev);
                               e.options.map((op) =>
                                 this.handleQtyChaged(e, op, { target: { value: id === op.variantId ? 1 : 0 } }),
                               );
-                              /// checked={!!(uiStore.SelectedOptions[e.variantId] || {})[op.variantId]}
                             }}
                           >
                             {e.options.map((op, index) => (
@@ -406,7 +394,6 @@ class ProductDetailDrawer extends Component {
       cartCatalogId: cartCatalogId || Random.id(),
       product,
     });
-    console.info("SwipeableDrawer", uiStore.catalogDrawerProduct, product);
   };
   render() {
     const { uiStore } = this.props;
