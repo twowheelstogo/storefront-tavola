@@ -206,7 +206,7 @@ const Checkout = ({ router }) => {
       // payment methods that were not returned from the API as currently available.
       const paymentMethods = definedPaymentMethods.filter((method) =>
         !!availablePaymentMethods.find((availableMethod) => availableMethod.name === method.name));
-
+      console.log('checkout ----->', cart)
       return (
         <StripeProvider stripe={stripe}>
           <div className={classes.checkoutContentContainer}>

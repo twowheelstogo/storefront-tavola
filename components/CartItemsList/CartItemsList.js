@@ -3,8 +3,14 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withComponents } from "@reactioncommerce/components-context";
 import { CustomPropTypes } from "@reactioncommerce/components/utils";
+import { Divider } from "@material-ui/core";
 
-const Items = styled.div`
+const Items = styled.div``;
+
+const TitleResumen = styled.h4`
+font-weight: 800;
+font-size: 24px;
+text-align: center;
 `;
 
 class CartItems extends Component {
@@ -70,10 +76,24 @@ class CartItems extends Component {
   };
 
   render() {
-    const { className, items, components: { CartItem, ...components }, ...props } = this.props;
+    const { className, items,components: { CartItem,CartItemDetail, ...components }, ...props } = this.props;
+    console.log('CartItems ------->',items)
     return (
       <Items className={className}>
-        {items.map((item) => <CartItem key={item._id} item={item} components={components} {...props} />)}
+        <TitleResumen>Revisa tu Orden</TitleResumen>
+        {/* {items.map((item) => <CartItem key={item._id} item={item} components={components} {...props} />)} */}
+        {items.map((item) => (
+          <div>
+            <CartItemDetail
+              quantityProduct={item.quantity}
+              attributes={item.attributes}
+              productSlug={item.productSlug}
+              productVendor={item.productVendor}
+              title={(item.attributes && item.attributes[0].label || "No tiene nombre")}
+            />
+          </div>
+        ))}
+        <Divider/>
       </Items>
     );
   }

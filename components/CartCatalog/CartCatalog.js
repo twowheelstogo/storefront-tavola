@@ -7,11 +7,13 @@ import { Typography, Accordion, AccordionSummary, AccordionDetails, Box } from "
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 const ItemContentQuantityInput = styled.div`
   bottom: 0;
-  left: 0;
+  right: 0;
   width: 100%;
   margin: 0 auto;
   position: absolute;
   padding-bottom: 10px;
+  text-align:right;
+  max-width:125px;
 `;
 const Catalog = styled.div`
   display: table;
@@ -272,7 +274,7 @@ class CartCatalog extends Component {
           >
             <div style={{ display: "flex", width: "100%" }}>
               <div style={{ width: "200px" }}>
-                <Typography style={{ color: "#1D0D13", fontSize: "18px", fontWeight: 800 }}>{title || _id}</Typography>
+                <Typography style={{ color: "#1D0D13", fontSize: "18px", fontWeight: 800 }}><small>{quantity} x </small>{title || _id}</Typography>
               </div>
             </div>
             <div>{displaySubtotal}</div>
@@ -297,7 +299,6 @@ class CartCatalog extends Component {
               </Box>
             </Box>
             <div style={{display:'flex'}}>
-              <h6 style={{float:'left'}}>Total seleccionado</h6>
                 {!isReadOnly && (
                   <ItemContentQuantityInput >
                     <QuantityInput value={quantity} onChange={this.handleChangeCartCatalogQuantity} />

@@ -134,7 +134,6 @@ class CartItemDetail extends Component {
 
     renderInlineAttributes() {
         const { attributes,quantityProduct } = this.props;
-        console.info('renderInlineAttributes ---> ', this.props)
         if (!attributes || !attributes.length) return null;
 
         const values = attributes.map(({ value }) => value).filter((value) => !!value);
