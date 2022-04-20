@@ -40,7 +40,7 @@ import CartSummary from "@reactioncommerce/components/CartSummary/v1";
 import CatalogGrid from "@reactioncommerce/components/CatalogGrid/v1";
 import CatalogGridItem from "components/CatalogGridItem";
 import Checkbox from "@reactioncommerce/components/Checkbox/v1";
-import CheckoutAction from "@reactioncommerce/components/CheckoutAction/v1";
+// import CheckoutAction from "@reactioncommerce/components/CheckoutAction/v1";
 import CheckoutActionComplete from "@reactioncommerce/components/CheckoutActionComplete/v1";
 import CheckoutActionIncomplete from "@reactioncommerce/components/CheckoutActionIncomplete/v1";
 import ErrorsBlock from "@reactioncommerce/components/ErrorsBlock/v1";
@@ -66,6 +66,10 @@ import withLocales from "../lib/utils/withLocales";
 
 // Providing locales data
 const AddressFormWithLocales = withLocales(AddressForm);
+/**
+* * *  Override
+*/
+import CheckoutAction from "components/CheckoutAction";
 /**
 * * *  Custom
 */

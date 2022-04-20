@@ -157,15 +157,24 @@ class CheckoutActions extends Component {
       const { selectedFulfillmentOption } = group;
 
       const items = cart.items.map((item) => ({
+        _id: item._id,
+        cartCatalogId: item.cartCatalogId,
         addedAt: item.addedAt,
         price: item.price.amount,
         productConfiguration: item.productConfiguration,
         quantity: item.quantity
       }));
+      const catalogs = cart.catalogs.map((cartCatalog) => ({
+        _id: cartCatalog._id,
+        addedAt: cartCatalog.addedAt,
+        productId: cartCatalog.productId,
+        quantity: cartCatalog.quantity
+      }));
 
       return {
         data,
         items,
+        catalogs,
         selectedFulfillmentMethodId: selectedFulfillmentOption.fulfillmentMethod._id,
         shopId: group.shop._id,
         totalPrice: checkout.summary.total.amount,
