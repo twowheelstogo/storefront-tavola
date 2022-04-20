@@ -56,8 +56,6 @@ class CheckoutSummary extends Component {
 
   renderCartItems() {
     const { cart, hasMoreCartItems, loadMoreCartItems } = this.props;
-
-      console.info('renderCartItems ------>',this.props);
       return (
         <Grid item xs={12}>
           <CartItems

@@ -11,10 +11,19 @@ import FinalReviewCheckoutAction from "@reactioncommerce/components/FinalReviewC
 import { addTypographyStyles } from "@reactioncommerce/components/utils";
 import withAddressValidation from "containers/address/withAddressValidation";
 import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
 import PageLoading from "components/PageLoading";
 import Router from "translations/i18nRouter";
 import calculateRemainderDue from "lib/utils/calculateRemainderDue";
 import { placeOrderMutation } from "../../hooks/orders/placeOrder.gql";
+import FulfillmentTypeAction from "components/FulfillmentTypeAction";
+import deliveryMethods from "custom/deliveryMethods";
+
+const PaymentMethod = styled.div`
+  font-size: 18px;
+  font-weight: 800;
+  padding-bottom: 20px;
+`;
 
 const MessageDiv = styled.div`
   ${addTypographyStyles("NoPaymentMethodsMessage", "bodyText")}
@@ -29,22 +38,22 @@ class CheckoutActions extends Component {
     addressValidation: PropTypes.func.isRequired,
     addressValidationResults: PropTypes.object,
     apolloClient: PropTypes.shape({
-      mutate: PropTypes.func.isRequired
+      mutate: PropTypes.func.isRequired,
     }),
     cart: PropTypes.shape({
       account: PropTypes.object,
       checkout: PropTypes.object,
       email: PropTypes.string,
-      items: PropTypes.array
+      items: PropTypes.array,
     }).isRequired,
     cartStore: PropTypes.object,
     checkoutMutations: PropTypes.shape({
       onSetFulfillmentOption: PropTypes.func.isRequired,
-      onSetShippingAddress: PropTypes.func.isRequired
+      onSetShippingAddress: PropTypes.func.isRequired,
     }),
     clearAuthenticatedUsersCart: PropTypes.func.isRequired,
     orderEmailAddress: PropTypes.string.isRequired,
-    paymentMethods: PropTypes.array
+    paymentMethods: PropTypes.array,
   };
 
   state = {
@@ -52,10 +61,22 @@ class CheckoutActions extends Component {
       1: null,
       2: null,
       3: null,
-      4: null
+      4: null,
     },
     hasPaymentError: false,
-    isPlacingOrder: false
+    isPlacingOrder: false,
+    shippingType: "shipping",
+    invoiceInputs: {
+      partnerId: -1,
+      isCf: true,
+      nit: "0",
+      name: "CF",
+      address: "",
+      country: "",
+      depto: "",
+      city: ""
+    },
+    paymentInputs: {}
   };
 
   componentDidUpdate({ addressValidationResults: prevAddressValidationResults }) {
@@ -81,11 +102,13 @@ class CheckoutActions extends Component {
     action,
     payment_method: this.paymentMethod, // eslint-disable-line camelcase
     shipping_method: this.shippingMethod, // eslint-disable-line camelcase
-    step
+    step,
   });
 
   get shippingMethod() {
-    const { checkout: { fulfillmentGroups } } = this.props.cart;
+    const {
+      checkout: { fulfillmentGroups },
+    } = this.props.cart;
     const { selectedFulfillmentOption } = fulfillmentGroups[0];
     return selectedFulfillmentOption ? selectedFulfillmentOption.fulfillmentMethod.displayName : null;
   }
@@ -96,15 +119,17 @@ class CheckoutActions extends Component {
   }
 
   setShippingAddress = async (address) => {
-    const { checkoutMutations: { onSetShippingAddress } } = this.props;
+    const {
+      checkoutMutations: { onSetShippingAddress },
+    } = this.props;
     delete address.isValid;
     const { data, error } = await onSetShippingAddress(address);
 
     if (data && !error && this._isMounted) {
       this.setState({
         actionAlerts: {
-          1: {}
-        }
+          1: {},
+        },
       });
     }
   };
@@ -113,24 +138,30 @@ class CheckoutActions extends Component {
     const { addressValidationResults } = this.props;
     const { validationErrors } = addressValidationResults || [];
     const shippingAlert =
-      validationErrors && validationErrors.length ? {
-        alertType: validationErrors[0].type,
-        title: validationErrors[0].summary,
-        message: validationErrors[0].details
-      } : null;
+      validationErrors && validationErrors.length
+        ? {
+          alertType: validationErrors[0].type,
+          title: validationErrors[0].summary,
+          message: validationErrors[0].details,
+        }
+        : null;
     this.setState({ actionAlerts: { 1: shippingAlert } });
   }
 
-  setShippingMethod = async (shippingMethod) => {
-    const { checkoutMutations: { onSetFulfillmentOption } } = this.props;
-    const { checkout: { fulfillmentGroups } } = this.props.cart;
+  /* setShippingMethod = async (shippingMethod) => {
+    const {
+      checkoutMutations: { onSetFulfillmentOption },
+    } = this.props;
+    const {
+      checkout: { fulfillmentGroups },
+    } = this.props.cart;
     const fulfillmentOption = {
       fulfillmentGroupId: fulfillmentGroups[0]._id,
-      fulfillmentMethodId: shippingMethod.selectedFulfillmentOption.fulfillmentMethod._id
+      fulfillmentMethodId: shippingMethod.selectedFulfillmentOption.fulfillmentMethod._id,
     };
 
     await onSetFulfillmentOption(fulfillmentOption);
-  };
+  }; */
 
   handlePaymentSubmit = (paymentInput) => {
     this.props.cartStore.addCheckoutPayment(paymentInput);
@@ -138,14 +169,14 @@ class CheckoutActions extends Component {
     this.setState({
       hasPaymentError: false,
       actionAlerts: {
-        3: {}
-      }
+        3: {},
+      },
     });
   };
 
   handlePaymentsReset = () => {
     this.props.cartStore.resetCheckoutPayments();
-  }
+  };
 
   buildOrder = async () => {
     const { cart, cartStore, orderEmailAddress } = this.props;
@@ -160,7 +191,7 @@ class CheckoutActions extends Component {
         addedAt: item.addedAt,
         price: item.price.amount,
         productConfiguration: item.productConfiguration,
-        quantity: item.quantity
+        quantity: item.quantity,
       }));
 
       return {
@@ -169,7 +200,7 @@ class CheckoutActions extends Component {
         selectedFulfillmentMethodId: selectedFulfillmentOption.fulfillmentMethod._id,
         shopId: group.shop._id,
         totalPrice: checkout.summary.total.amount,
-        type: group.type
+        type: group.type,
       };
     });
 
@@ -178,7 +209,7 @@ class CheckoutActions extends Component {
       currencyCode: checkout.summary.total.currency.code,
       email: orderEmailAddress,
       fulfillmentGroups,
-      shopId: cart.shop._id
+      shopId: cart.shop._id,
     };
 
     return this.setState({ isPlacingOrder: true }, () => this.placeOrder(order));
@@ -201,9 +232,9 @@ class CheckoutActions extends Component {
         variables: {
           input: {
             order,
-            payments
-          }
-        }
+            payments,
+          },
+        },
       });
 
       // Placing the order was successful, so we should clear the
@@ -215,7 +246,9 @@ class CheckoutActions extends Component {
       // Also destroy the collected and cached payment input
       cartStore.resetCheckoutPayments();
 
-      const { placeOrder: { orders, token } } = data;
+      const {
+        placeOrder: { orders, token },
+      } = data;
 
       // Send user to order confirmation page
       Router.push(`/checkout/order?orderId=${orders[0].referenceId}${token ? `&token=${token}` : ""}`);
@@ -228,9 +261,9 @@ class CheckoutActions extends Component {
             3: {
               alertType: "error",
               title: "Payment method failed",
-              message: error.toString().replace("Error: GraphQL error:", "")
-            }
-          }
+              message: error.toString().replace("Error: GraphQL error:", ""),
+            },
+          },
         });
       }
     }
@@ -245,17 +278,17 @@ class CheckoutActions extends Component {
       </Dialog>
     );
   };
+  handleShippingType = (shippingType) => {
+    this.setState({ shippingType });
+  };
 
   render() {
-    const {
-      addressValidation,
-      addressValidationResults,
-      cart,
-      cartStore,
-      paymentMethods
-    } = this.props;
+    const { addressValidation, addressValidationResults, cart, cartStore, paymentMethods } = this.props;
 
-    const { checkout: { fulfillmentGroups, summary }, items } = cart;
+    const {
+      checkout: { fulfillmentGroups, summary },
+      items,
+    } = cart;
     const { actionAlerts, hasPaymentError } = this.state;
     const [fulfillmentGroup] = fulfillmentGroups;
 
@@ -267,7 +300,7 @@ class CheckoutActions extends Component {
       displaySurcharge: surchargeTotal.displayAmount,
       displayTotal: total.displayAmount,
       displayTax: taxTotal && taxTotal.displayAmount,
-      items
+      items,
     };
 
     const addresses = fulfillmentGroups.reduce((list, group) => {
@@ -284,34 +317,51 @@ class CheckoutActions extends Component {
     }
 
     const actions = [
-      {
-        id: "1",
-        activeLabel: "Enter a shipping address",
-        completeLabel: "Shipping address",
-        incompleteLabel: "Shipping address",
-        status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
-        component: ShippingAddressCheckoutAction,
-        onSubmit: this.setShippingAddress,
-        props: {
-          addressValidationResults,
-          alert: actionAlerts["1"],
-          fulfillmentGroup,
-          onAddressValidation: addressValidation
-        }
-      },
-      {
-        id: "2",
-        activeLabel: "Choose a shipping method",
-        completeLabel: "Shipping method",
-        incompleteLabel: "Shipping method",
-        status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
-        component: FulfillmentOptionsCheckoutAction,
-        onSubmit: this.setShippingMethod,
-        props: {
-          alert: actionAlerts["2"],
-          fulfillmentGroup
-        }
-      },
+      ...(this.state.shippingType === "shipping"
+        ? // Show : address && shipping
+        [
+          {
+            id: "1",
+            activeLabel: "Elige un método de entrega",
+            completeLabel: "Método de entrega",
+            incompleteLabel: "Método de entrega",
+            status:
+              fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
+            component: FulfillmentTypeAction,
+            onSubmit: this.setShippingAddress,
+            props: {
+              alert: actionAlerts["1"],
+              deliveryMethods,
+              fulfillmentGroup,
+              actionAlerts: {
+                2: actionAlerts["2"],
+                3: actionAlerts["3"],
+              },
+              submits: {
+                onSubmitShippingAddress: this.setShippingAddress,
+                // onSetShippingMethod: this.setShippingMethod,
+            /*     onSelectFulfillmentType: this.setFulfillmentType,
+                onSubmitPickupDetails: this.setPickupDetails, */
+              },
+            },
+          },
+        /*   {
+            id: "2",
+            activeLabel: "Choose a shipping method",
+            completeLabel: "Shipping method",
+            incompleteLabel: "Shipping method",
+            status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
+            component: FulfillmentOptionsCheckoutAction,
+            onSubmit: this.setShippingMethod,
+            props: {
+              alert: actionAlerts["2"],
+              fulfillmentGroup,
+            },
+          }, */
+        ]
+        : // you need to set a default address and correct the "state.actions"
+        []),
+
       {
         id: "3",
         activeLabel: "Enter payment information",
@@ -326,8 +376,8 @@ class CheckoutActions extends Component {
           onReset: this.handlePaymentsReset,
           payments,
           paymentMethods,
-          remainingAmountDue
-        }
+          remainingAmountDue,
+        },
       },
       {
         id: "4",
@@ -340,14 +390,50 @@ class CheckoutActions extends Component {
         props: {
           alert: actionAlerts["4"],
           checkoutSummary,
-          productURLPath: "/api/detectLanguage/product/"
-        }
-      }
+          productURLPath: "/api/detectLanguage/product/",
+        },
+      },
     ];
 
     return (
       <Fragment>
         {this.renderPlacingOrderOverlay()}
+        <div>
+          <PaymentMethod>Elige metodo de entrega</PaymentMethod>
+          {/* <Button 
+            style={{
+              backgroundColor: this.state.shippingType==="shipping"? "red": "yellow",
+
+            }} 
+            onClick={() => this.handleShippingType("shipping")}
+          >
+            Shipping
+          </Button>
+          <Button style={{backgroundColor: this.state.shippingType==="pickup"? "red": "yellow"}}  onClick={() => this.handleShippingType("pickup")}>Pickup</Button> */}
+
+
+        </div>
+        <div style={{ display: "flex", marginRight: -10 }}>
+          {deliveryMethods &&
+            deliveryMethods.map((meth) => (
+              <Button
+                style={{
+                  border: `1px solid ${this.state.shippingType === meth.name ? "#000" : "#979797"}`,
+                  backgroundColor: this.state.shippingType === meth.name ? "#F6F6F6" : "white",
+                  opacity: this.state.shippingType === meth.name ? 1 : 0.5,
+                  color: this.state.shippingType === meth.name ? "#000" : "#979797",
+                  padding: "40px 0 15px",
+                  marginRight: 10, width: "40%", textAlign: "center"
+                }}
+                onClick={() => this.handleShippingType(meth.name)}
+              >
+                <div>
+                  <img style={{ backgroundColor: "pruple", maxWidth: 50, display: "block" }} src={meth.icon} />
+                  <h5>{meth.displayName}</h5>
+                </div>
+              </Button>
+            ))}
+        </div>
         <Actions actions={actions} />
       </Fragment>
     );

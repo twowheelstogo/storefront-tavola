@@ -266,7 +266,6 @@ class CheckoutActions extends Component {
     let bAddress = billingAddress || (addresses && addresses[0]) ? addresses[0] : null;
     const selectedPaymentMethod = paymentMethods.find((method) => method.name === selectedPaymentMethodName);
 
-    console.log("selectedPaymentMethodName", selectedPaymentMethodName);
     let cappedPaymentAmount = amount;
     if (cappedPaymentAmount && typeof remainingAmountDue === "number") {
       cappedPaymentAmount = Math.min(cappedPaymentAmount, remainingAmountDue);
@@ -333,7 +332,6 @@ class CheckoutActions extends Component {
     const cartId = cartStore.hasAccountCart ? cartStore.accountCartId : cartStore.anonymousCartId;
     const { checkout } = cart;
 
-    console.log("building order");
     try {
       //await this.handleInputPickupComponentSubmit();
       //await this.handleInputShippingComponentSubmit();
@@ -341,7 +339,6 @@ class CheckoutActions extends Component {
       const fulfillmentGroups = checkout.fulfillmentGroups.map((group) => {
         const { data } = group;
         let { selectedFulfillmentOption } = group;
-        console.log('compra del carrito ', cart.items)
         const items = cart.items.map((item) => ({
           addedAt: item.addedAt,
           price: item.price.amount,
@@ -394,7 +391,6 @@ class CheckoutActions extends Component {
 
   placeOrder = async (order) => {
     const { cartStore, clearAuthenticatedUsersCart, apolloClient } = this.props;
-    console.log("placing order...")
     // Payments can have `null` amount to mean "remaining".
     let remainingAmountDue = order.fulfillmentGroups.reduce((sum, group) => sum + group.totalPrice, 0);
     const payments = cartStore.checkoutPayments.map(({ payment }) => {

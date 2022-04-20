@@ -33,9 +33,6 @@ const OrderDetails = (props) => {
         { "title": "Método de pago", "label": order.payments[0].method.name === "epay_card" ? "Tarjeta" : "Efectivo"}
     ]
 
-    console.log(obj)
-
-    console.log(order)
     return (
         <Fragment>
             <ContainerCustomer>

@@ -117,8 +117,6 @@ const AccountDropdown = (props) => {
     setAnchorElement(event.currentTarget);
   };
   
-  console.log(viewer);
-  
   return (
     <Fragment>
       <EntryModal onClose={onClose} resetToken={resetToken} />

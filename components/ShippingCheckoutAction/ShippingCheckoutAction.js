@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { applyTheme, CustomPropTypes, getRequiredValidator } from "@reactioncommerce/components/utils";
 import { Form } from "reacto-form";
 import ShippingAddressCheckoutAction from "components/ShippingAddressCheckoutAction";
-import ShippingMethodCheckoutAction from "components/ShippingMethodCheckoutAction";
 import Actions from "components/Actions";
 class ShippingCheckoutAction extends Component{
     static propTypes = {
@@ -62,9 +61,7 @@ class ShippingCheckoutAction extends Component{
     			ref={(formEl)=>{
     				this._dateForm=formEl;
     			}}
-
-    		>
-    		</Form>
+    		/>
     	);
     }
     renderActions(){
@@ -77,7 +74,7 @@ class ShippingCheckoutAction extends Component{
     			incompleteLabel: "Shipping address",
     			// status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
     			component: ShippingAddressCheckoutAction,
-    			onSubmit: submits.onSubmitShippingAddress,
+    		onSubmit: submits.onSubmitShippingAddress, 
     			props: {
     				alert: actionAlerts["2"],
     				fulfillmentGroup

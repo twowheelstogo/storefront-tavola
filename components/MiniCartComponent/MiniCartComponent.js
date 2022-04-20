@@ -233,7 +233,7 @@ class MiniCartComponent extends Component {
          className,
          classes,
          checkoutButtonText,
-         components: { Button, CartCheckoutButton, CartCatalogs, CartItems, MiniCartSummary },
+         components: { Button, CartCheckoutButton, CartCatalogs, MiniCartSummary },
          footerMessageText,
          onCheckoutButtonClick,
          ...props

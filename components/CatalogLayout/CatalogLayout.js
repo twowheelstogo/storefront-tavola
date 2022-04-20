@@ -23,7 +23,6 @@ const CatalogLayout = props => {
         let catalogProducts = [...products]
         return e.catalogProducts = catalogProducts.filter(element => element.tagIds[0] == e._id);
     });
-    // console.info(" CatalogLayout -> currencyCode", currencyCode);
     return (
         <Fragment>
             <HorizontalTagsProducts 

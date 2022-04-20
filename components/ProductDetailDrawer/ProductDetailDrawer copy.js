@@ -58,7 +58,6 @@ class ProductDetailDrawer extends Component {
         props.product ||
         {},
     };
-    console.info("catalogDrawerProduct", (props.product||{}).productId, props.uiStore.catalogDrawerProduct);
   }
   componentDidMount() {
     this.props.uiStore.selectedCartCatalog(this.state.cartCatalogId);
@@ -98,7 +97,6 @@ class ProductDetailDrawer extends Component {
           continue;
         }
         const oPricing = this.getPricing(option);
-        console.info("currencyCode", currencyCode, "qty", qty, "pricing", oPricing);
         if (!oPricing) {
           console.info("Error the pricing option not exists");
           continue;
@@ -143,7 +141,6 @@ class ProductDetailDrawer extends Component {
         });
       }
     }
-    console.info("determineProductPrice", selectedTotal);
     // return selectedTotal;
     this.setState({ selectedTotal, errors });
     this.showNotif();
@@ -167,18 +164,15 @@ class ProductDetailDrawer extends Component {
       if (this.qtyInput[`${variant.variantId}:${option.variantId}`])
         this.qtyInput[`${variant.variantId}:${option.variantId}`].setState({ value: 1 });
     }
-    console.info("handleSelectOption", uiStore.SelectedOptions);
     // ReCalculate the Selected Total
     this.determineProductPrice();
   }
   handleQtyChaged(variant, option, event) {
-    console.info("Qty Changed", variant.variantId, option.variantId, (event.target || {}).value);
     this.props.uiStore.setQtySelectedOption(variant.variantId, option.variantId, (event.target || {}).value);
     this.determineProductPrice();
   }
   renderOptionInfo(e, op) {
     const pricing = this.getPricing(op);
-    console.info(pricing);
     return (
       <div style={{ width: "100%", paddingTop: "10px", paddingBottom: "10px" }}>
         <div style={{ width: "100%", display: "flex" }}>
@@ -194,7 +188,6 @@ class ProductDetailDrawer extends Component {
   }
   handleAddToCartClick = async (e) => {
     if (!this.determineProductPrice()) return;
-    console.info("Sounds Working");
     const {
       addItemsToCart,
       currencyCode,
@@ -246,7 +239,6 @@ class ProductDetailDrawer extends Component {
         )
         .flat(),
     };
-    console.info("addItemsToCart", req);
     await addItemsToCart(req);
     // }
     // if (isWidthUp("md", width)) {
@@ -257,7 +249,6 @@ class ProductDetailDrawer extends Component {
   DrawerViewList() {
     const { uiStore, currencyCode, classes } = this.props;
     const { product } = this.state;
-    // console.info("DrawerViewList ---> product", product);
     return (
       <Fragment>
         <div role="presentation" style={{ width: 400, background: "white" }}>
@@ -401,7 +392,6 @@ class ProductDetailDrawer extends Component {
                                 Object.keys({ ...uiStore.SelectedOptions[e.variantId], [e.options[0].variantId]: 1 })[0]
                               }
                               onChange={(ev, id) => {
-                                console.info("Checked", id, ev);
                                 e.options.map((op) =>
                                   this.handleQtyChaged(e, op, { target: { value: id === op.variantId ? 1 : 0 } }),
                                 );

@@ -187,15 +187,15 @@ class MiniCart extends Component {
                 onLoadMoreCartCatalogs={loadMoreCartCatalogs}
               />
             ),
-            CartItems: (cartItemProps) => (
-              <CartItems
-                {...cartItemProps}
-                hasMoreCartItems={hasMoreCartItems}
-                onRemoveItemFromCart={this.handleRemoveItem}
-                onChangeCartItemQuantity={this.handleItemQuantityChange}
-                onLoadMoreCartItems={loadMoreCartItems}
-              />
-            ),
+            // CartItems: (cartItemProps) => (
+            //   <CartItems
+            //     {...cartItemProps}
+            //     hasMoreCartItems={hasMoreCartItems}
+            //     onRemoveItemFromCart={this.handleRemoveItem}
+            //     onChangeCartItemQuantity={this.handleItemQuantityChange}
+            //     onLoadMoreCartItems={loadMoreCartItems}
+            //   />
+            // ),
             CartCheckoutButton: (cartCheckoutProps) => (
               <Button className={classes.BotonPrincipal} {...cartCheckoutProps} isFullWidth>
                 {"Proceder a la compra - " + cart.checkout.summary.itemTotal.displayAmount}
@@ -219,7 +219,6 @@ class MiniCart extends Component {
     const { cart, classes, uiStore } = this.props;
     const { isCartOpen } = uiStore;
     const id = isCartOpen ? "simple-popper" : null;
-    console.log(cart);
     return (
       <Fragment>
         <div ref={this.setPopoverAnchorEl}>

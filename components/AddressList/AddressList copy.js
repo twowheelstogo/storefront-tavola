@@ -2,7 +2,6 @@ import React, { Component, useState } from "react";
 import { withComponents } from "@reactioncommerce/components-context";
 import styled from "styled-components";
 import { Menu, MenuItem, IconButton } from "@material-ui/core";
-import metas from "lib/utils/metas";
 /* import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddIcon from "@material-ui/icons/Add"; */
 const Items = styled.div`
@@ -62,7 +61,7 @@ const Controls = (props) => {
   return (
     <div>
       <IconButton onClick={handleOpen} aria-controls={id} aria-haspopup="true">
-        {/*  <MoreVertIcon /> */}
+       {/*  <MoreVertIcon /> */} 
       </IconButton>
       <Menu id={id} keepMounted anchorEl={state.menuOpen} open={Boolean(state.menuOpen)} onClose={handleClose}>
         <MenuItem onClick={editAddress}>Editar</MenuItem>
@@ -102,46 +101,50 @@ class AddressList extends Component {
     } = this.props;
     return (
       <Items>
-        {(addressBook || []).map(({ metafields }) => {
-          const inp={ metaddress : {}, geolocation :{},  ...metas(metafields).res };
-          /*   const getNameOfBranch = (distance) => {
-              if (!distance.branchId) {
-                return "Actualiza su dirección";
-              } else if (distance.branchId == "") {
-                return "Actualiza su dirección";
-              } else {
-                return distance.branch;
-              }
-            }; */
-
-          /* ${getNameOfBranch(metaddress.distance)} */
+        {(addressBook || []).map(({ _id, description,fullName, address, reference, geolocation, metaddress, receiver,metafields, phone }) => {
+          const getNameOfBranch = (distance) => {
+            if (!distance.branchId) {
+              return "Actualiza su dirección";
+            } else if (distance.branchId == "") {
+              return "Actualiza su dirección";
+            } else {
+              return distance.branch;
+            }
+          };
           return (
-            <div>
-              <RadioButtonItem
-                      title={ inp.description}
-                      description={
-                        inp.metaddress
-                          ? ` - ${ inp.address} - ${inp.metaddress.distance.text}`
-                          : `Actualiza su dirección - ${ inp.address} ${ inp.description}`
-                      }
-                      isSelected={currentAddress && currentAddress._id == inp._id}
-                      value={inp}
-                      handleChange={onSelect}
-                      trailing={<Controls id={ inp._id} onAddressDeleted={onAddressDeleted} />}
-                      trailingProps={{
-                        menuOpen: this.state.menuOpen,
-                        handleOpen: this.handleOpen,
-                        handleClose: this.handleClose,
-                      }}
-                    />
-            </div>
+            <RadioButtonItem
+              title={description}
+              description={
+                metaddress
+                  ? `${getNameOfBranch(metaddress.distance)} - ${address} - ${metaddress.distance.text}`
+                  : `Actualiza su dirección - ${address} ${fullName}`
+              }
+              isSelected={currentAddress && currentAddress._id == _id}
+              value={{
+                _id,
+                description,
+                address,
+                reference,
+                geolocation,
+                metaddress,
+                receiver,
+                phone
+              }}
+              handleChange={onSelect}
+              trailing={<Controls id={_id} onAddressDeleted={onAddressDeleted} />}
+              trailingProps={{
+                menuOpen: this.state.menuOpen,
+                handleOpen: this.handleOpen,
+                handleClose: this.handleClose,
+              }}
+            />
           );
         })}
         <CustomRoundedButton onClick={this.createAddress}>
           <CustomButtonText>
             {addressBook.length > 0 ? "Agregar otra dirección" : "Agregar una dirección"}
           </CustomButtonText>
-          {/*   <AddIcon /> */}
+        {/*   <AddIcon /> */}
         </CustomRoundedButton>
       </Items>
     );

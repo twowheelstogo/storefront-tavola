@@ -262,7 +262,6 @@ class CartCatalog extends Component {
     const { displayAmount: displaySubtotal } = subtotal || {};
     // const { displayAmount: displayCompareAtPrice } = compareAtPrice || {};
     const { CartCatalogDetail, Price, StockWarning, CartItems, CartItem, QuantityInput, CartItemDetail } = components || {};
-
     return (
       <Catalog style={{ borderBottom: "1px solid #dcdcdc" }} className={className}>
         <Accordion style={{ margin: 0 }}>
@@ -292,7 +291,7 @@ class CartCatalog extends Component {
                       productSlug={item.productSlug}
                       productVendor={item.productVendor}
                       quantity={isReadOnly ? quantity : null}
-                      title={(item.attributes[0].label || "No tiene nombre")}
+                      title={(item.attributes && item.attributes[0].label || "No tiene nombre")}
                     />
                   </div>
                 ))}

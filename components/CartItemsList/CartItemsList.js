@@ -77,7 +77,6 @@ class CartItems extends Component {
 
   render() {
     const { className, items,components: { CartItem,CartItemDetail, ...components }, ...props } = this.props;
-    console.log('CartItems ------->',items)
     return (
       <Items className={className}>
         <TitleResumen>Revisa tu Orden</TitleResumen>

@@ -1,28 +1,27 @@
 query viewer {
   viewer {
     _id
+    userId
     addressBook {
       edges {
         node {
           _id
           address1
-          address2
-          city
-          company
-          country
-          fullName
-          isBillingDefault
-          isCommercial
-          isShippingDefault
-          phone
-          postal
-          region
+          metafields {
+            description
+            key
+            namespace
+            scope
+            value
+            valueType
+          }
         }
       }
     }
     emailRecords {
       address
     }
+    username
     name
     primaryEmailAddress
   }

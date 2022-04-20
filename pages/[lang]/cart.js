@@ -175,14 +175,9 @@ class CartPage extends Component {
 
 
     if (cart && cart.checkout && cart.checkout.summary && Array.isArray(cart.items) && cart.items.length) {
+      
       const { fulfillmentTotal, itemTotal, surchargeTotal, taxTotal, total } = cart.checkout.summary;
-      console.log({
-        fulfillmentTotal,
-        itemTotal,
-        surchargeTotal,
-        taxTotal,
-        total
-      })
+
       return (
         <>
           <CartSummary
