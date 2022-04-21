@@ -11,10 +11,12 @@ import FinalReviewCheckoutAction from "@reactioncommerce/components/FinalReviewC
 import { addTypographyStyles } from "@reactioncommerce/components/utils";
 import withAddressValidation from "containers/address/withAddressValidation";
 import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
 import PageLoading from "components/PageLoading";
 import Router from "translations/i18nRouter";
 import calculateRemainderDue from "lib/utils/calculateRemainderDue";
 import { placeOrderMutation } from "../../hooks/orders/placeOrder.gql";
+import deliveryMethods from "custom/deliveryMethods";
 
 const MessageDiv = styled.div`
   ${addTypographyStyles("NoPaymentMethodsMessage", "bodyText")}
@@ -55,8 +57,13 @@ class CheckoutActions extends Component {
       4: null
     },
     hasPaymentError: false,
-    isPlacingOrder: false
+    isPlacingOrder: false,
+    shippingType: "shipping",
   };
+
+	handleShippingType = (shippingType) => {
+		this.setState({ shippingType });
+	};
 
   componentDidUpdate({ addressValidationResults: prevAddressValidationResults }) {
     const { addressValidationResults } = this.props;
@@ -293,21 +300,26 @@ class CheckoutActions extends Component {
     }
 
     const actions = [
-      {
-        id: "1",
-        activeLabel: "Enter a shipping address",
-        completeLabel: "Shipping address",
-        incompleteLabel: "Shipping address",
-        status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
-        component: ShippingAddressCheckoutAction,
-        onSubmit: this.setShippingAddress,
-        props: {
-          addressValidationResults,
-          alert: actionAlerts["1"],
-          fulfillmentGroup,
-          onAddressValidation: addressValidation
-        }
-      },
+      ...(this.state.shippingType === "shipping"
+        ? // Show : address && shipping
+          [
+            {
+              id: "1",
+              activeLabel: "Enter a shipping address",
+              completeLabel: "Shipping address",
+              incompleteLabel: "Shipping address",
+              status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
+              component: ShippingAddressCheckoutAction,
+              onSubmit: this.setShippingAddress,
+              props: {
+                addressValidationResults,
+                alert: actionAlerts["1"],
+                fulfillmentGroup,
+                onAddressValidation: addressValidation
+              }
+            },
+          ]
+        : []),
       {
         id: "2",
         activeLabel: "Choose a shipping method",
@@ -357,6 +369,29 @@ class CheckoutActions extends Component {
     return (
       <Fragment>
         {this.renderPlacingOrderOverlay()}
+        <div style={{ display: "flex", marginRight: -10 }}>
+				{deliveryMethods &&
+					deliveryMethods.map((meth) => (
+							<Button
+								style={{
+									border: `1px solid ${this.state.shippingType === meth.name ? "#000" : "#979797"}`,
+									backgroundColor: this.state.shippingType === meth.name ? "#F6F6F6" : "white",
+									opacity: this.state.shippingType === meth.name ? 1 : 0.5,
+									color: this.state.shippingType === meth.name ? "#000" : "#979797",
+									padding: "40px 0 15px",
+									marginRight: 10,
+									width: "40%",
+									textAlign: "center",
+								}}
+								onClick={() => this.handleShippingType(meth.name)}
+							>
+								<div>
+									<img style={{ backgroundColor: "pruple", maxWidth: 50, display: "block" }} src={meth.icon} />
+									<h5>{meth.displayName}</h5>
+								</div>
+							</Button>
+					))}
+			</div>
         <Actions actions={actions} />
       </Fragment>
     );

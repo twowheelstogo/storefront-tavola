@@ -23,31 +23,8 @@ class FulfillmentTypeAction extends Component {
 	renderDeliveryMethods() {
 		const { deliveryMethods, components: { CartItems }, fulfillmentGroup } = this.props;
 		return (
-			<div style={{ display: "flex", marginRight: -10 }}>
-				{deliveryMethods &&
-					deliveryMethods.map((meth) => (
-						<div>
-							<Button
-								style={{
-									border: `1px solid ${this.state.shippingType === meth.name ? "#000" : "#979797"}`,
-									backgroundColor: this.state.shippingType === meth.name ? "#F6F6F6" : "white",
-									opacity: this.state.shippingType === meth.name ? 1 : 0.5,
-									color: this.state.shippingType === meth.name ? "#000" : "#979797",
-									padding: "40px 0 15px",
-									marginRight: 10,
-									width: "40%",
-									textAlign: "center",
-								}}
-								onClick={() => this.handleShippingType(meth.name)}
-							>
-								<div>
-									<img style={{ backgroundColor: "pruple", maxWidth: 50, display: "block" }} src={meth.icon} />
-									<h5>{meth.displayName}</h5>
-								</div>
-							</Button>
-						</div>
-
-					))}
+			<div>
+				
 			</div>
 		)
 	}

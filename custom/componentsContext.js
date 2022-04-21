@@ -34,7 +34,7 @@ import AddressReview from "@reactioncommerce/components/AddressReview/v1";
 import BadgeOverlay from "@reactioncommerce/components/BadgeOverlay/v1";
 import Button from "@reactioncommerce/components/Button/v1";
 import CartItem from "@reactioncommerce/components/CartItem/v1";
-import CartItemDetail from "@reactioncommerce/components/CartItemDetail/v1";
+/* import CartItemDetail from "@reactioncommerce/components/CartItemDetail/v1"; */
 import CartItems from "@reactioncommerce/components/CartItems/v1";
 import CartSummary from "@reactioncommerce/components/CartSummary/v1";
 import CatalogGrid from "@reactioncommerce/components/CatalogGrid/v1";
@@ -95,6 +95,7 @@ import BreadcrumbsSwitch from "components/BreadcrumbsSwitch";
 import OrderDetails from "components/OrderDetails";
 import ProductDetailDrawer from "components/ProductDetailDrawer";
 import CartCatalogs from "components/CartCatalogs";
+import CartItemDetail from "components/CartItemDetail";
 import CartCatalog from "components/CartCatalog";
 import CartCatalogsList from "components/CartCatalogsList";
 
