@@ -137,11 +137,12 @@ const HorizontalProductCard = (props) => {
                   <Grid container>
                     {catalogProducts.map((values) => (
                       <Grid item xs={6} className={classes.cardMobil} key={values._id}>
-                        <Link
-                          href={values.slug && "/product/[...slugOrId]"}
-                          as={values.slug && `/product/${values.slug}`}
-                        >
-                          <CardContainerVertical withBorder boderColor={"2px solid rgba(151, 151, 151, 0.5)"}>
+
+                        <CardContainerVertical withBorder boderColor={"2px solid rgba(151, 151, 151, 0.5)"}>
+                          <Link
+                            href={values.slug && "/product/[...slugOrId]"}
+                            as={values.slug && `/product/${values.slug}`}
+                          >
                             <ProductMediaWrapper>
                               <ProgressiveImage
                                 fit={""}
@@ -162,11 +163,12 @@ const HorizontalProductCard = (props) => {
                                 <StyledSubtitleVertical>{values.description}</StyledSubtitleVertical>
                               </div>
                               <div>
-                                <Typography className={classes.textPrice}>{values.pricing[0].displayPrice}</Typography>
+                                <Typography className={classes.textPrice}>{/* values.pricing[0].displayPrice */}</Typography>
                               </div>
                             </CardContent>
-                          </CardContainerVertical>
-                        </Link>
+                          </Link>
+
+                        </CardContainerVertical>
                       </Grid>
                     ))}
                   </Grid>

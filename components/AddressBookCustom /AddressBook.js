@@ -1,10 +1,113 @@
-import React, { Component } from "react";
+import React, { Component, useImperativeHandle, useRef } from "react";
 import PropTypes from "prop-types";
 import isEmpty from "lodash.isempty";
-import { withComponents } from "@reactioncommerce/components-context";
 import { addressToString, CustomPropTypes } from "@reactioncommerce/components/utils";
+import withGoogleMaps from "containers/maps/withGoogleMap";
+import { withComponents } from "@reactioncommerce/components-context";
+import GoogleMapComponent from "components/GoogleMaps";
+import inject from "hocs/inject";
+import { SearchBox } from "react-google-maps/lib/components/places/SearchBox";
+
 const NORMAL = "normal";
 const REVIEW = "review";
+
+const PlacesWithSearchBox = (props) => {
+  return (
+    <SearchBox
+      ref={props.onSearchBoxMounted}
+      bounds={props.bounds}
+      onPlacesChanged={() => {
+        props.onPlacesChanged(props.authStore.accessToken);
+      }}
+      controlPosition={google.maps.ControlPosition.TOP_LEFT}
+    >
+      <div style={{ width: "50%", padding: "10px" }}>{props.children}</div>
+    </SearchBox>
+  );
+};
+
+const CustomAddAddressForm = withGoogleMaps((props) => {
+  // this.demo = "Hola mundo";
+  const {
+    components: { CustomForm, TextInput },
+    onSubmit,
+    googleProps,
+    ...itemAddFormProps
+  } = props;
+
+  const handleSubmit = (value) => {
+    const input = {
+      metafields: [],
+      address1: "",
+      region: "",
+      city: "",
+      phone: "",
+      country: "gt",
+      fullName: "",
+      postal: "",
+      ...value,
+    };
+    if (googleProps.locationRef.latitude) {
+      // for (const [k, obj] of [
+      //   ["geolocation", googleProps.locationRef],
+      //   ["metaddress", googleProps.metadataMarker],
+      // ]) {
+      //   for (const [kobj, vobj] of Object.entries(obj)) {
+      //     const key = `${k}.${kobj}`;
+      //     const found = input.metafields.find((m) => m.key === key);
+		  // const str = typeof vobj !== "string" && vobj !== null ? JSON.stringify(vobj) :vobj;
+      //     if (found) {
+      //       found.value = str;
+      //     } else {
+      //       input.metafields.push({ key, value: str });
+      //     }
+      //   }
+      // }
+      initMetas(input, {geolocation:googlelocationRef,metaddress :props.googleProps.metadataMarker })
+      // Object.assign(input, {
+      // 	geolocation: googleProps.locationRef,
+      // 	metaddress: { ...googleProps.metadataMarker }
+      // });
+    }
+    onSubmit(input);
+  };
+
+  let _formRef = null;
+
+  useImperativeHandle(props.formRef, () => ({
+    submit() {
+      _formRef.submit();
+    },
+  }));
+
+  return (
+    <div ref={props.formRef}>
+      <CustomForm
+        {...itemAddFormProps}
+        onSubmit={handleSubmit}
+        ref={(formEl) => {
+          _formRef = formEl;
+        }}
+      />
+      <div
+        style={{
+          width: "100%",
+          height: "300px",
+        }}
+      >
+        <GoogleMapComponent
+          {...googleProps}
+          authStore={props.authStore}
+          SearchBox={
+            <PlacesWithSearchBox {...props} {...googleProps}>
+              <TextInput id="search" name="search" placeholder="buscar una dirección" />
+            </PlacesWithSearchBox>
+          }
+        />
+      </div>
+    </div>
+  );
+});
 
 class AddressBook extends Component {
   static propTypes = {
@@ -88,13 +191,13 @@ class AddressBook extends Component {
     account: {
       addressBook: [],
     },
-    addNewItemButtonText: "Add a new address",
-    deleteItemButtonText: "Delete address",
-    entryFormSubmitButtonText: "Save Changes",
+    addNewItemButtonText: "Agregar nueva dirección",
+    deleteItemButtonText: "Eliminar dirección",
+    entryFormSubmitButtonText: "Guardar cambios",
     isSaving: false,
-    onAddressAdded() {},
-    onAddressDeleted() {},
-    onAddressEdited() {},
+    onAddressAdded(values) {},
+    onAddressDeleted(values) {},
+    onAddressEdited(values) {},
     validatedValue: {},
     value: {},
   };
@@ -152,65 +255,49 @@ class AddressBook extends Component {
     const {
       account: { addressBook },
       addNewItemButtonText,
-      components: { AccordionFormListCustom, AddressForm },
+      components: { AccordionFormList, AddressForm, TextInput },
       deleteItemButtonText,
       entryFormSubmitButtonText,
       isSaving,
+      googleProps,
     } = this.props;
 
-    const items = addressBook.map((input) => {
-      console.info('addressBook inputs',input)
-      input = {
-        country:"gt",
-        city:".",
-        postal:".",
-        address1:".",
-        fullName:"...",
-        region:".",
-        phone:"+3200000000",
-        ...input
-      };
-
-      const { _id, ...address } = input;
-      console.log(_id)
-      return {
-        id: _id,
-        detail: addressToString(address),
-        address:input,
-        itemEditFormProps: {
-          isOnDarkBackground: true,
-          isSaving,
-          onSubmit: (value) => {
-            this.handleEditAddress(value, _id);
-          },
-          value: address,
+    const items = addressBook.map(({ _id, ...address }) => ({
+      id: _id,
+      detail: `${address.address}, ${address.reference}`,
+      itemEditFormProps: {
+        isOnDarkBackground: true,
+        isSaving,
+        onSubmit: (value) => {
+          this.handleEditAddress(value, _id);
         },
-        label: address.fullName,
-      };
-    });
-
+        value: address,
+        components: { CustomForm: AddressForm, TextInput },
+        authStore: this.props.authStore,
+      },
+      label: address.description,
+    }));
     const itemAddFormProps = {
       isSaving,
       onSubmit: this.handleAddAddress,
+      components: { CustomForm: AddressForm, TextInput },
+      authStore: this.props.authStore,
     };
 
     return (
-      <div>
-        THIS Component
-        <AccordionFormListCustom
-          {...this.props}
-          addNewItemButtonText={addNewItemButtonText}
-          components={{ ItemAddForm: AddressForm, ItemEditForm: AddressForm }}
-          deleteItemButtonText={deleteItemButtonText}
-          entryFormSubmitButtonText={entryFormSubmitButtonText}
-          itemAddFormProps={itemAddFormProps}
-          items={items}
-          onItemDeleted={this.handleDeleteAddress}
-          ref={(instance) => {
-            this._accordionFormList = instance;
-          }}
-        />
-      </div>
+      <AccordionFormList
+        addNewItemButtonText={addNewItemButtonText}
+        components={{ ItemAddForm: CustomAddAddressForm, ItemEditForm: CustomAddAddressForm }}
+        deleteItemButtonText={deleteItemButtonText}
+        entryFormSubmitButtonText={entryFormSubmitButtonText}
+        itemAddFormProps={itemAddFormProps}
+        items={items}
+        googleProps={googleProps}
+        onItemDeleted={this.handleDeleteAddress}
+        ref={(instance) => {
+          this._accordionFormList = instance;
+        }}
+      />
     );
   }
 
@@ -222,7 +309,6 @@ class AddressBook extends Component {
     } = this.props;
     return (
       <AddressReview
-        {...this.props}
         ref={(el) => {
           this._addressReview = el;
         }}
@@ -241,4 +327,4 @@ class AddressBook extends Component {
   }
 }
 
-export default withComponents(AddressBook);
+export default withComponents(inject("authStore")(AddressBook));

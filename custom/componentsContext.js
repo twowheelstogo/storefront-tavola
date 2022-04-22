@@ -63,6 +63,8 @@ import StockWarning from "@reactioncommerce/components/StockWarning/v1";
 import StripeForm from "@reactioncommerce/components/StripeForm/v1";
 import TextInput from "@reactioncommerce/components/TextInput/v1";
 import withLocales from "../lib/utils/withLocales";
+import AccordionFormListCustom from "components/AccordionFormListCustom";
+import AccordionCustom from "components/AccordionCustom";
 
 // Providing locales data
 const AddressFormWithLocales = withLocales(AddressForm);
@@ -178,4 +180,6 @@ export default {
   CartCatalogs,
   CartCatalog,
   CartCatalogsList,
+  AccordionFormListCustom,
+  AccordionCustom
 };

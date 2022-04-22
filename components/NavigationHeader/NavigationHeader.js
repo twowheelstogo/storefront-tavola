@@ -276,7 +276,7 @@ class NavigationHeader extends Component {
               </Grid>
             </Grid>
             {/* new version Slider */}
-         {withHero ? (
+            {withHero ? (
               <Slider {...settings}>
                 <Tags group="slider">
                   {({ tags }) => {
@@ -287,7 +287,7 @@ class NavigationHeader extends Component {
                             <div
                               className={`${classes.hero} talign`}
                               style={{
-                                height: 500,
+                                height: 400,
                               }}
                             >
                               <div
@@ -312,7 +312,7 @@ class NavigationHeader extends Component {
                   }}
                 </Tags>
               </Slider>
-            ) : null} 
+            ) : null}
 
             {/* old version SlideHero */}
 
@@ -379,7 +379,8 @@ class NavigationHeader extends Component {
                                 backgroundRepeat: "no-repeat",
                               }}
                               className="fit"
-                            ></div>
+                            >
+                            </div>
                             <h1 className="valign tac">{e && e.displayTitle.toUpperCase()}</h1>
                           </div>
                         );

@@ -4,7 +4,8 @@ import inject from "hocs/inject";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import AddressBook from "@reactioncommerce/components/AddressBook/v1";
+/* import AddressBook from "@reactioncommerce/components/AddressBook/v1"; */
+import AddressBook from "components/AddressBook";
 import withAddressBook from "containers/address/withAddressBook";
 import relayConnectionToArray from "lib/utils/relayConnectionToArray";
 import ErrorPage from "../../pages/_error";
@@ -35,7 +36,8 @@ class ProfileAddressBook extends Component {
       authStore: { account: { addressBook } },
       onAddressAdded,
       onAddressEdited,
-      onAddressDeleted
+      onAddressDeleted,
+      onSubmit
     } = this.props;
     // Use relayConnectionToArray to remove edges / nodes levels from addressBook object
     const addresses = (addressBook && relayConnectionToArray(addressBook)) || [];
@@ -47,6 +49,7 @@ class ProfileAddressBook extends Component {
 
     return (
       <AddressBook
+        {...this.props}
         account={accountAddressBook}
         onAddressAdded={onAddressAdded}
         onAddressEdited={onAddressEdited}
@@ -57,7 +60,7 @@ class ProfileAddressBook extends Component {
 
   render() {
     const { authStore: { account }, classes, shop } = this.props;
-
+    console.info('this props',this.props)
     if (account && !account._id) return <ErrorPage shop={shop} subtitle="Not Found" />;
 
     return (
