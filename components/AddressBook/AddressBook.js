@@ -159,24 +159,23 @@ class AddressBook extends Component {
     } = this.props;
 
     const items = addressBook.map((input) => {
-      console.info('addressBook inputs',input)
+      console.info("addressBook inputs", input);
       input = {
-        country:"gt",
-        city:".",
-        postal:".",
-        address1:".",
-        fullName:"...",
-        region:".",
-        phone:"+3200000000",
-        ...input
+        country: "gt",
+        city: ".",
+        postal: ".",
+        address1: ".",
+        fullName: "...",
+        region: ".",
+        phone: "+3200000000",
+        ...input,
       };
 
       const { _id, ...address } = input;
-      console.log(_id)
       return {
         id: _id,
         detail: addressToString(address),
-        address:input,
+        address: input,
         itemEditFormProps: {
           isOnDarkBackground: true,
           isSaving,
@@ -196,7 +195,6 @@ class AddressBook extends Component {
 
     return (
       <div>
-        THIS Component
         <AccordionFormListCustom
           {...this.props}
           addNewItemButtonText={addNewItemButtonText}
@@ -236,7 +234,9 @@ class AddressBook extends Component {
     const { className } = this.props;
     const { status } = this.state;
     return (
-      <div className={className}>{status === REVIEW ? this.renderAddressReview() : this.renderAccordionFormList()}</div>
+      <div style={{ width: "100%" }} className={className}>
+        {status === REVIEW ? this.renderAddressReview() : this.renderAccordionFormList()}
+      </div>
     );
   }
 }

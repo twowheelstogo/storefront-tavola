@@ -238,7 +238,7 @@ class ShippingAddressCheckoutActionCustom extends Component {
 
   render() {
 
-    const { alert, components: { InlineAlert }, label, stepNumber } = this.props;
+    const { alert, components: { InlineAlert }, label, stepNumber,cart } = this.props;
     console.info('information',this.props);
     return (
       <Fragment>
@@ -247,12 +247,16 @@ class ShippingAddressCheckoutActionCustom extends Component {
         </Title>
         {alert ? <InlineAlert {...alert} /> : ""}
         {
-            <ProfileAddressBook {...this.props}/>
+           cart.account !== null ? (
+             <ProfileAddressBook {...this.props}/>
+           ):(
+            this.renderAddressCapture()
+           )
             //Check if the user it's "account" mean's it's connected
             // Show AddressBook 
             // else keep this compon like this, you don't need to change anything : this.renderAddressCapture()
         }
-        {this.renderAddressCapture()}
+        
       </Fragment>
     );
   }

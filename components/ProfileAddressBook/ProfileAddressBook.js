@@ -66,7 +66,7 @@ class ProfileAddressBook extends Component {
     return (
       <Grid className={classes.profileAddressBookContainer} container>
         <Grid className={classes.profileAddressBookTitle} item xs={12} md={12}>
-          <Typography variant="h6">Address Book</Typography>
+          {/* <Typography variant="h6">Address Book</Typography> */}
         </Grid>
         {this.renderAddressBook()}
       </Grid>

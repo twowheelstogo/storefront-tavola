@@ -72,27 +72,13 @@ class ShippingCheckoutAction extends Component{
     			activeLabel: "A dónde llevaremos tu orden?",
     			completeLabel: "Shipping address",
     			incompleteLabel: "Shipping address",
-    			// status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
     			component: ShippingAddressCheckoutAction,
-    		onSubmit: submits.onSubmitShippingAddress, 
+    			onSubmit: submits.onSubmitShippingAddress, 
     			props: {
     				alert: actionAlerts["2"],
     				fulfillmentGroup
     			}
     		},
-    		// {
-    		// 	id: "3",
-    		// 	activeLabel: "Elige un método de envío",
-    		// 	completeLabel: "Shipping address",
-    		// 	incompleteLabel: "Shipping address",
-    		// 	// status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
-    		// 	component: ShippingMethodCheckoutAction,
-    		// 	onSubmit: submits.onSetShippingMethod,
-    		// 	props: {
-    		// 		alert: actionAlerts["3"],
-    		// 		fulfillmentGroup
-    		// 	}
-    		// },
     	];
     	return <Actions actions={actions}/>;
     }
