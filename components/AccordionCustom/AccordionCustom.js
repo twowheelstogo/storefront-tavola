@@ -6,11 +6,9 @@ import { applyTheme, addTypographyStyles } from "@reactioncommerce/components/ut
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
+import { Typography } from "@material-ui/core";
 
 const AccordionWrapper = styled.div`
-  border-color: ${applyTheme("Accordion.borderColor")};
-  border-style: ${applyTheme("Accordion.borderStyle")};
-  border-width: ${applyTheme("Accordion.borderWidth")};
   box-sizing: border-box;
   color: inherit;
   overflow: hidden;
@@ -124,10 +122,10 @@ class Accordion extends Component {
   toggle = () => this.handleToggle();
 
   // handle accordion toggle
-  /*    handleToggle = () => {
-           this.setState({ isExpanded: !isExpanded });
-       };
-     */
+  handleToggle = () => {
+    const { isExpanded } = this.state;
+    this.setState({ isExpanded: !isExpanded })
+  };
   render() {
     const {
       children,
@@ -140,40 +138,26 @@ class Accordion extends Component {
       id,
       cart: { checkout: { fulfillmentGroups = [] } = {} } = {},
     } = this.props;
-    const shippingAddress = fulfillmentGroups.length ? fulfillmentGroups[0].shippingAddress || {} : {}
+
+    const shippingAddress = fulfillmentGroups.length ? fulfillmentGroups[0].shippingAddress || {} : {};
     const { isExpanded } = this.state;
-console.info("AccordionCustom this.props.onSubmit", this.props.onSubmit, address);
+    console.log(isExpanded)
     return (
       <AccordionWrapper
-        className={className}
         ref={(accordionEl) => {
           this._accordion = accordionEl;
         }}
       >
-        <AccordionHeader onClick={this.handleToggle}>
-          <span>
+        <AccordionHeader onClick={this.handleToggle} >
+          <div >
             {icon ? <AccordionHeaderIcon>{icon}</AccordionHeaderIcon> : null}
-            <AccordionHeaderLabel>{label}</AccordionHeaderLabel>
-            {detail ? (
-              <div>
-                <RadioGroup aria-label="quiz" name="" value={label} /* onChange={handleRadioChange} */>
-                  <FormControlLabel
-                    value={id}
-                    checked={id === shippingAddress._id}
-                    onClick={() => this.props.onSubmit(address)}
-                    control={
-                      <div>
-                        <Radio />
-                        <AccordionHeaderDetail> , {detail} </AccordionHeaderDetail>
-                      </div>
-                    }
-                  />
-                </RadioGroup>
-              </div>
-            ) : (
-              ""
-            )}
-          </span>
+            <Typography>
+              {"Titulo"}
+            </Typography>
+            <div>
+              <AccordionHeaderDetail>{detail || ""}</AccordionHeaderDetail>
+            </div>
+          </div>
           <AccordionHeaderIcon isExpanded={isExpanded}>{iconExpand}</AccordionHeaderIcon>
         </AccordionHeader>
         <AccordionContent isExpanded={isExpanded}>{children}</AccordionContent>

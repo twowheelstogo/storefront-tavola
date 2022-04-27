@@ -7,6 +7,7 @@ import Actions from "@reactioncommerce/components/CheckoutActions/v1";
 /* import ShippingAddressCheckoutAction from "@reactioncommerce/components/ShippingAddressCheckoutAction/v1"; */
 import FulfillmentOptionsCheckoutAction from "@reactioncommerce/components/FulfillmentOptionsCheckoutAction/v1";
 import PaymentsCheckoutAction from "@reactioncommerce/components/PaymentsCheckoutAction/v1";
+import PaymentsCheckoutActionCustom from "components/PaymentsCheckoutActionCustom";
 import FinalReviewCheckoutAction from "@reactioncommerce/components/FinalReviewCheckoutAction/v1";
 import { addTypographyStyles } from "@reactioncommerce/components/utils";
 import withAddressValidation from "containers/address/withAddressValidation";
@@ -296,7 +297,7 @@ class CheckoutActions extends Component {
     const payments = cartStore.checkoutPayments.slice();
     const remainingAmountDue = calculateRemainderDue(payments, total.amount);
 
-    let PaymentComponent = PaymentsCheckoutAction;
+    let PaymentComponent = PaymentsCheckoutActionCustom;
     if (!Array.isArray(paymentMethods) || paymentMethods.length === 0) {
       PaymentComponent = NoPaymentMethodsMessage;
     }
@@ -323,7 +324,7 @@ class CheckoutActions extends Component {
             },
           ]
         : []),
-      {
+    /*   {
         id: "2",
         activeLabel: "Choose a shipping method",
         completeLabel: "Shipping method",
@@ -335,10 +336,10 @@ class CheckoutActions extends Component {
           alert: actionAlerts["2"],
           fulfillmentGroup
         }
-      },
+      }, */
       {
         id: "3",
-        activeLabel: "Enter payment information",
+        activeLabel: "Elige cómo pagarás tu orden.",
         completeLabel: "Payment information",
         incompleteLabel: "Payment information",
         status: remainingAmountDue === 0 && !hasPaymentError ? "complete" : "incomplete",
@@ -355,7 +356,7 @@ class CheckoutActions extends Component {
       },
       {
         id: "4",
-        activeLabel: "Review and place order",
+        activeLabel: "Revisión de tu orden",
         completeLabel: "Review and place order",
         incompleteLabel: "Review and place order",
         status: "incomplete",

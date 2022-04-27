@@ -314,7 +314,6 @@ class CheckoutActions extends Component {
 	render() {
 		const { className, actions } = this.props;
 		const activeActions = this.determineActiveActions();
-		console.info("actions", actions);
 		return (
 			<div>
 				{

@@ -32,6 +32,12 @@ class AddressForm extends Component {
       reference: "",
       phone: "",
       receiver: "",
+      // country:"gt",
+      // region:".",
+      // city:".",
+      // postal:".",
+      // phone:"",
+      // isCommercial: false,
     },
     validator: getRequiredValidator("address", "description", "phone", "receiver"),
   };
@@ -60,7 +66,7 @@ class AddressForm extends Component {
           value={value}
           revalidateOn="changed"
           onSubmit={(v, val) => {
-            const res = { address1: v.address, metafields: (value || {}).metafields || [] };
+            const res = {  address1: v.address, metafields: (value || {}).metafields || [] };
             for (const o of ["reference", "description", "receiver"]) {
               const found = res.metafields.find((m) => m.key === o);
               if (found) {

@@ -29,7 +29,7 @@ import AddressBook from "@reactioncommerce/components/AddressBook/v1";
 import Address from "@reactioncommerce/components/Address/v1";
 import AddressCapture from "@reactioncommerce/components/AddressCapture/v1";
 import AddressChoice from "@reactioncommerce/components/AddressChoice/v1";
-import AddressForm from "@reactioncommerce/components/AddressForm/v1";
+// import AddressForm from "@reactioncommerce/components/AddressForm/v1";
 import AddressReview from "@reactioncommerce/components/AddressReview/v1";
 import BadgeOverlay from "@reactioncommerce/components/BadgeOverlay/v1";
 import Button from "@reactioncommerce/components/Button/v1";
@@ -75,6 +75,7 @@ import CheckoutAction from "components/CheckoutAction";
 /**
 * * *  Custom
 */
+import AddressForm from "components/AddressForm";
 import CartItemSelect from "components/CartItemSelect";
 import HorizontalProductCard from "components/HorizontalProductCard";
 import CatalogLayout from "components/CatalogLayout";
@@ -100,6 +101,9 @@ import CartCatalogs from "components/CartCatalogs";
 import CartItemDetail from "components/CartItemDetail";
 import CartCatalog from "components/CartCatalog";
 import CartCatalogsList from "components/CartCatalogsList";
+import PaymentsCheckoutActionCustom from "components/PaymentsCheckoutActionCustom";
+import SelectableListCustom from "components/SelectableListCustom";
+import SelectableItemCustomer from "components/SelectableItemCustomer";
 
 export default {
   Accordion,
@@ -181,5 +185,8 @@ export default {
   CartCatalog,
   CartCatalogsList,
   AccordionFormListCustom,
-  AccordionCustom
+  AccordionCustom,
+  PaymentsCheckoutActionCustom,
+  SelectableListCustom,
+  SelectableItemCustomer
 };

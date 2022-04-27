@@ -23,6 +23,7 @@ fragment CartCommon on Cart {
       type
       data {
         shippingAddress {
+          _id
           address1
           address2
           city
@@ -67,6 +68,7 @@ fragment CartCommon on Cart {
         _id
       }
       shippingAddress {
+        _id
         address1
         address2
         city
