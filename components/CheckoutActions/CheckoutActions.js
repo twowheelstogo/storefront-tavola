@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { isEqual } from "lodash";
 import styled from "styled-components";
 import Actions from "@reactioncommerce/components/CheckoutActions/v1";
-/* import ShippingAddressCheckoutAction from "@reactioncommerce/components/ShippingAddressCheckoutAction/v1"; */
+import ShippingAddressCheckoutAction from "@reactioncommerce/components/ShippingAddressCheckoutAction/v1";
 import FulfillmentOptionsCheckoutAction from "@reactioncommerce/components/FulfillmentOptionsCheckoutAction/v1";
 import PaymentsCheckoutAction from "@reactioncommerce/components/PaymentsCheckoutAction/v1";
 import PaymentsCheckoutActionCustom from "components/PaymentsCheckoutActionCustom";
@@ -19,7 +19,7 @@ import calculateRemainderDue from "lib/utils/calculateRemainderDue";
 import { placeOrderMutation } from "../../hooks/orders/placeOrder.gql";
 import deliveryMethods from "custom/deliveryMethods";
 import AddressBook from "components/AddressBook";
-import ShippingAddressCheckoutActionCustom from "components/ShippingAddressCheckoutActionCustom";
+// import ShippingAddressCheckoutActionCustom from "components/ShippingAddressCheckoutActionCustom";
 
 const MessageDiv = styled.div`
   ${addTypographyStyles("NoPaymentMethodsMessage", "bodyText")}
@@ -297,7 +297,7 @@ class CheckoutActions extends Component {
     const payments = cartStore.checkoutPayments.slice();
     const remainingAmountDue = calculateRemainderDue(payments, total.amount);
 
-    let PaymentComponent = PaymentsCheckoutActionCustom;
+    let PaymentComponent = PaymentsCheckoutAction;
     if (!Array.isArray(paymentMethods) || paymentMethods.length === 0) {
       PaymentComponent = NoPaymentMethodsMessage;
     }
@@ -308,11 +308,12 @@ class CheckoutActions extends Component {
           [
             {
               id: "1",
-              activeLabel: "A dónde llevaremos tu orden?",
+              activeLabel: "A dónde llevaremos tu orden?XXXXX",
               completeLabel: "Shipping address",
               incompleteLabel: "Shipping address",
               status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
-              component: ShippingAddressCheckoutActionCustom,
+              component: ShippingAddressCheckoutAction,
+              // component: ShippingAddressCheckoutActionCustom,
               onSubmit: this.setShippingAddress,
               props: {
                 cart,
@@ -322,21 +323,22 @@ class CheckoutActions extends Component {
                 onAddressValidation: addressValidation
               }
             },
+            {
+              id: "2",
+              activeLabel: "Choose a shipping method",
+              completeLabel: "Shipping method",
+              incompleteLabel: "Shipping method",
+              status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
+              component: FulfillmentOptionsCheckoutAction,
+              onSubmit: this.setShippingMethod,
+              props: {
+                alert: actionAlerts["2"],
+                fulfillmentGroup
+              }
+            },
           ]
         : []),
-    /*   {
-        id: "2",
-        activeLabel: "Choose a shipping method",
-        completeLabel: "Shipping method",
-        incompleteLabel: "Shipping method",
-        status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
-        component: FulfillmentOptionsCheckoutAction,
-        onSubmit: this.setShippingMethod,
-        props: {
-          alert: actionAlerts["2"],
-          fulfillmentGroup
-        }
-      }, */
+       
       {
         id: "3",
         activeLabel: "Elige cómo pagarás tu orden.",
