@@ -222,25 +222,27 @@ class SelectableItem extends Component {
       >
         <StyledRadioButton />
         {label}
-        <Button
-            style={{
-              border: `1px solid "#000"`,
-              backgroundColor: /* this.state.shippingType === meth.name ? */ "#F6F6F6" /* : "white" */,
-              opacity: /* this.state.shippingType === meth.name ? */ 1 /* : 0.5 */,
-              color: /* this.state.shippingType === meth.name ? */ "#000" /* : "#979797" */,
-              padding: "40px 0 15px",
-              marginRight: 10,
-              width: "40%",
-              textAlign: "center",
-            }}
-          >
-            <div>
-              {/* <img style={{ backgroundColor: "pruple", maxWidth: 50, display: "block" }} src={meth.icon} /> */}
-              <h5>{label}</h5>
-            </div>
-          </Button>
+      
       </StyledLabel>
     );
+
+    // <Button
+    //   style={{
+    //     border: `1px solid "#000"`,
+    //     backgroundColor: /* this.state.shippingType === meth.name ? */ "#F6F6F6" /* : "white" */,
+    //     opacity: /* this.state.shippingType === meth.name ? */ 1 /* : 0.5 */,
+    //     color: /* this.state.shippingType === meth.name ? */ "#000" /* : "#979797" */,
+    //     padding: "40px 0 15px",
+    //     marginRight: 10,
+    //     width: "40%",
+    //     textAlign: "center",
+    //   }}
+    // >
+    //   <div>
+    //     {/* <img style={{ backgroundColor: "pruple", maxWidth: 50, display: "block" }} src={meth.icon} /> */}
+    //     <h5>{label}</h5>
+    //   </div>
+    // </Button>
 
     return (
       <div className={className}>

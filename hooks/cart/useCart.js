@@ -8,12 +8,13 @@ import cartCatalogsConnectionToArray from "lib/utils/cartCatalogsConnectionToArr
 import {
   createCartMutation,
   addCartItemsMutation,
+  aCartCatalogsMutation,
   removeCartItemsMutation,
   reconcileCartsMutation,
   setEmailOnAnonymousCartMutation,
   setFulfillmentOptionCartMutation,
   setShippingAddressCartMutation,
-  updateCartCatalogsQuantityMutation,
+  uCartCatalogsQtyMutation,
   updateCartItemsQuantityMutation,
   updateFulfillmentOptionsForGroup,
 } from "./mutations.gql";
@@ -120,7 +121,8 @@ export default function useCart() {
   };
 
   const [addOrCreateCartMutation, { loading: addOrCreateCartLoading }] = useMutation(
-    cart && cart._id ? addCartItemsMutation : createCartMutation,
+    // cart && cart._id ? addCartItemsMutation : createCartMutation,
+    cart && cart._id ? aCartCatalogsMutation : createCartMutation,
     {
       onCompleted(addOrCreateCartMutationData) {
         if (addOrCreateCartMutationData && addOrCreateCartMutationData.createCart && (!viewer || !viewer._id)) {
@@ -381,7 +383,7 @@ export default function useCart() {
     },
     onChangeCartCatalogsQuantity: async (cartCatalogs) => {
       await apolloClient.mutate({
-        mutation: updateCartCatalogsQuantityMutation,
+        mutation: uCartCatalogsQtyMutation,
         variables: {
           input: {
             cartId: cartStore.anonymousCartId || cartStore.accountCartId,
@@ -390,8 +392,8 @@ export default function useCart() {
           },
         },
         update: (cache, { data: mutationData }) => {
-          if (mutationData && mutationData.updateCartCatalogsQuantity) {
-            const { cart: cartPayload } = mutationData.updateCartCatalogsQuantity;
+          if (mutationData && mutationData.uCartCatalogsQty) {
+            const { cart: cartPayload } = mutationData.uCartCatalogsQty;
 
             if (cartPayload) {
               // Update Apollo cache

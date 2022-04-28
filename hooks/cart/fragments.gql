@@ -169,6 +169,7 @@ fragment CartCatalogConnectionFragment on CartCatalogConnection {
 ## Fragment for cart items, used in both queries and mutations
 fragment CartItemFragment on CartItem {
   _id
+  cartCatalogId
   productConfiguration {
     productId
     productVariantId
@@ -260,6 +261,15 @@ fragment IncorrectPriceFailureDetailsFragment on IncorrectPriceFailureDetails {
 # Fragment for use with payloads related cart. Used solely for mutations
 fragment MinOrderQuantityFailureDetailsFragment on MinOrderQuantityFailureDetails {
   minOrderQuantity
+  productConfiguration {
+    productId
+    productVariantId
+  }
+  quantity
+}
+# Fragment for use with payloads related cart. Used solely for mutations
+fragment MaxOrderQuantityFailureDetailsFragment on MaxOrderQuantityFailureDetails {
+  maxOrderQuantity
   productConfiguration {
     productId
     productVariantId
