@@ -10,7 +10,7 @@ import { Typography } from "@material-ui/core";
 
 const AccordionWrapper = styled.div`
   box-sizing: border-box;
-  color: inherit;
+  color: inherit; 
   overflow: hidden;
   &:first-of-type {
     border-top-left-radius: ${applyTheme("Accordion.borderRadius")};
