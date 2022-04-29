@@ -170,6 +170,7 @@ fragment CartCatalogConnectionFragment on CartCatalogConnection {
 fragment CartItemFragment on CartItem {
   _id
   cartCatalogId
+  isHidden
   productConfiguration {
     productId
     productVariantId

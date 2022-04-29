@@ -25,7 +25,6 @@ import { useRouter } from "next/router";
 import CrosshairsGps from "mdi-material-ui/CrosshairsGps";
 import initMetas from "lib/utils/initMetas";
 
-
 const PlacesWithStandaloneSearchBox = (props) => {
   return (
     <div data-standalone-searchbox="">
@@ -180,7 +179,7 @@ const CreateAddress = (props) => {
         //   for (const [kobj, vobj] of Object.entries(obj)) {
         //     const key = `${k}.${kobj}`;
         //     const found = meta.metafields.find((m) => m.key === key);
-		// 	const str = typeof vobj !== "string" && vobj !== null ? JSON.stringify(vobj) :vobj;
+        // 	const str = typeof vobj !== "string" && vobj !== null ? JSON.stringify(vobj) :vobj;
         //     if (found) {
         //       found.value = str;
         //     } else {
@@ -188,7 +187,7 @@ const CreateAddress = (props) => {
         //     }
         //   }
         // }
-		initMetas(meta, {geolocation:props.googleProps.locationRef,metaddress :props.googleProps.metadataMarker })
+        initMetas(meta, { geolocation: props.googleProps.locationRef, metaddress: props.googleProps.metadataMarker });
       }
       if (addressBookId != null) {
         await onAddressEdited(addressBookId, meta);
@@ -445,7 +444,7 @@ const RenderWeb = withStyles(styles)((props) => {
 });
 
 export async function getStaticProps({ params: { lang } }) {
-  const primaryShop = await fetchPrimaryShop(lang);
+  const primaryShop = await fetchPrimaryShop({ language: lang });
   const translations = await fetchTranslations(lang, ["common"]);
   if (!primaryShop) {
     return {

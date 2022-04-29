@@ -27,8 +27,8 @@ async function getTags(variables) {
  * @param {String} lang - the shop's language
  * @returns {Object[]} Array of all tags
  */
-export default async function fetchAllTags(lang) {
-  const { shop } = await fetchPrimaryShop(lang);
+export default async function fetchAllTags(language) {
+  const { shop } = await fetchPrimaryShop({language});
 
   if (!shop) {
     // eslint-disable-next-line no-console

@@ -18,23 +18,23 @@ import fetchTranslations from "staticUtils/translations/fetchTranslations";
 
 const styles = (theme) => ({
   backLink: {
-    "color": theme.palette.reaction.black80,
-    "cursor": "pointer",
-    "fontFamily": theme.typography.fontFamily,
-    "fontSize": 14,
+    color: theme.palette.reaction.black80,
+    cursor: "pointer",
+    fontFamily: theme.typography.fontFamily,
+    fontSize: 14,
     "&:hover": {
-      color: theme.palette.reaction.reactionBlue400
-    }
+      color: theme.palette.reaction.reactionBlue400,
+    },
   },
   backLinkText: {
     letterSpacing: "0.3px",
     lineHeight: 1.71,
     marginLeft: theme.spacing(),
-    textDecoration: "underline"
+    textDecoration: "underline",
   },
   headerFlex: {
     alignSelf: "center",
-    flex: "1 1 1%"
+    flex: "1 1 1%",
   },
   header: {
     alignContent: "center",
@@ -42,12 +42,12 @@ const styles = (theme) => ({
     display: "flex",
     justifyContent: "center",
     marginBottom: theme.spacing(3),
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
   },
   logo: {
     color: theme.palette.reaction.reactionBlue,
     margin: "auto",
-    borderBottom: `solid 5px ${theme.palette.reaction.reactionBlue200}`
+    borderBottom: `solid 5px ${theme.palette.reaction.reactionBlue200}`,
   },
   main: {
     flex: "1 1 auto",
@@ -56,25 +56,25 @@ const styles = (theme) => ({
     margin: "0 auto",
     padding: theme.spacing(3, 3, 0),
     [theme.breakpoints.up("md")]: {
-      padding: theme.spacing(10, 3, 0)
-    }
+      padding: theme.spacing(10, 3, 0),
+    },
   },
-  root: {}
+  root: {},
 });
 
 class Login extends Component {
   static propTypes = {
     cart: PropTypes.shape({
       account: PropTypes.object,
-      email: PropTypes.string
+      email: PropTypes.string,
     }),
     classes: PropTypes.object,
     setEmailOnAnonymousCart: PropTypes.func,
     shop: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      description: PropTypes.string
+      description: PropTypes.string,
     }),
-    theme: PropTypes.object.isRequired
+    theme: PropTypes.object.isRequired,
   };
 
   state = {};
@@ -97,9 +97,7 @@ class Login extends Component {
         </div>
 
         <Link route="home">
-          <div className={classes.logo}>
-            {shop ? <ShopLogo shopName={shop.name} /> : "Example Storefront"}
-          </div>
+          <div className={classes.logo}>{shop ? <ShopLogo shopName={shop.name} /> : "Example Storefront"}</div>
         </Link>
 
         <div className={classes.headerFlex} />
@@ -138,9 +136,9 @@ class Login extends Component {
 export async function getStaticProps({ params: { lang } }) {
   return {
     props: {
-      ...await fetchPrimaryShop(lang),
-      ...await fetchTranslations(lang, ["common"])
-    }
+      ...(await fetchPrimaryShop({ language: lang })),
+      ...(await fetchTranslations(lang, ["common"])),
+    },
   };
 }
 
@@ -152,7 +150,7 @@ export async function getStaticProps({ params: { lang } }) {
 export async function getStaticPaths() {
   return {
     paths: locales.map((locale) => ({ params: { lang: locale } })),
-    fallback: false
+    fallback: false,
   };
 }
 

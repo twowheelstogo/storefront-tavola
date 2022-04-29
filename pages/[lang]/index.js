@@ -95,7 +95,7 @@ class ProductGridPage extends Component {
  * @returns {Object} the props
  */
 export async function getStaticProps({ params: { lang } }) {
-  const primaryShop = await fetchPrimaryShop(lang);
+  const primaryShop = await fetchPrimaryShop({ language: lang });
   const translations = await fetchTranslations(lang, ["common"]);
   const tags = await fetchAllTags(lang);
   if (!primaryShop) {

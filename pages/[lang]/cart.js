@@ -22,25 +22,27 @@ import { withComponents } from "@reactioncommerce/components-context";
 const styles = (theme) => ({
   contenedorPrincipal: {
     ["@media (min-width:800px)"]: {
-      display: "flex", justifyContent: "center"
+      display: "flex",
+      justifyContent: "center",
     },
     ["@media(min-width:600px) and (max-width:799px)"]: {
-      display: "flex", justifyContent: "space-evenly"
+      display: "flex",
+      justifyContent: "space-evenly",
     },
   },
   cartEmptyMessageContainer: {
     marginLeft: "auto",
-    marginRight: "auto"
+    marginRight: "auto",
   },
   checkoutButtonsContainer: {
     backgroundColor: "#F6F6F6",
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
   },
   customerSupportCopy: {
-    paddingLeft: `${theme.spacing(4)}px !important`
+    paddingLeft: `${theme.spacing(4)}px !important`,
   },
   phoneNumber: {
-    fontWeight: theme.typography.fontWeightBold
+    fontWeight: theme.typography.fontWeightBold,
   },
   title: {
     fontWeight: 700,
@@ -50,7 +52,7 @@ const styles = (theme) => ({
   },
   itemWrapper: {
     borderTop: theme.palette.borders.default,
-    borderBottom: theme.palette.borders.default
+    borderBottom: theme.palette.borders.default,
   },
   breadcrumbGrid: {
     padding: theme.spacing(1),
@@ -58,7 +60,7 @@ const styles = (theme) => ({
       marginLeft: theme.spacing(5),
     },
     ["@media (max-width:959px)"]: {
-      marginLeft: theme.spacing(0)
+      marginLeft: theme.spacing(0),
     },
 
     ["@media (min-width:600px)"]: {
@@ -72,15 +74,15 @@ const styles = (theme) => ({
   page: {
     backgroundColor: "#202124",
     ["@media (min-width:600px)"]: {
-      height: '43px',
+      height: "43px",
     },
     ["@media (max-width:599px)"]: {
-      height: '33px',
+      height: "33px",
     },
   },
   Dividers: {
-    border: 'solid 1px transparent'
-  }
+    border: "solid 1px transparent",
+  },
 });
 
 class CartPage extends Component {
@@ -90,15 +92,15 @@ class CartPage extends Component {
       items: PropTypes.arrayOf(PropTypes.object),
       checkout: PropTypes.shape({
         fulfillmentTotal: PropTypes.shape({
-          displayAmount: PropTypes.string
+          displayAmount: PropTypes.string,
         }),
         itemTotal: PropTypes.shape({
-          displayAmount: PropTypes.string
+          displayAmount: PropTypes.string,
         }),
         taxTotal: PropTypes.shape({
-          displayAmount: PropTypes.string
-        })
-      })
+          displayAmount: PropTypes.string,
+        }),
+      }),
     }),
     classes: PropTypes.object,
     routingStore: PropTypes.object.isRequired,
@@ -108,8 +110,8 @@ class CartPage extends Component {
     onRemoveCartItems: PropTypes.func,
     shop: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      description: PropTypes.string
-    })
+      description: PropTypes.string,
+    }),
   };
 
   handleClick = () => Router.push("/");
@@ -130,17 +132,20 @@ class CartPage extends Component {
     const { cart, classes, hasMoreCartItems, loadMoreCartItems } = this.props;
 
     if (cart && Array.isArray(cart.items) && cart.items.length) {
-      return (
-        <div>
-        </div>
-      );
+      return <div></div>;
     }
 
     return (
       <Grid item xs={9} sm={5} md={5} lg={5} className={classes.cartEmptyMessageContainer}>
-        <br /><br />
+        <br />
+        <br />
         <CartEmptyMessage onClick={this.handleClick} />
-        <br /><br /><br /><br /><br /><br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
       </Grid>
     );
   }
@@ -164,18 +169,13 @@ class CartPage extends Component {
       );
     }
 
-    return (
-      <div>
-      </div>
-    );
+    return <div></div>;
   }
 
   renderCartSummary() {
     const { cart, classes } = this.props;
 
-
     if (cart && cart.checkout && cart.checkout.summary && Array.isArray(cart.items) && cart.items.length) {
-      
       const { fulfillmentTotal, itemTotal, surchargeTotal, taxTotal, total } = cart.checkout.summary;
 
       return (
@@ -201,32 +201,33 @@ class CartPage extends Component {
   Titulo() {
     const { cart, classes } = this.props;
 
-
     if (cart && cart.checkout && cart.checkout.summary && Array.isArray(cart.items) && cart.items.length) {
-      return <>
-        <Typography className={classes.title} variant="h6" align="center">
-          Mi Carrito
-        </Typography>
-      </>
-    }
-    else {
+      return (
+        <>
+          <Typography className={classes.title} variant="h6" align="center">
+            Mi Carrito
+          </Typography>
+        </>
+      );
+    } else {
       return null;
     }
-
   }
 
   render() {
-    const { cart, classes, shop, components: { CartItem, CartSummary }, routingStore, } = this.props;
+    const {
+      cart,
+      classes,
+      shop,
+      components: { CartItem, CartSummary },
+      routingStore,
+    } = this.props;
     // when a user has no item in cart in a new session, this.props.cart is null
     // when the app is still loading, this.props.cart is undefined
     if (typeof cart === "undefined") return <PageLoading delay={0} />;
 
     return (
-      <Layout shop={shop}
-        router={routingStore}
-        routerLabel={'Shopping cart'}
-        routerType={1}
-      >
+      <Layout shop={shop} router={routingStore} routerLabel={"Shopping cart"} routerType={1}>
         <Helmet
           title={`Cart | ${shop && shop.name}`}
           meta={[{ name: "description", content: shop && shop.description }]}
@@ -234,20 +235,19 @@ class CartPage extends Component {
         {this.Titulo()}
         <section>
           <Grid container className={classes.contenedorPrincipal}>
-
-            <Grid item xs={12} sm={12} md={5} lg={7} style={{ padding: '12px' }}>
+            <Grid item xs={12} sm={12} md={5} lg={7} style={{ padding: "12px" }}>
               {this.renderCartItems()}
             </Grid>
 
-            <Grid item xs={12} sm={12} md={2} lg={1}><span style={{ color: 'transparent' }}>s</span></Grid>
+            <Grid item xs={12} sm={12} md={2} lg={1}>
+              <span style={{ color: "transparent" }}>s</span>
+            </Grid>
 
             <Grid item xs={12} sm={12} md={3} lg={3}>
               {this.renderCartSummary()}
             </Grid>
 
-
             {this.renderEmpty()}
-
           </Grid>
         </section>
       </Layout>
@@ -262,9 +262,9 @@ class CartPage extends Component {
 export async function getServerSideProps({ params: { lang } }) {
   return {
     props: {
-      ...await fetchPrimaryShop(lang),
-      ...await fetchTranslations(lang, ["common"])
-    }
+      ...(await fetchPrimaryShop({ language: lang })),
+      ...(await fetchTranslations(lang, ["common"])),
+    },
   };
 }
 

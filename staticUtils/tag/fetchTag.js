@@ -9,8 +9,8 @@ import tagQuery from "./tag.js";
  * @param {String} lang - The shop's language
  * @returns {Object} The fetched tag object
  */
-export default async function fetchTag(slugOrId, lang) {
-  const { shop } = await fetchPrimaryShop(lang);
+export default async function fetchTag(slugOrId, language) {
+  const { shop } = await fetchPrimaryShop({ language });
   const data = await graphQLRequest(tagQuery, { shopId: shop && shop._id, slugOrId });
 
   return data && data.tag && { tag: data.tag };
