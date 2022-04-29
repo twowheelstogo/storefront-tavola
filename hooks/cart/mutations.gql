@@ -2,9 +2,9 @@
 
 # Create cart for both anonymous and account users
 mutation createCartMutation($input: CreateCartInput!) {
-  createCart(input: $input) {
+  createCart: cCart(input: $input) {
     cart {
-     ...CartPayloadFragment
+      ...CartPayloadFragment
     }
     incorrectPriceFailures {
       ...IncorrectPriceFailureDetailsFragment
@@ -32,6 +32,24 @@ mutation addCartItemsMutation($input: AddCartItemsInput!) {
     clientMutationId
   }
 }
+# Add items to the cart
+mutation aCartCatalogsMutation($input: AddCartCatalogsInput!) {
+  aCartCatalogs(input: $input) {
+    cart {
+      ...CartPayloadFragment
+    }
+    incorrectPriceFailures {
+      ...IncorrectPriceFailureDetailsFragment
+    }
+    minOrderQuantityFailures {
+      ...MinOrderQuantityFailureDetailsFragment
+    }
+    maxOrderQuantityFailures {
+      ...MaxOrderQuantityFailureDetailsFragment
+    }
+    clientMutationId
+  }
+}
 
 # Reconcile carts. Usually used to merge an anonymous cart with an account cart
 mutation reconcileCartsMutation($input: ReconcileCartsInput!) {
@@ -51,9 +69,10 @@ mutation removeCartItemsMutation($input: RemoveCartItemsInput!) {
   }
 }
 
-
 # Set email on anonymous cart for guest checkout
-mutation setEmailOnAnonymousCartMutation($input: SetEmailOnAnonymousCartInput!) {
+mutation setEmailOnAnonymousCartMutation(
+  $input: SetEmailOnAnonymousCartInput!
+) {
   setEmailOnAnonymousCart(input: $input) {
     cart {
       ...CartPayloadFragment
@@ -62,7 +81,9 @@ mutation setEmailOnAnonymousCartMutation($input: SetEmailOnAnonymousCartInput!) 
 }
 
 # Set Fulfillment option for items in cart
-mutation setFulfillmentOptionCartMutation($input: SelectFulfillmentOptionForGroupInput!) {
+mutation setFulfillmentOptionCartMutation(
+  $input: SelectFulfillmentOptionForGroupInput!
+) {
   selectFulfillmentOptionForGroup(input: $input) {
     cart {
       ...CartPayloadFragment
@@ -71,7 +92,9 @@ mutation setFulfillmentOptionCartMutation($input: SelectFulfillmentOptionForGrou
 }
 
 # Set shipping address on cart
-mutation setShippingAddressCartMutation($input: SetShippingAddressOnCartInput!) {
+mutation setShippingAddressCartMutation(
+  $input: SetShippingAddressOnCartInput!
+) {
   setShippingAddressOnCart(input: $input) {
     cart {
       ...CartPayloadFragment
@@ -80,16 +103,20 @@ mutation setShippingAddressCartMutation($input: SetShippingAddressOnCartInput!) 
 }
 
 # Update the quantities of items in the cart
-mutation updateCartItemsQuantityMutation($input: UpdateCartItemsQuantityInput!) {
-  updateCartItemsQuantity(input: $input) {
+mutation updateCartItemsQuantityMutation(
+  $input: UpdateCartItemsQuantityInput!
+) {
+  uCartItemsQty(input: $input) {
     cart {
       ...CartPayloadFragment
     }
   }
 }
 # Update the quantities of catalogs in the cart
-mutation updateCartCatalogsQuantityMutation($input: UpdateCartCatalogsQuantityInput!) {
-  updateCartCatalogsQuantity(input: $input) {
+mutation uCartCatalogsQtyMutation(
+  $input: UpdateCartCatalogsQuantityInput!
+) {
+  uCartCatalogsQty(input: $input) {
     cart {
       ...CartPayloadFragment
     }
@@ -97,7 +124,9 @@ mutation updateCartCatalogsQuantityMutation($input: UpdateCartCatalogsQuantityIn
 }
 
 # Update fulfillment options for the provided fulfillment group
-mutation updateFulfillmentOptionsForGroup($input: UpdateFulfillmentOptionsForGroupInput!) {
+mutation updateFulfillmentOptionsForGroup(
+  $input: UpdateFulfillmentOptionsForGroupInput!
+) {
   updateFulfillmentOptionsForGroup(input: $input) {
     cart {
       ...CartPayloadFragment

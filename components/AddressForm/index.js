@@ -419,7 +419,7 @@ class AddressForm extends Component {
     const isCommercialInputId = `isCommercial_${this.uniqueInstanceIdentifier}`;
 
     return (
-      <div style={{ backgroundColor: "green", width: "100%" }}>
+      <div >
         <Form
           className={className}
           ref={(formEl) => {
@@ -435,10 +435,10 @@ class AddressForm extends Component {
           validator={validator}
           revalidateOn="changed"
           value={value}
-          style={{ backgroundColor: "red", width: "100%" }}
+       
         >
-          <Grid container style={{ backgroundColor: "yellow", width: "100%" }}>
-            <Grid item md={6} style={{ backgroundColor: "red" }}>
+          <Grid container>
+            <Grid item md={10} >
               <Accordion defaultExpanded={true} style={{ margin: 0, width: "100%", display: "block" }}>
                 <AccordionSummary
                   style={{ background: "#F6F6F6" }}
@@ -601,10 +601,10 @@ class AddressForm extends Component {
                 </AccordionDetails>
               </Accordion>
             </Grid>
-            <Grid item md={6} style={{ backgroundColor: "blue" }}>
+           {/*  <Grid item md={2} style={{ backgroundColor: "blue" }}>
               <h1>MAP</h1>
-            </Grid>
-          </Grid>
+            </Grid>*/}
+          </Grid> 
         </Form>
       </div>
     );

@@ -267,3 +267,12 @@ fragment MinOrderQuantityFailureDetailsFragment on MinOrderQuantityFailureDetail
   }
   quantity
 }
+# Fragment for use with payloads related cart. Used solely for mutations
+fragment MaxOrderQuantityFailureDetailsFragment on MaxOrderQuantityFailureDetails {
+  maxOrderQuantity
+  productConfiguration {
+    productId
+    productVariantId
+  }
+  quantity
+}

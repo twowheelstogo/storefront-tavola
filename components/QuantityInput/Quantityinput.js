@@ -113,6 +113,7 @@ class QuantityInput extends Component {
             disableRipple
             disableTouchRipple
             disabled={lodash.isInteger(this.props.min) && this.props.min >= this.state.value}
+            style={{background:this.props.min >= this.state.value?"#979797": "#1D0D13"}}
           >
             <Minus style={{ fontSize: "20px" }} />
           </ButtonBase>
@@ -134,6 +135,7 @@ class QuantityInput extends Component {
             disableRipple={true}
             disableTouchRipple={true}
             disabled={lodash.isInteger(this.props.max) && this.props.max <= this.state.value}
+            style={{background:this.props.max <= this.state.value?"#979797": "#1D0D13"}}
           >
             <Plus style={{ fontSize: "20px" }} />
           </ButtonBase>

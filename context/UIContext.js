@@ -21,10 +21,14 @@ export const UIProvider = ({ children }) => {
   // Custom
   const [selectedCartCatalogId, setPdpSelectedCartCatalogId] = useState(null);
   const [selectedCatalogs, setPdpSelectedCatalogs] = useState({});
+
   // Drawer
   const [catalogDrawerProduct, setPdpCatalogDrawerProduct] = useState(null);
   const [isDrawerProductOpen, togglePdpDrawerProduct] = useState(false);
   // const [SelectedOptions, setPdpSelectedOption] = useState({});
+
+  // Custom Items
+  // const [selectedItems, setPdpSelectedItems] = useState({});
 
   const openDrawerProduct = (opts) => {
     // const {cartCatalogId}
@@ -45,14 +49,15 @@ export const UIProvider = ({ children }) => {
     }
   };
 
-  const selectedCartCatalog = (cartCatalogId) => {
-    const initCartCatalogId = cartCatalogId || selectedCartCatalogId;
+  const selectedCartCatalog = (def) => {
+    const initCartCatalogId = def || selectedCartCatalogId;
     //
     if (!selectedCatalogs[initCartCatalogId]) {
-      selectedCatalogs[initCartCatalogId] = { options: {}, qty: 1, draft: true };
+      selectedCatalogs[initCartCatalogId] = { options: {}, qty: 1, xob: {} };
       setPdpSelectedCatalogs(selectedCatalogs);
     }
     if (selectedCartCatalogId !== initCartCatalogId) {
+      console.info("selectedCartCatalog", selectedCartCatalogId, initCartCatalogId)
       setPdpSelectedCartCatalogId(initCartCatalogId);
     }
     return initCartCatalogId;
@@ -72,41 +77,46 @@ export const UIProvider = ({ children }) => {
     setPdpSelectedCatalogs(SelectedCatalogsFinal);
   };
 
-  const updateSelectedCartCatalog = (SelectedOptions) => {
-    const selectedCartCatalogId = selectedCartCatalog();
-    selectedCatalogs[selectedCartCatalogId].options = SelectedOptions;
+  const updateSelectedCartCatalog = (data={}) => {
+    const id = selectedCartCatalog();
+    selectedCatalogs[id].options = data;
     updateSelectedCartCatalogs(selectedCatalogs);
   };
 
-  const SelectedOptions = () => {
-    const selectedCartCatalogId = selectedCartCatalog();
-    return selectedCatalogs[selectedCartCatalogId].options;
+  const SelectedOptions = (def) => {
+    const id = selectedCartCatalog(def);
+    return selectedCatalogs[id].options;
   };
 
   const setSelectedOption = (variantId, optionId) => {
-    if (!SelectedOptions[variantId]) SelectedOptions[variantId] = [];
-    SelectedOptions[variantId][optionId] = (SelectedOptions[variantId][optionId] || 0) + 1;
-    // setPdpSelectedOption(SelectedOptions);
-    updateSelectedCartCatalog(SelectedOptions);
+    let res = SelectedOptions();
+    if (!res[variantId]) res[variantId] = [];
+    res[variantId][optionId] = (res[variantId][optionId] || 0) + 1;
+    // setPdpSelectedOption(res);
+    updateSelectedCartCatalog(res);
   };
   const setQtySelectedOption = (variantId, optionId, qty) => {
-    if (!SelectedOptions[variantId]) SelectedOptions[variantId] = [];
-    SelectedOptions[variantId][optionId] = qty || 0;
-    if (SelectedOptions[variantId][optionId] <= 0) delete SelectedOptions[variantId][optionId];
-    if (!Object.keys(SelectedOptions[variantId])) delete SelectedOptions[variantId];
-    // setPdpSelectedOption(SelectedOptions);
-    updateSelectedCartCatalog(SelectedOptions);
+    let res = SelectedOptions();
+    if (!res[variantId]) res[variantId] = [];
+    res[variantId][optionId] = qty || 0;
+    if (res[variantId][optionId] <= 0) delete res[variantId][optionId];
+    if (!Object.keys(res[variantId])) delete res[variantId];
+    // setPdpSelectedOption(res);
+    updateSelectedCartCatalog(res);
+    return SelectedOptions;
   };
 
   const unSetSelectedOption = (variantId, optionId) => {
-    if (SelectedOptions[variantId]) {
-      // SelectedOptions[variantId] = SelectedOptions[variantId].filter((f) => f !== optionId);
-      SelectedOptions[variantId][optionId] = (SelectedOptions[variantId][optionId] || 0) - 1;
-      if (SelectedOptions[variantId][optionId] <= 0) delete SelectedOptions[variantId][optionId];
-      if (!Object.keys(SelectedOptions[variantId])) delete SelectedOptions[variantId];
-      // setPdpSelectedOption(SelectedOptions);
-      updateSelectedCartCatalog(SelectedOptions);
+    let res = SelectedOptions();
+    if (res[variantId]) {
+      // res[variantId] = res[variantId].filter((f) => f !== optionId);
+      res[variantId][optionId] = (res[variantId][optionId] || 0) - 1;
+      if (res[variantId][optionId] <= 0) delete res[variantId][optionId];
+      if (!Object.keys(res[variantId])) delete res[variantId];
+      // setPdpSelectedOption(res);
+      updateSelectedCartCatalog(res);
     }
+    return res;
   };
 
   const setPDPSelectedVariantId = (variantId, optionId) => {
@@ -193,6 +203,7 @@ export const UIProvider = ({ children }) => {
         setEntryModal,
         // Custom
         // Catalog
+        selectedCartCatalogId,
         selectedCartCatalog,
         selectedCatalogs,
         updateSelectedCartCatalogs,

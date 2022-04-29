@@ -53,19 +53,50 @@ class ProductDetailDrawer extends Component {
   componentDidMount() {
     this.props.uiStore.selectedCartCatalog(this.state.cartCatalogId);
   }
-  getPricing = (op) => {
-    return { maxQty: 1, minQty: 0, maxFreeQty: 0, ...(op.pricing || [])[0] };
+  getPricing = (op, def) => {
+    def = { maxQty: 1, minQty: 0, maxFreeQty: 0, ...def };
+    return { ...def, ...(op.pricing || [])[0] };
+  };
+  titlePricing = (op) => {
+    const o = this.getPricing(op, { maxQty: 0 });
+    const l = [];
+    for (const [key, title] of [
+      ["maxQty", "Cantidad Maxima"],
+      ["minQty", "Cantidad Minima"],
+      ["maxFreeQty", "Cantidad Gratis"],
+    ]) {
+      if (o[key])
+        l.push(() => (
+          <p style={{ color: "#979797" }}>
+            <b>{` ${title}`}</b>:{` ${o[key]} `}
+          </p>
+        ));
+    }
+    if (l.length) {
+      return <small style={{ fontSize: "0.8rem" }}>{l.map((c) => c())}</small>;
+    }
+    //
+    return "";
   };
   renderTitle = (e) => e.title || e.optionTitle || e.attributeLabel;
-  determineProductPrice = () => {
+  SelectedOptions = () => {
+    const { uiStore } = this.props;
+    const res = uiStore.selectedCatalogs[uiStore.selectedCartCatalogId].options;
+    // console.info("uiStore.SelectedOptions", uiStore.selectedCartCatalogId, res, uiStore.SelectedOptions());
+    console.info("res", uiStore.selectedCartCatalogId, uiStore.selectedCatalogs[uiStore.selectedCartCatalogId]);
+    return res;
+  };
+  determineProductPrice = (opts = {}) => {
     const { uiStore, currencyCode } = this.props;
     const errors = [];
     let selectedTotal = 0.0;
+    const product = opts.product || (opts.state || {}).product || this.state.product;
+    console.info("uiStore.SelectedOptions()", uiStore.selectedCartCatalogId, uiStore.SelectedOptions());
     ///|\\\|///|\\\|///|\\\
     ///      Selected Options
     ///|\\\|///|\\\|///|\\\
-    for (const [variantId, optionQtys] of Object.entries(uiStore.SelectedOptions)) {
-      const variant = this.state.product.variants.find((v) => v.variantId === variantId);
+    for (const [variantId, optionQtys] of Object.entries(uiStore.SelectedOptions())) {
+      const variant = product.variants.find((v) => v.variantId === variantId);
       if (!variant) {
         console.info("Error the variant not exists");
         continue;
@@ -84,7 +115,7 @@ class ProductDetailDrawer extends Component {
           continue;
         }
         const oPricing = this.getPricing(option);
-        console.info("currencyCode", currencyCode, "qty", qty, "pricing", oPricing);
+        // console.info("currencyCode", currencyCode, "qty", qty, "pricing", oPricing);
         if (!oPricing) {
           console.info("Error the pricing option not exists");
           continue;
@@ -109,15 +140,22 @@ class ProductDetailDrawer extends Component {
       ///|\\\|///|\\\|///|\\\
       ///      Validations
       ///|\\\|///|\\\|///|\\\
-      if (vPricing.maxQty && vPricing.maxQty < qtyTotal) {
+
+      if (qtyTotal > vPricing.maxQty) {
+        // console.info("cantidad elegida", qtyTotal, vPricing.maxQty);
         errors.push({
-          msg: `Test: for the variant ${this.renderTitle(variant)} has a max qty ${vPricing.maxQty
-            } and the current qty is ${qtyTotal}`,
+          msg: `El producto ${this.renderTitle(variant)} solo puede elegir ${
+            vPricing.maxQty
+          } y estas eligiendo ${qtyTotal}`,
         });
       }
     }
-    this.setState({ selectedTotal, errors });
-    this.showNotif();
+    this.setState({ selectedTotal, errors, ...opts.state });
+    if (!opts.isInit) {
+      this.showNotif();
+    }
+    console.info("Total : selectedTotal", selectedTotal);
+
     return !errors.length;
   };
   showNotif = () => {
@@ -157,9 +195,11 @@ class ProductDetailDrawer extends Component {
             {pricing.price != 0 && <div>{pricing.displayPrice}</div>}
           </Typography>
         </div>
+        {this.titlePricing(op)}
       </div>
     );
   }
+
   handleAddToCartClick = async (e) => {
     if (!this.determineProductPrice()) return;
     const {
@@ -235,19 +275,25 @@ class ProductDetailDrawer extends Component {
             <CancelIcon />
           </IconButton>
         </div>
-        <Typography variant="h4" component="h2" style={{ padding: "20px 0px 0px 20px", fontSize: 30 }}>
-          {this.state.product.title}
-        </Typography>
-        <Typography variant="h6" style={{ padding: "5px 0px 0px 20px", fontSize: 18 }}>
-          {(this.state.product.pricing[0] || "").displayPrice}
-        </Typography>
-        <Typography variant="h6" style={{ padding: "5px 0px 0px 20px", fontSize: 18 }}>
-          (test) Selected TOTAL : {this.state.selectedTotal}
-        </Typography>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography variant="h4" component="h2" style={{ padding: "20px 10px 0px 20px", fontSize: 26 }}>
+            {this.state.product.title}
+          </Typography>
+          <Typography variant="h6" component="h6" style={{ padding: "20px 30px 0px 20px", fontSize: 18 }}>
+            Total Q.{this.state.selectedTotal}
+          </Typography>
+        </div>
+        {/* 
+          <Typography variant="h6" style={{ padding: "5px 0px 0px 20px", fontSize: 18 }}>
+            {(this.state.product.pricing[0] || "").displayPrice}
+          </Typography> 
+        */}
+        <Typography variant="h6" style={{ padding: "5px 0px 0px 20px", fontSize: 18 }}></Typography>
+
         <Typography
           variant="h6"
           style={{
-            padding: "10px 0px 0px 20px",
+            padding: "10px 0px 10px 20px",
             color: "#979797",
             fontSize: 16,
           }}
@@ -265,9 +311,12 @@ class ProductDetailDrawer extends Component {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
-                <Typography style={{ color: "#1D0D13", fontSize: "18px", fontWeight: 800 }}>{`${this.renderTitle(
-                  e,
-                )}`}</Typography>
+                <div>
+                  <Typography style={{ color: "#1D0D13", fontSize: "18px", fontWeight: 800 }}>
+                    {this.renderTitle(e)}
+                  </Typography>
+                  {this.titlePricing(e)}
+                </div>
               </AccordionSummary>
               <AccordionDetails style={{ padding: "25px 20px" }}>
                 <Typography>
@@ -380,25 +429,75 @@ class ProductDetailDrawer extends Component {
     );
   };
   init = () => {
-    const { uiStore, catalogItems, cartCatalogId } = this.props;
+    const { uiStore, catalogItems, cartCatalogId: cartCatalogIdIn } = this.props;
     const product = {
       ...(
         (catalogItems.find((catalog) => catalog.node.product.productId === uiStore.catalogDrawerProduct) || {}).node ||
         {}
       ).product,
     };
+    //cartCatalogId
+    const cartCatalogId = cartCatalogIdIn || Random.id();
+    console.info("cartCatalogId", cartCatalogId);
+    uiStore.selectedCartCatalog(cartCatalogId);
+    let selectedItems = this.initItems(product, uiStore.SelectedOptions(cartCatalogId));
+    // Init Qty
     this.refs = {};
-    this.setState({
-      selectedTotal: 0.0,
-      errors: [],
-      cartCatalogId: cartCatalogId || Random.id(),
-      product,
+    this.determineProductPrice({
+      isInit: true,
+      state: {
+        cartCatalogId,
+        product,
+      },
     });
+  };
+  initItems = (product, selectedItems) => {
+    const { uiStore } = this.props;
+    for (const variant of product.variants || []) {
+      const vPrice = this.getPricing(variant, { minQty: null });
+      const oCount = (variant.options || []).length;
+      (variant.options || []).forEach((option, index) => {
+        const oPrice = this.getPricing(variant, { minQty: null });
+        const totalQty = !uiStore.SelectedOptions()[variant.variantId]
+          ? 0
+          : Object.values(uiStore.SelectedOptions()[variant.variantId]).reduce((p, c) => p + (c || 0), 0);
+        // Qty
+        let qty;
+        // const minQty = oPrice.minQty || vPrice.minQty;
+        // option MinQty
+        if (oPrice.minQty) {
+          qty = oPrice.minQty;
+        }
+
+        // is RadioButton
+        if (variant.multipleOption === false && index === 0 && totalQty <= 0) {
+          if (!qty) {
+            qty = 1;
+          }
+        }
+        //---
+        if (vPrice.minQty && totalQty === 0 && !qty && index === 0) {
+          qty = vPrice.minQty;
+        }
+        if (qty) {
+          // if (!selectedItems[variant.variantId]) selectedItems[variant.variantId] = {};
+          // if (!selectedItems[variant.variantId][option.variantId])
+          //   selectedItems[variant.variantId][option.variantId] = 0;
+          if (((uiStore.SelectedOptions()[variant.variantId] || {})[option.variantId] || 0) < qty) {
+            // selectedItems[variant.variantId][option.variantId] = qty;
+            this.props.uiStore.setQtySelectedOption(variant.variantId, option.variantId, qty);
+            // console.info(`Auto Select variant:${variant.title} |  option:${option.title || option.optionTitle} |  qty:${qty}`)
+          }
+        }
+      });
+    }
+    return selectedItems;
   };
   render() {
     const { uiStore } = this.props;
 
     if (uiStore.catalogDrawerProduct && uiStore.catalogDrawerProduct !== this.state.product.productId) this.init();
+    let selectedItems = uiStore.SelectedOptions();
     return (
       <React.Fragment>
         <SwipeableDrawer
