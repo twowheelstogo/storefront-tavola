@@ -281,7 +281,7 @@ class CartCatalog extends Component {
           <AccordionDetails style={{ padding: "25px 20px" }}>
             <Box>
               <Box>
-                {items.map((item) => (
+                {items.filter((h)=>!h.isHidden).map((item) => (
                   <div>
                     <CartItemDetail
                       quantityProduct={item.quantity}

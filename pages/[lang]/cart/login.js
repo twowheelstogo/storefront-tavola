@@ -21,46 +21,46 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "1440px",
     alignSelf: "center",
     [theme.breakpoints.up("md")]: {
-      paddingRight: "2rem"
-    }
+      paddingRight: "2rem",
+    },
   },
   cartSummary: {
     maxWidth: "400px",
     alignSelf: "flex-start",
     [theme.breakpoints.up("md")]: {
-      paddingRight: "2rem"
-    }
+      paddingRight: "2rem",
+    },
   },
   checkoutContent: {
     flex: "1",
     maxWidth: theme.layout.mainContentMaxWidth,
-    padding: "1rem"
+    padding: "1rem",
   },
   checkoutContentContainer: {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
   },
 
   flexContainer: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   emptyCartContainer: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   emptyCart: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     width: 320,
-    height: 320
+    height: 320,
   },
   logo: {
     color: theme.palette.reaction.reactionBlue,
     marginRight: theme.spacing(1),
-    borderBottom: `solid 5px ${theme.palette.reaction.reactionBlue200}`
+    borderBottom: `solid 5px ${theme.palette.reaction.reactionBlue200}`,
   },
   main: {
     flex: "1 1 auto",
@@ -69,10 +69,10 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
     padding: `${theme.spacing(3)}px ${theme.spacing(3)}px 0`,
     [theme.breakpoints.up("md")]: {
-      padding: `${theme.spacing(10)}px ${theme.spacing(3)}px 0`
-    }
+      padding: `${theme.spacing(10)}px ${theme.spacing(3)}px 0`,
+    },
   },
-  root: {}
+  root: {},
 }));
 
 const Login = ({ router }) => {
@@ -114,7 +114,7 @@ const Login = ({ router }) => {
 };
 
 Login.propTypes = {
-  router: PropTypes.object
+  router: PropTypes.object,
 };
 
 /**
@@ -125,9 +125,9 @@ Login.propTypes = {
 export async function getStaticProps({ params: { lang } }) {
   return {
     props: {
-      ...(await fetchPrimaryShop(lang)),
-      ...(await fetchTranslations(lang, ["common"]))
-    }
+      ...(await fetchPrimaryShop({ language: lang })),
+      ...(await fetchTranslations(lang, ["common"])),
+    },
   };
 }
 
@@ -139,7 +139,7 @@ export async function getStaticProps({ params: { lang } }) {
 export async function getStaticPaths() {
   return {
     paths: locales.map((locale) => ({ params: { lang: locale } })),
-    fallback: false
+    fallback: false,
   };
 }
 

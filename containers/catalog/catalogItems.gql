@@ -39,6 +39,7 @@ query catalogItemsQuery(
             slug
             variants {
               _id
+              isHidden
               variantId
               title
               optionTitle
@@ -66,6 +67,7 @@ query catalogItemsQuery(
               isLowQuantity
               options {
                 _id
+                isHidden
                 variantId
                 title
                 index

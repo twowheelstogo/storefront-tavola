@@ -28,24 +28,24 @@ class TagGridPage extends Component {
     routingStore: PropTypes.shape({
       query: PropTypes.shape({
         limit: PropTypes.string,
-        sortby: PropTypes.string
+        sortby: PropTypes.string,
       }),
       setSearch: PropTypes.func.isRequired,
-      tag: SharedPropTypes.tag
+      tag: SharedPropTypes.tag,
     }),
     shop: PropTypes.shape({
       currency: PropTypes.shape({
-        code: PropTypes.string.isRequired
+        code: PropTypes.string.isRequired,
       }),
-      description: PropTypes.string
+      description: PropTypes.string,
     }),
     tag: SharedPropTypes.tag,
     uiStore: PropTypes.shape({
       pageSize: PropTypes.number.isRequired,
       setPageSize: PropTypes.func.isRequired,
       setSortBy: PropTypes.func.isRequired,
-      sortBy: PropTypes.string.isRequired
-    })
+      sortBy: PropTypes.string.isRequired,
+    }),
   };
 
   static getDerivedStateFromProps(props) {
@@ -54,7 +54,7 @@ class TagGridPage extends Component {
       routingStore.setTagId(tag._id);
       routingStore.setSearch({
         before: null,
-        after: null
+        after: null,
       });
     }
 
@@ -81,7 +81,7 @@ class TagGridPage extends Component {
     metafields.forEach((field) => {
       if (field.namespace && field.namespace === "metatag") {
         const metatag = {
-          content: field.value
+          content: field.value,
         };
         metatag[field.scope] = field.key;
         metatags.push(metatag);
@@ -97,25 +97,15 @@ class TagGridPage extends Component {
   }
 
   render() {
-    const {
-      catalogItems,
-      catalogItemsPageInfo,
-      isLoadingCatalogItems,
-      routingStore,
-      shop,
-      tag,
-      uiStore
-    } = this.props;
-    const pageSize = routingStore.query && routingStore.query.limit ? parseInt(routingStore.query.limit, 10) : uiStore.pageSize;
+    const { catalogItems, catalogItemsPageInfo, isLoadingCatalogItems, routingStore, shop, tag, uiStore } = this.props;
+    const pageSize =
+      routingStore.query && routingStore.query.limit ? parseInt(routingStore.query.limit, 10) : uiStore.pageSize;
     const sortBy = routingStore.query && routingStore.query.sortby ? routingStore.query.sortby : uiStore.sortBy;
 
     if (!tag && !shop) {
       return (
         <Layout shop={shop}>
-          <ProductGridEmptyMessage
-            actionMessage="Go Home"
-            resetLink="/"
-          />
+          <ProductGridEmptyMessage actionMessage="Go Home" resetLink="/" />
         </Layout>
       );
     }
@@ -125,16 +115,13 @@ class TagGridPage extends Component {
         <Helmet
           title={`${tag && tag.name} | ${shop && shop.name}`}
           meta={
-            tag && tag.metafields && tag.metafields.length > 0 ?
-              this.renderHeaderMetatags(tag.metafields)
-              :
-              [{ name: "description", content: shop && shop.description }]
+            tag && tag.metafields && tag.metafields.length > 0
+              ? this.renderHeaderMetatags(tag.metafields)
+              : [{ name: "description", content: shop && shop.description }]
           }
         />
         <Breadcrumbs isTagGrid tagId={routingStore.tagId} />
-        {
-          tag && tag.displayTitle && <ProductGridTitle displayTitle={tag.displayTitle} />
-        }
+        {tag && tag.displayTitle && <ProductGridTitle displayTitle={tag.displayTitle} />}
         <ProductGridHero tag={tag} />
         <ProductGrid
           catalogItems={catalogItems}
@@ -159,7 +146,7 @@ class TagGridPage extends Component {
  * @returns {Object} props
  */
 export async function getStaticProps({ params: { lang, slug } }) {
-  const primaryShop = await fetchPrimaryShop(lang);
+  const primaryShop = await fetchPrimaryShop({ language: lang });
 
   if (!primaryShop?.shop) {
     return {
@@ -167,22 +154,22 @@ export async function getStaticProps({ params: { lang, slug } }) {
         shop: null,
         translations: null,
         fetchAllTags: null,
-        tag: null
+        tag: null,
       },
       // eslint-disable-next-line camelcase
-      unstable_revalidate: 1 // Revalidate immediately
+      unstable_revalidate: 1, // Revalidate immediately
     };
   }
 
   return {
     props: {
       ...primaryShop,
-      ...await fetchTranslations(lang, ["common"]),
-      ...await fetchAllTags(lang),
-      ...await fetchTag(slug, lang)
+      ...(await fetchTranslations(lang, ["common"])),
+      ...(await fetchAllTags(lang)),
+      ...(await fetchTag(slug, lang)),
     },
     // eslint-disable-next-line camelcase
-    unstable_revalidate: 120 // Revalidate each two minutes
+    unstable_revalidate: 120, // Revalidate each two minutes
   };
 }
 
@@ -194,7 +181,7 @@ export async function getStaticProps({ params: { lang, slug } }) {
 export async function getStaticPaths() {
   return {
     paths: locales.map((locale) => ({ params: { lang: locale, slug: "-" } })),
-    fallback: true
+    fallback: true,
   };
 }
 

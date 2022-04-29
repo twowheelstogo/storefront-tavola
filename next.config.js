@@ -1,15 +1,11 @@
 const path = require("path");
-const appConfig = require("./config");
-
+const lodash = require("lodash");
+const appConfig = Object.entries(require("./config"))
+  .filter(([k]) => !k.match("npm_"))
+  .reduce((p, [k, v]) => ({ ...p, [k]: v }), {});
 module.exports = {
-  env: {
-    CANONICAL_URL: appConfig.CANONICAL_URL,
-    INTERNAL_GRAPHQL_URL: appConfig.INTERNAL_GRAPHQL_URL,
-    EXTERNAL_GRAPHQL_URL: appConfig.EXTERNAL_GRAPHQL_URL,
-    SEGMENT_ANALYTICS_SKIP_MINIMIZE: appConfig.SEGMENT_ANALYTICS_SKIP_MINIMIZE,
-    SEGMENT_ANALYTICS_WRITE_KEY: appConfig.SEGMENT_ANALYTICS_WRITE_KEY,
-    STRIPE_PUBLIC_API_KEY: appConfig.STRIPE_PUBLIC_API_KEY
-  },
+  publicRuntimeConfig: appConfig,
+  env: lodash.omit(appConfig, ["NODE_VERSION", "NODE_ENV"]),
   webpack: (webpackConfig) => {
     webpackConfig.module.rules.push({
       test: /\.(gql|graphql)$/,

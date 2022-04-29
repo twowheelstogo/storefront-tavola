@@ -301,7 +301,7 @@ class ProductDetailDrawer extends Component {
           {this.state.product.description}
         </Typography>
 
-        {this.state.product.variants.map((e) => {
+        {this.state.product.variants.filter((h)=>!h.isHidden).map((e) => {
           const variantPricing = this.getPricing(e);
           return (
             <Accordion defaultExpanded={true} style={{ margin: 0 }}>
@@ -323,7 +323,7 @@ class ProductDetailDrawer extends Component {
                   {e.multipleOption ? (
                     <div>
                       {e.options &&
-                        e.options.map((op) => {
+                        e.options.filter((h)=>!h.isHidden).map((op) => {
                           const optionPricing = this.getPricing(op);
                           return (
                             <FormControl
