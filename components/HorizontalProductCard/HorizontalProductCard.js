@@ -102,7 +102,7 @@ const HorizontalProductCard = (props) => {
                   <Grid item xs={12} sm={6} md={4} lg={4} key={product._id} className={classes.gridSpacing}>
                     <CardContainerHorizontal
                       withBorder
-                      onClick={() => uiStore.setCatalogDrawerProduct(product.productId)}
+                      onClick={() => props.uiStore.toggleCatalog({ open: true, catalogId: product.productId })}
                       boderColor={"2px solid rgba(151, 151, 151, 0.5)"}
                     >
                       {product.primaryImage !== null ? (
@@ -137,7 +137,6 @@ const HorizontalProductCard = (props) => {
                   <Grid container>
                     {catalogProducts.map((values) => (
                       <Grid item xs={6} className={classes.cardMobil} key={values._id}>
-
                         <CardContainerVertical withBorder boderColor={"2px solid rgba(151, 151, 151, 0.5)"}>
                           <Link
                             href={values.slug && "/product/[...slugOrId]"}
@@ -163,11 +162,12 @@ const HorizontalProductCard = (props) => {
                                 <StyledSubtitleVertical>{values.description}</StyledSubtitleVertical>
                               </div>
                               <div>
-                                <Typography className={classes.textPrice}>{/* values.pricing[0].displayPrice */}</Typography>
+                                <Typography className={classes.textPrice}>
+                                  {/* values.pricing[0].displayPrice */}
+                                </Typography>
                               </div>
                             </CardContent>
                           </Link>
-
                         </CardContainerVertical>
                       </Grid>
                     ))}

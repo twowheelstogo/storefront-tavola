@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { makeStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => ({
+  container: { minHeight: "100%", position: "relative" },
+  loader: { ...theme.mixin.fit, backgroundColor: "#ffffffde", "& > div": { height: "100vh" } },
   // centerSomething:{
   //   // ...theme.mixin.customFunction("red")
   // },

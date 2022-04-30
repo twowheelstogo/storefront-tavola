@@ -1,15 +1,17 @@
 export default `
-query primaryShop($language: String! = "en") {
-  primaryShop {
-    _id
-    currency {
-      code
+query shopx($language: String! = "en", $inp:FShopxInput) {
+  shopx(inp: $inp){
+    shops {
+      _id
+      currency {
+        code
+      }
+      defaultNavigationTree(language: $language) {
+        ...NavigationTreeFragment
+      }
+      description
+      name
     }
-    defaultNavigationTree(language: $language) {
-      ...NavigationTreeFragment
-    }
-    description
-    name
   }
 }
 fragment NavigationTreeFragment on NavigationTree {

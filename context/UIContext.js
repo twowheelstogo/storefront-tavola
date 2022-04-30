@@ -1,4 +1,5 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
+
 import PropTypes from "prop-types";
 import { PAGE_SIZES, inPageSizes } from "lib/utils/pageSizes";
 
@@ -18,105 +19,106 @@ export const UIProvider = ({ children }) => {
   const [sortByCurrencyCode, setSortByCurrencyCode] = useState("USD"); // eslint-disable-line no-unused-vars
   const [openCartTimeout, setOpenCartTimeout] = useState();
   const [entryModal, setEntryModal] = useState(null);
-  // Custom
-  const [selectedCartCatalogId, setPdpSelectedCartCatalogId] = useState(null);
-  const [selectedCatalogs, setPdpSelectedCatalogs] = useState({});
 
-  // Drawer
-  const [catalogDrawerProduct, setPdpCatalogDrawerProduct] = useState(null);
-  const [isDrawerProductOpen, togglePdpDrawerProduct] = useState(false);
-  // const [SelectedOptions, setPdpSelectedOption] = useState({});
+  // Detail
+  let [_isCatalogOpen, setIsCatalogOpen] = useState(false);
+  let [_catalogIds, catalogIdsStore] = useState({});
+  let [_catalogId, catalogIdStore] = useState(null);
+  // Qtys
+  let [_quantities, sQuantitiesStore] = useState({});
+  let [_cartCatalogId, cartCatalogIdStore] = useState(null);
+  ///|\\\|///|\\\|///|\\\
+  ///      Gets
+  ///|\\\|///|\\\|///|\\\ 
+  const isCatalogOpen = _isCatalogOpen;
+  const catalogIds = _catalogIds;
+  const catalogId = _catalogId;
+  const quantities = _quantities;
+  const cartCatalogId = _cartCatalogId;
 
-  // Custom Items
-  // const [selectedItems, setPdpSelectedItems] = useState({});
+  ///|\\\|///|\\\|///|\\\
+  ///      Toggle
+  ///|\\\|///|\\\|///|\\\
+  const toggleCatalog = (opts = {}) => {
+    const b = opts.open || !_isCatalogOpen;
 
-  const openDrawerProduct = (opts) => {
-    // const {cartCatalogId}
-  };
+    setIsCatalogOpen(b);
 
-  const toggleDrawerProduct = (_toggle) => {
-    if (_toggle !== undefined && _toggle === isDrawerProductOpen) return;
-    const toggle = _toggle || !isDrawerProductOpen;
-    // if(toggle){ closeCart(); }
-    togglePdpDrawerProduct(toggle);
-  };
-  const setCatalogDrawerProduct = (catalogId, openDrawer = true) => {
-    if (catalogId) {
-      setPdpCatalogDrawerProduct(catalogId);
+    const keys = Object.keys(opts);
+    if (keys.includes("catalogId")) {
+      setCatalogId(opts.catalogId);
     }
-    if (openDrawer) {
-      toggleDrawerProduct(true);
+    if (keys.includes("cartCatalogId")) {
+      setCartCatalogId(opts.cartCatalogId);
     }
+    return b;
   };
 
-  const selectedCartCatalog = (def) => {
-    const initCartCatalogId = def || selectedCartCatalogId;
+  ///|\\\|///|\\\|///|\\\
+  ///      Set Catalog
+  ///|\\\|///|\\\|///|\\\
+  const setCatalogId = (def) => {
+    const id = def !== undefined ? def : _catalogId;
+    if (_catalogId !== id) {
+      catalogIdStore(id);
+      _catalogId = id;
+    }
+    return id;
+  };
+  ///|\\\|///|\\\|///|\\\
+  ///      Set Cart Catalog
+  ///|\\\|///|\\\|///|\\\
+  const setCartCatalogId = (def) => {
+    const id = def !== undefined ? def : _cartCatalogId;
     //
-    if (!selectedCatalogs[initCartCatalogId]) {
-      selectedCatalogs[initCartCatalogId] = { options: {}, qty: 1, xob: {} };
-      setPdpSelectedCatalogs(selectedCatalogs);
+    if (!_quantities[id]) {
+      _quantities[id] = {};
+      sQuantitiesStore(_quantities);
     }
-    if (selectedCartCatalogId !== initCartCatalogId) {
-      console.info("selectedCartCatalog", selectedCartCatalogId, initCartCatalogId)
-      setPdpSelectedCartCatalogId(initCartCatalogId);
+    if (_cartCatalogId !== id) {
+      cartCatalogIdStore(id);
+      _cartCatalogId = id;
     }
-    return initCartCatalogId;
+    return id;
   };
-
-  const updateSelectedCartCatalogs = (_SelectedCatalogs) => {
-    const SelectedCatalogsFinal = _SelectedCatalogs || selectedCatalogs;
-    for (const [cartCatalogId, catalog] of Object.entries(SelectedCatalogsFinal)) {
-      for (const [variantId, options] of Object.entries(catalog.options)) {
-        for (const [optionId, qty] of Object.entries(options)) {
-          if (qty <= 0) delete options[optionId];
-        }
-        if (!Object.keys(options).length) delete catalog.options[variantId];
-      }
-      if (!Object.keys(catalog.options).length) delete SelectedCatalogsFinal[cartCatalogId];
+  ///|\\\|///|\\\|///|\\\
+  ///      Remove Cart Catalog
+  ///|\\\|///|\\\|///|\\\
+  const rCartCatalogId = (def) => {
+    const id = def !== undefined ? def : _cartCatalogId;
+    //
+    if (_quantities[id]) {
+      delete _quantities[id];
+      sQuantitiesStore(_quantities);
     }
-    setPdpSelectedCatalogs(SelectedCatalogsFinal);
-  };
-
-  const updateSelectedCartCatalog = (data={}) => {
-    const id = selectedCartCatalog();
-    selectedCatalogs[id].options = data;
-    updateSelectedCartCatalogs(selectedCatalogs);
-  };
-
-  const SelectedOptions = (def) => {
-    const id = selectedCartCatalog(def);
-    return selectedCatalogs[id].options;
-  };
-
-  const setSelectedOption = (variantId, optionId) => {
-    let res = SelectedOptions();
-    if (!res[variantId]) res[variantId] = [];
-    res[variantId][optionId] = (res[variantId][optionId] || 0) + 1;
-    // setPdpSelectedOption(res);
-    updateSelectedCartCatalog(res);
-  };
-  const setQtySelectedOption = (variantId, optionId, qty) => {
-    let res = SelectedOptions();
-    if (!res[variantId]) res[variantId] = [];
-    res[variantId][optionId] = qty || 0;
-    if (res[variantId][optionId] <= 0) delete res[variantId][optionId];
-    if (!Object.keys(res[variantId])) delete res[variantId];
-    // setPdpSelectedOption(res);
-    updateSelectedCartCatalog(res);
-    return SelectedOptions;
-  };
-
-  const unSetSelectedOption = (variantId, optionId) => {
-    let res = SelectedOptions();
-    if (res[variantId]) {
-      // res[variantId] = res[variantId].filter((f) => f !== optionId);
-      res[variantId][optionId] = (res[variantId][optionId] || 0) - 1;
-      if (res[variantId][optionId] <= 0) delete res[variantId][optionId];
-      if (!Object.keys(res[variantId])) delete res[variantId];
-      // setPdpSelectedOption(res);
-      updateSelectedCartCatalog(res);
+    if (_cartCatalogId === id) {
+      cartCatalogIdStore(null);
+      _cartCatalogId = null;
     }
-    return res;
+    return id;
+  };
+
+  ///|\\\|///|\\\|///|\\\
+  ///      Quantities
+  ///|\\\|///|\\\|///|\\\
+  const qtys = (def_id) => {
+    const id = setCatalogId(def_id);
+    return _quantities[id];
+  };
+  const setQtys = (opts = {}) => {
+    const id = setCatalogId(def_id);
+    let qtys = opts.qtys || _quantities[id];
+    // by key
+    if (opts.qty && opts.key) qtys[opts.key] = opts.qty || 0;
+    if (opts.autoClean !== false || opts.autoDelete) {
+      for (const [id, qty] of Object.entries(qtys)) if (qty <= 0) delete qtys[opts.key];
+    }
+    if (opts.autoDelete && !Object.values(qtys).length) {
+      delete _quantities[id];
+    }
+    _quantities = { ..._quantities, [id]: qtys };
+    sQuantitiesStore(_quantities);
+    return { id, qtys, qty: qtys[opts.key], opts, quantities: _quantities };
   };
 
   const setPDPSelectedVariantId = (variantId, optionId) => {
@@ -202,23 +204,17 @@ export const UIProvider = ({ children }) => {
         setSortBy,
         setEntryModal,
         // Custom
-        // Catalog
-        selectedCartCatalogId,
-        selectedCartCatalog,
-        selectedCatalogs,
-        updateSelectedCartCatalogs,
-        updateSelectedCartCatalog,
-        // Options
-        SelectedOptions,
-        setSelectedOption,
-        setQtySelectedOption,
-        unSetSelectedOption,
-        // Drawer Product
-        isDrawerProductOpen,
-        toggleDrawerProduct,
-        // Drawer Catalog
-        catalogDrawerProduct,
-        setCatalogDrawerProduct,
+        isCatalogOpen,
+        catalogIds,
+        catalogId,
+        quantities,
+        cartCatalogId,
+        toggleCatalog,
+        setCatalogId,
+        setCartCatalogId,
+        rCartCatalogId,
+        qtys,
+        setQtys,
       }}
     >
       {children}

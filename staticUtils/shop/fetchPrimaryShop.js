@@ -1,8 +1,7 @@
 import graphQLRequest from "staticUtils/graphQLRequest";
 import primaryShopQuery from "./primaryShop.js";
-import getConfig from "next/config";
+import config from "../../config.js";
 import lodash from "lodash";
-const { SHOP_IDS = "" } = getConfig().publicRuntimeConfig;
 /**
  * Fetch the primary shop's information
  *
@@ -14,14 +13,18 @@ export default async function fetchPrimaryShop(o) {
   try {
     inp = JSON.parse(localStorage.getItem("shopxInp"));
   } catch (e) {
-    inp={}
-    console.info("fetchPrimaryShop: error:", e)
+    inp = {};
   }
-
-  opts = lodash({ language, inp: { shopIds: SHOP_IDS.split(","), ...inp } }, o);
-  console.info(`\n\n==> { fetchPrimaryShop:opts }\n`, opts, `\n`, ``);
+  const opts = lodash.merge({ inp: { shopIds: (config.SHOP_IDS || "").split(","), ...inp } }, o);
+  for (const c of ["shopIds"]) {
+    opts.inp[c] = (opts.inp[c] || []).filter((h) => h && h.trim() !== "");
+    if (!opts.inp[c].length) delete opts.inp[c];
+  }
   const data = await graphQLRequest(primaryShopQuery, opts);
-  console.info(`\n\n==> { fetchPrimaryShop:data }\n`, data, `\n`, ``);
 
-  return (data && data.primaryShop && { shop: data.primaryShop }) || { shop: null };
+  return (
+    (data && data.shopx && data.shopx.shops && data.shopx.shops.length && { shop: data.shopx.shops[0] }) || {
+      shop: null,
+    }
+  );
 }
