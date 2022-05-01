@@ -72,16 +72,16 @@ class CartCatalogsList extends Component {
 
   render() {
     const {
-      className,
+      className = "",
       catalogs,
       components: { CartCatalog, ...components },
-      ...props
     } = this.props;
-    // 
+    const { className: __, classes, ...props } = this.props;
+    //
     return (
       <Catalogs className={className}>
         {catalogs.map((catalog) => (
-          <CartCatalog key={catalog._id} catalog={catalog} components={components} {...props} />
+          <CartCatalog key={catalog._id} {...props} catalog={catalog} components={components} />
         ))}
       </Catalogs>
     );

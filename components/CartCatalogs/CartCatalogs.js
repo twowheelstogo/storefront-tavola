@@ -79,13 +79,16 @@ class CartCatalogs extends Component {
       onLoadMoreCartCatalogs,
       components: { CartCatalogsList },
     } = this.props;
+    const { className: __, classes:___, ...props } = this.props;
+
     return (
       <Fragment>
         <CartCatalogsList
-          components={this.props.components}
-          isMiniCart={isMiniCart}
-          isReadOnly={isReadOnly}
-          catalogs={catalogs}
+          {...props}
+          // components={this.props.components}
+          // isMiniCart={isMiniCart}
+          // isReadOnly={isReadOnly}
+          // catalogs={catalogs}
           onChangeCartCatalogQuantity={this.handleCatalogQuantityChange}
           onRemoveCatalogFromCart={this.handleRemoveCatalog}
           productURLPath="/api/detectLanguage/product/"

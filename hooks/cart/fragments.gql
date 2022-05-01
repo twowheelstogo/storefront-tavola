@@ -171,6 +171,12 @@ fragment CartItemFragment on CartItem {
   _id
   cartCatalogId
   isHidden
+  pricex {
+    _id
+    variant {
+      _id
+    }
+  }
   productConfiguration {
     productId
     productVariantId

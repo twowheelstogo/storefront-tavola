@@ -36,6 +36,7 @@ module.exports = envalid.cleanEnv(process.env, {
   SITEMAP_MAX_AGE: num({ default: 43200 }), // 12 hours
   IS_BUILDING_NEXTJS: bool({ default: false }),
   SHOP_IDS: str({ default: "" }),
+  PRODUCT_DETAIL_PRESIST: bool({ default: false }),
 }, {
   // disable dotenv processing
   dotEnvPath: null,

@@ -171,6 +171,8 @@ class MiniCart extends Component {
       loadMoreCartItems,
       components: { MiniCartComponent, CartCatalogs, CartItems, CartEmptyMessage, Button },
     } = this.props;
+    const { className: __, classes:___, ...props } = this.props;
+
     if (cart && Array.isArray(cart.catalogs) && cart.catalogs.length) {
       return (
         <MiniCartComponent
@@ -180,6 +182,7 @@ class MiniCart extends Component {
             QuantityInput: "div",
             CartCatalogs: (cartCatalogProps) => (
               <CartCatalogs
+                {...props}
                 {...cartCatalogProps}
                 hasMoreCartCatalogs={hasMoreCartCatalogs}
                 onRemoveCatalogFromCart={this.handleRemoveCatalog}

@@ -49,6 +49,8 @@ class ProductDetailDrawer extends Component {
       cartCatalogId: null,
       catalogId: null,
       product: {},
+      isSaving: false,
+      refresh: 0,
     };
   }
   componentDidUpdate() {
@@ -57,16 +59,28 @@ class ProductDetailDrawer extends Component {
   init(opts = {}) {
     const { uiStore, catalogItems } = this.props;
     opts.catalogId = opts.catalogId || uiStore.catalogId;
-    console.log("opts.catalogId", opts.catalogId);
     if (opts.catalogId && opts.catalogId !== this.state.catalogId) {
+      const ids = catalogItems.map((catalog) => catalog.node.product.productId);
+      const product =
+        ((catalogItems.find((catalog) => catalog.node.product.productId === opts.catalogId) || {}).node || {})
+          .product || {};
+      console.log("opts.catalogId", opts.catalogId, this.state.refresh, product, ids);
       this.setState({
+        refresh: this.state.refresh + 1,
+        isSaving: false,
         catalogId: opts.catalogId,
-        product: {
-          ...((catalogItems.find((catalog) => catalog.node.product.productId === opts.catalogId) || {}).node || {})
-            .product,
-        },
+        product,
       });
     }
+  }
+  renderView() {
+    const { uiStore, classes } = this.props;
+    return (
+      <div>
+        <h1>catalogId:{this.props.uiStore.catalogId}</h1>
+        <h1>cartCatalogId:{this.props.uiStore.cartCatalogId}</h1>
+      </div>
+    );
   }
   render() {
     const { uiStore, classes } = this.props;
@@ -79,15 +93,17 @@ class ProductDetailDrawer extends Component {
           onClose={() => {
             this.props.uiStore.toggleCatalog({ catalogId: null });
             this.setState({ product: {}, catalogId: null });
+            console.info("Close drawer");
           }}
         >
           <div className={classes.container}>
-            id:{this.props.uiStore.catalogId}
-            {!(this.state.product || {})._id ? (
+            {(this.state.product || {})._id ? (
+              this.renderView()
+            ) : (
               <div className={classes.loader}>
                 <PageLoading />
               </div>
-            ) : null}
+            )}
           </div>
         </SwipeableDrawer>
       </React.Fragment>

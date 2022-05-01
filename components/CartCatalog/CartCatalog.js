@@ -3,8 +3,11 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withComponents } from "@reactioncommerce/components-context";
 import { CustomPropTypes } from "@reactioncommerce/components/utils";
-import { Typography, Accordion, AccordionSummary, AccordionDetails, Box } from "@material-ui/core";
+import { Typography, Accordion, AccordionSummary, AccordionDetails, Box, Button } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import inject from "hocs/inject";
+import withCart from "containers/cart/withCart";
+
 const ItemContentQuantityInput = styled.div`
   bottom: 0;
   right: 0;
@@ -12,8 +15,8 @@ const ItemContentQuantityInput = styled.div`
   margin: 0 auto;
   position: absolute;
   padding-bottom: 10px;
-  text-align:right;
-  max-width:125px;
+  text-align: right;
+  max-width: 125px;
 `;
 const Catalog = styled.div`
   display: table;
@@ -201,8 +204,8 @@ class CartCatalog extends Component {
   static defaultProps = {
     isMiniCart: false,
     isReadOnly: false,
-    onChangeCartCatalogQuantity() { },
-    onRemoveCatalogFromCart() { },
+    onChangeCartCatalogQuantity() {},
+    onRemoveCatalogFromCart() {},
     removeText: "Remove",
     totalText: "Total",
   };
@@ -261,7 +264,8 @@ class CartCatalog extends Component {
 
     const { displayAmount: displaySubtotal } = subtotal || {};
     // const { displayAmount: displayCompareAtPrice } = compareAtPrice || {};
-    const { CartCatalogDetail, Price, StockWarning, CartItems, CartItem, QuantityInput, CartItemDetail } = components || {};
+    const { CartCatalogDetail, Price, StockWarning, CartItems, CartItem, QuantityInput, CartItemDetail } =
+      components || {};
     return (
       <Catalog style={{ borderBottom: "1px solid #dcdcdc" }} className={className}>
         <Accordion style={{ margin: 0 }}>
@@ -273,36 +277,50 @@ class CartCatalog extends Component {
           >
             <div style={{ display: "flex", width: "100%" }}>
               <div style={{ width: "200px" }}>
-                <Typography style={{ color: "#1D0D13", fontSize: "18px", fontWeight: 800 }}><small>{quantity} x </small>{title || _id}</Typography>
+                <Typography style={{ color: "#1D0D13", fontSize: "18px", fontWeight: 800 }}>
+                  <small>{quantity} x </small>
+                  {title || _id}
+                </Typography>
               </div>
             </div>
             <div>{displaySubtotal}</div>
           </AccordionSummary>
           <AccordionDetails style={{ padding: "25px 20px" }}>
             <Box>
+              <Button
+                onClick={() =>
+                  this.props.uiStore.toggleCatalog({ cartCatalog: this.props.catalog, cart: this.props.cart })
+                }
+              >
+                Editer
+              </Button>
+
               <Box>
-                {items.filter((h)=>!h.isHidden).map((item) => (
-                  <div>
-                    <CartItemDetail
-                      quantityProduct={item.quantity}
-                      attributes={item.attributes}
-                      isMiniCart={isMiniCart}
-                      productURLPath={productURLPath}
-                      productSlug={item.productSlug}
-                      productVendor={item.productVendor}
-                      quantity={isReadOnly ? quantity : null}
-                      title={(item.attributes && item.attributes[0].label || "No tiene nombre")}
-                    />
-                  </div>
-                ))}
+                {items
+                  .filter((h) => !h.isHidden)
+                  .map((item) => (
+                    <div>
+                      <CartItemDetail
+                        key={item._id}
+                        quantityProduct={item.quantity}
+                        attributes={item.attributes}
+                        isMiniCart={isMiniCart}
+                        productURLPath={productURLPath}
+                        productSlug={item.productSlug}
+                        productVendor={item.productVendor}
+                        quantity={isReadOnly ? quantity : null}
+                        title={(item.attributes && item.attributes[0].label) || "No tiene nombre"}
+                      />
+                    </div>
+                  ))}
               </Box>
             </Box>
-            <div style={{display:'flex'}}>
-                {!isReadOnly && (
-                  <ItemContentQuantityInput >
-                    <QuantityInput value={quantity} onChange={this.handleChangeCartCatalogQuantity} />
-                  </ItemContentQuantityInput>
-                )}
+            <div style={{ display: "flex" }}>
+              {!isReadOnly && (
+                <ItemContentQuantityInput>
+                  <QuantityInput value={quantity} onChange={this.handleChangeCartCatalogQuantity} />
+                </ItemContentQuantityInput>
+              )}
             </div>
           </AccordionDetails>
         </Accordion>
@@ -311,4 +329,5 @@ class CartCatalog extends Component {
   }
 }
 
-export default withComponents(CartCatalog);
+export default withComponents(inject("uiStore")(CartCatalog));
+// export default withComponents(inject("uiStore")(withCart(CartCatalog)));
