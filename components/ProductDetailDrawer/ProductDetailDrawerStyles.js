@@ -1,14 +1,26 @@
 import styled from "styled-components";
 import { makeStyles } from "@material-ui/core/styles";
-
+const widthDrawer = 300;
 const styles = (theme) => ({
   container: { minHeight: "100%", position: "relative" },
-  loader: { ...theme.mixin.fit, backgroundColor: "#ffffffde", "& > div": { height: "100vh" } },
+  loader: {
+    ...theme.mixin.fit,
+    backgroundColor: "#ffffffde",
+    "& > div": { height: "100vh" },
+  },
+  loaderSaving: { position: "fixed", },
   // centerSomething:{
   //   // ...theme.mixin.customFunction("red")
   // },
   imageProduct: {
     width: "100%",
+    zIndex: 1,
+    position: "relative"
+  },
+  imgLoader:{
+    ...theme.mixin.fit,
+    opacity: 0.3,
+    "& > div": { height: "100%" },
   },
   textPrice: {
     fontStyle: "normal",
@@ -36,7 +48,7 @@ const styles = (theme) => ({
 
 const useStyles = makeStyles({
   list: {
-    width: 300,
+    width: widthDrawer,
   },
   fullList: {
     width: "auto",

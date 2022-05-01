@@ -46,7 +46,6 @@ export const UIProvider = ({ children }) => {
     const b = opts.open || !_isCatalogOpen;
 
     setIsCatalogOpen(b);
-    console.info(`\n\n==> { toggleCatalog }\n`, b, `\n`, ``);
 
     opts.oldCatalogId = opts.oldCatalogId || _catalogId;
     opts.oldCartCatalogId = opts.oldCartCatalogId || _cartCatalogId;
@@ -63,7 +62,6 @@ export const UIProvider = ({ children }) => {
       setCatalogId(opts.catalogId);
       if (_catalogId && !opts.cartCatalogId) {
         opts.cartCatalogId = setCatalogIds(opts);
-        console.info(`\n\n==> { opts.cartCatalogId }\n`, opts.cartCatalogId, `\n`, ``);
       } else if (!_catalogId && !opts.cartCatalogId) {
         if (
           _catalogIds[opts.oldCatalogId] &&
@@ -104,19 +102,19 @@ export const UIProvider = ({ children }) => {
           _quantities[id][key] = item.quantity || 0;
         }
       }
-      opts.catalogId = opts.catalogId || opts.cartCatalog.productId;
-      opts.cartCatalogId = opts.cartCatalogId || id;
-      closeCart()
+      opts.catalogId =   opts.cartCatalog.productId;
+      opts.cartCatalogId =  id;
+      closeCart();
     }
-    console.info(`\n\n==> { opts }\n`, opts, `\n`, ``);
   };
   ///|\\\|///|\\\|///|\\\
   ///      After Saved
   ///|\\\|///|\\\|///|\\\
-  const afterSaved = (opts) => {
+  const afterSaved = (opts = {}) => {
     opts.catalogId = opts.catalogId || _catalogId;
     opts.cartCatalogId = opts.cartCatalogId || _cartCatalogId;
     toggleCatalog({ open: false, ...opts });
+    openCart();
   };
 
   ///|\\\|///|\\\|///|\\\
@@ -194,26 +192,37 @@ export const UIProvider = ({ children }) => {
   ///      Quantities
   ///|\\\|///|\\\|///|\\\
   const qtys = (def_id) => {
-    const id = setCatalogId(def_id);
+    const id = setCartCatalogId(def_id);
     return _quantities[id];
   };
+  const qtyx = (def_id) => {
+    const res = {};
+    for (const [key, qty] of Object.entries(qtys(def_id))) {
+      const [variantId, optionId] = key.split("::");
+      if (optionId) {
+        if (!res[variantId]) res[variantId] = {};
+        res[variantId][optionId] = qty;
+      }
+    }
+    return res;
+  };
   const setQtys = (opts = {}) => {
-    const id = setCatalogId(def_id);
-    let qtys = opts.qtys || _quantities[id];
+    const id = setCartCatalogId(opts.cartCatalogId);
+    let res = opts.qtys || _quantities[id];
     // by key
     if (opts.qty !== undefined) {
       opts.key = opts.key || `${opts.variantId || ""}${opts.optionId ? `::${opts.optionId}` : ""}`;
-      if (opts.key.trim() !== "") qtys[opts.key] = opts.qty || 0;
+      if (opts.key.trim() !== "") res[opts.key] = opts.qty || 0;
     }
     if (opts.autoClean !== false || opts.autoDelete) {
-      for (const [id, qty] of Object.entries(qtys)) if (qty <= 0) delete qtys[opts.key];
+      for (const [id, qty] of Object.entries(res)) if (qty <= 0) delete res[opts.key];
     }
-    if (opts.autoDelete && !Object.values(qtys).length) {
+    if (opts.autoDelete && !Object.values(res).length) {
       delete _quantities[id];
     }
-    _quantities = { ..._quantities, [id]: qtys };
+    _quantities = { ..._quantities, [id]: res };
     sQuantitiesStore(_quantities);
-    return { id, qtys, qty: qtys[opts.key], opts, quantities: _quantities };
+    return { id, qtys: res, qty: res[opts.key], opts, quantities: _quantities };
   };
 
   const setPDPSelectedVariantId = (variantId, optionId) => {
@@ -314,6 +323,7 @@ export const UIProvider = ({ children }) => {
         setCartCatalogId,
         rCartCatalogId,
         qtys,
+        qtyx,
         setQtys,
       }}
     >

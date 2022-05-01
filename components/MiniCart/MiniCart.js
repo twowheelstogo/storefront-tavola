@@ -60,7 +60,7 @@ const styles = ({ palette, zIndex }) => ({
     background: palette.primary.main,
     color: palette.primary.light,
   },
-  icon: { zIndex: 999999 },
+  icon: {},
 });
 
 class MiniCart extends Component {
@@ -141,10 +141,10 @@ class MiniCart extends Component {
     Router.push("/cart");
   };
 
-  handleCatalogQuantityChange = (quantity, cartCatalogId) => {
+  handleCatalogQuantityChange = (quantity, _id) => {
     const { onChangeCartCatalogsQuantity } = this.props;
 
-    onChangeCartCatalogsQuantity({ quantity, cartCatalogId });
+    onChangeCartCatalogsQuantity({ quantity, _id });
   };
   handleItemQuantityChange = (quantity, cartItemId) => {
     const { onChangeCartItemsQuantity } = this.props;
@@ -171,7 +171,7 @@ class MiniCart extends Component {
       loadMoreCartItems,
       components: { MiniCartComponent, CartCatalogs, CartItems, CartEmptyMessage, Button },
     } = this.props;
-    const { className: __, classes:___, ...props } = this.props;
+    const { className: __, classes: ___, ...props } = this.props;
 
     if (cart && Array.isArray(cart.catalogs) && cart.catalogs.length) {
       return (

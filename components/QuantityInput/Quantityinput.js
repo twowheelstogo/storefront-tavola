@@ -45,6 +45,7 @@ class QuantityInput extends Component {
     value: PropTypes.number,
     max: PropTypes.number,
     min: PropTypes.number,
+    disabled: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -99,6 +100,7 @@ class QuantityInput extends Component {
   render() {
     const {
       className,
+      disabled,
       classes: { incrementButton, buttonResponsive },
     } = this.props;
     const { value, defaultValue } = this.state;
@@ -112,21 +114,22 @@ class QuantityInput extends Component {
             className={incrementButton}
             disableRipple
             disableTouchRipple
-            disabled={lodash.isInteger(this.props.min) && this.props.min >= this.state.value}
-            style={{background:this.props.min >= this.state.value?"#979797": "#1D0D13"}}
+            disabled={disabled || (lodash.isInteger(this.props.min) && this.props.min >= this.state.value)}
+            style={{ background: this.props.min >= this.state.value ? "#979797" : "#1D0D13" }}
           >
             <Minus style={{ fontSize: "20px" }} />
           </ButtonBase>
-         <TextField
+          <TextField
             id="addToCartQuantityInput"
             onChange={this.handleQuantityInputChange}
             defaultValue={defaultValue}
             value={value}
+            disabled={disabled}
             InputProps={{
               disableUnderline: true,
               style: { paddingLeft: "50%", width: "40px" },
             }}
-          />  
+          />
           <ButtonBase
             variant="outlined"
             color="default"
@@ -134,8 +137,8 @@ class QuantityInput extends Component {
             className={incrementButton}
             disableRipple={true}
             disableTouchRipple={true}
-            disabled={lodash.isInteger(this.props.max) && this.props.max <= this.state.value}
-            style={{background:this.props.max <= this.state.value?"#979797": "#1D0D13"}}
+            disabled={disabled || (lodash.isInteger(this.props.max) && this.props.max <= this.state.value)}
+            style={{ background: this.props.max <= this.state.value ? "#979797" : "#1D0D13" }}
           >
             <Plus style={{ fontSize: "20px" }} />
           </ButtonBase>
