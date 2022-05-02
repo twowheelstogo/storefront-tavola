@@ -16,7 +16,7 @@ import Link from "components/Link";
 
 const useStyles = makeStyles((theme) => ({
   accountProfileInfoContainer: {
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(4),
   }
 }));
 
@@ -48,7 +48,7 @@ function ProfileMenu() {
   ];
 
   return (
-    <section>
+    <section style={{paddingBottom: 200, paddingTop:100}}>
       <div className={classes.accountProfileInfoContainer}>
         <AccountProfileInfo viewer={account} />
       </div>

@@ -17,6 +17,7 @@ const ItemContentQuantityInput = styled.div`
   padding-bottom: 10px;
   text-align: right;
   max-width: 125px;
+  padding-right:5px
 `;
 const Catalog = styled.div`
   display: table;
@@ -204,8 +205,8 @@ class CartCatalog extends Component {
   static defaultProps = {
     isMiniCart: false,
     isReadOnly: false,
-    onChangeCartCatalogQuantity() {},
-    onRemoveCatalogFromCart() {},
+    onChangeCartCatalogQuantity() { },
+    onRemoveCatalogFromCart() { },
     removeText: "Remove",
     totalText: "Total",
   };
@@ -287,13 +288,7 @@ class CartCatalog extends Component {
           </AccordionSummary>
           <AccordionDetails style={{ padding: "25px 20px" }}>
             <Box>
-              <Button
-                onClick={() =>
-                  this.props.uiStore.toggleCatalog({ cartCatalog: this.props.catalog, cart: this.props.cart })
-                }
-              >
-                Editer
-              </Button>
+
 
               <Box>
                 {items
@@ -315,11 +310,22 @@ class CartCatalog extends Component {
                   ))}
               </Box>
             </Box>
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex",paddingLeft:'5px'}}>
               {!isReadOnly && (
-                <ItemContentQuantityInput>
-                  <QuantityInput value={quantity} onChange={this.handleChangeCartCatalogQuantity} />
-                </ItemContentQuantityInput>
+                <div>
+                  <div
+                    style={{color:'#97DBAE',cursor:'pointer'}}
+                    onClick={() =>
+                      this.props.uiStore.toggleCatalog({ cartCatalog: this.props.catalog, cart: this.props.cart })
+                    }
+                  >
+                    EDITER
+                  </div>
+                  <ItemContentQuantityInput>
+                    <QuantityInput value={quantity} onChange={this.handleChangeCartCatalogQuantity} />
+                  </ItemContentQuantityInput>
+                </div>
+
               )}
             </div>
           </AccordionDetails>

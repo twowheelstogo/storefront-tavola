@@ -160,10 +160,26 @@ fragment CartCatalogConnectionFragment on CartCatalogConnection {
       updatedAt
       quantity
       productId
+      itemx {
+        ...CartItemxFragment
+      }
       items {
         ...CartItemFragment
       }
     }
+  }
+}
+## Fragment for cart items, used in both queries and mutations
+fragment CartItemxFragment on CartItemx {
+  _id
+  label
+  value
+  quantity
+  options {
+    _id
+    label
+    value
+    quantity
   }
 }
 ## Fragment for cart items, used in both queries and mutations
