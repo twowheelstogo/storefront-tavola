@@ -1,10 +1,185 @@
-import React, { Component } from "react";
+import React, { Component, useImperativeHandle, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import isEmpty from "lodash.isempty";
+import { CustomPropTypes } from "@reactioncommerce/components/utils";
+import withGoogleMaps from "containers/maps/withGoogleMap";
 import { withComponents } from "@reactioncommerce/components-context";
-import { addressToString, CustomPropTypes } from "@reactioncommerce/components/utils";
+import GoogleMapComponent from "components/GoogleMaps";
+import inject from "hocs/inject";
+import { StandaloneSearchBox } from "react-google-maps/lib/components/places/StandaloneSearchBox";
+import { SearchBox } from "react-google-maps/lib/components/places/SearchBox";
+import AddressMap from "./addresMapCustom";
+
 const NORMAL = "normal";
 const REVIEW = "review";
+
+const PlacesWithSearchBox = (props) => {
+  return (
+    <SearchBox
+      ref={props.onSearchBoxMounted}
+      bounds={props.bounds}
+      onPlacesChanged={() => {
+        props.onPlacesChanged(props.authStore.accessToken);
+      }}
+      controlPosition={google.maps.ControlPosition.TOP_LEFT}
+    >
+      <div style={{ width: "50%", padding: "10px" }}>{props.children}</div>
+    </SearchBox>
+  );
+};
+
+const StandaloneWithSearchBox = (props) => {
+  return (
+    <StandaloneSearchBox
+      ref={props.onSearchBoxMounted}
+      bounds={props.bounds}
+      onPlacesChanged={() => {
+        props.onPlacesChanged(props.authStore.accessToken);
+      }}
+    >
+      {props.children}
+    </StandaloneSearchBox>
+  );
+};
+
+const CustomAddAddressForm = withGoogleMaps((props) => {
+  const {
+    components: { CustomForm, TextInput },
+    onSubmit,
+    googleProps,
+    ...itemAddFormProps
+  } = props;
+  const [showForm, setShowForm] = useState(false);
+  // const [mapStyle, setMapStyle] = useState({ height: "300px" });
+  // const [objProps, setObjProps] = useState(props);
+  // const [googleMapProps, setGoogleMapProps] = useState(googleProps);
+  // const [searchAddress, setSearchAddress] = useState("");
+  // const [addresValues, setAddressValues] = useState({ address: "", reference: "", description: "" });
+
+  // console.log("props", props);
+
+  // const setValueAddress = () => {
+  //   const { neighborhood, street_address, sublocality } = googleProps.metadataMarker;
+  //   let address = street_address,
+  //     reference = sublocality;
+  //   // console.log("street_address", street_address);
+  //   if (street_address === "") {
+  //     address = neighborhood;
+  //   }
+  //   setAddressValues({ address, reference, description: "" });
+  // };
+
+  // const getCurrentPosition = () => {
+  //   navigator?.geolocation.getCurrentPosition(async ({ coords }) => {
+  //     setGoogleMapProps({ ...googleProps, locationRef: { latitude: coords.latitude, longitude: coords.longitude } });
+  //     // console.log("googleMapProps", googleMapProps);
+  //     // console.log("searchBoxProps", objProps);
+  //     await googleMapProps.onMarkerChanged(
+  //       { latitude: coords.latitude, longitude: coords.longitude },
+  //       objProps.authStore.accessToken
+  //     );
+  //   });
+  // };
+
+  // const getGeoAddress = (coords = { latitude: 0, longitude: 0 }, waittime = 500) => {
+  //   // Added delay to show effect of locating current position
+  //   setTimeout(() => {
+  //     // coords with value an address is being assigned by search
+  //     if (coords) {
+  //       setGoogleMapProps({ ...googleProps, locationRef: coords });
+  //     } else {
+  //       getCurrentPosition();
+  //     }
+  //   }, waittime);
+  // };
+
+  // useEffect(() => {
+  //   // console.log("testtesttestsetstsa");
+  //   // console.log("googleProps", googleProps);
+  //   const { latitude, longitude } = googleProps.locationRef;
+  //   getGeoAddress({ latitude, longitude }, 0);
+  //   // setValueAddress();
+  // }, [googleProps.metadataMarker]);
+
+  // useEffect(() => {
+  //   getGeoAddress(null);
+  // }, []);
+
+  // useEffect(() => {
+  //   // console.log("searchAddress", searchAddress);
+  //   if (searchAddress && searchAddress.trim() !== "") {
+  //     const timedId = setTimeout(() => {
+  //       console.log("searching searchAddress...", searchAddress);
+  //     }, 500);
+  //     return () => {
+  //       clearTimeout(timedId);
+  //     };
+  //   }
+  // }, [searchAddress]);
+
+  const handleSubmit = (value) => {
+    const input = { ...value };
+    if (googleProps.locationRef.latitude) {
+      Object.assign(input, {
+        geolocation: googleProps.locationRef,
+        metaddress: { ...googleProps.metadataMarker },
+      });
+    }
+    setShowForm(false);
+    onSubmit(input);
+  };
+
+  // const handleSearchAddress = (search) => {
+  //   setSearchAddress(search);
+  // };
+
+  let _formRef = null;
+
+  useImperativeHandle(props.formRef, () => ({
+    submit() {
+      _formRef.submit();
+    },
+  }));
+
+  return (
+    <div ref={props.formRef}>
+      {showForm ? (
+        <div>
+          <CustomForm
+            {...itemAddFormProps}
+            onSubmit={handleSubmit}
+            onCurrentPosition={() => getGeoAddress(null)}
+            // handleSearchAddress={handleSearchAddress}
+            searchBoxProps={props}
+            // googleMapProps={googleMapProps}
+            StandaloneWithSearchBox={StandaloneWithSearchBox}
+            ref={(formEl) => {
+              _formRef = formEl;
+            }}
+            // value={addresValues}
+          />
+          <div
+            style={{
+              width: "100%",
+              height: "300px",
+            }}
+          >
+            <GoogleMapComponent
+              {...googleProps}
+              authStore={props.authStore}
+              SearchBox={
+                <PlacesWithSearchBox {...props} {...googleProps}>
+                  <TextInput id="search" name="search" placeholder="Buscar una dirección" />
+                </PlacesWithSearchBox>
+              }
+            />
+          </div>
+        </div>
+      ) : null}
+      {!showForm ? <AddressMap setShowForm={setShowForm} {...props} /> : null}
+    </div>
+  );
+});
 
 class AddressBook extends Component {
   static propTypes = {
@@ -88,13 +263,13 @@ class AddressBook extends Component {
     account: {
       addressBook: [],
     },
-    addNewItemButtonText: "Add a new address",
-    deleteItemButtonText: "Delete address",
-    entryFormSubmitButtonText: "Save Changes",
+    addNewItemButtonText: "Agregar nueva dirección",
+    deleteItemButtonText: "Eliminar dirección",
+    entryFormSubmitButtonText: "Guardar cambios",
     isSaving: false,
-    onAddressAdded() {},
-    onAddressDeleted() {},
-    onAddressEdited() {},
+    onAddressAdded(values) {},
+    onAddressDeleted(values) {},
+    onAddressEdited(values) {},
     validatedValue: {},
     value: {},
   };
@@ -152,63 +327,51 @@ class AddressBook extends Component {
     const {
       account: { addressBook },
       addNewItemButtonText,
-      components: { AccordionFormListCustom, AddressForm },
+      components: { AccordionFormList, AddressForm, TextInput },
       deleteItemButtonText,
       entryFormSubmitButtonText,
       isSaving,
+      googleProps,
     } = this.props;
-
-    const items = addressBook.map((input) => {
-      console.info("addressBook inputs", input);
-      input = {
-        country: "gt",
-        city: ".",
-        postal: ".",
-        address1: ".",
-        fullName: "...",
-        region: ".",
-        phone: "+3200000000",
-        ...input,
-      };
-
-      const { _id, ...address } = input;
-      return {
-        id: _id,
-        detail: addressToString(address),
-        address: input,
-        itemEditFormProps: {
-          isOnDarkBackground: true,
-          isSaving,
-          onSubmit: (value) => {
-            this.handleEditAddress(value, _id);
-          },
-          value: address,
+    // console.log("this.props_test", this.props);
+    const items = addressBook.map(({ _id, ...address }) => ({
+      id: _id,
+      detail: `${address.address}, ${address.reference}`,
+      itemEditFormProps: {
+        isOnDarkBackground: true,
+        isSaving,
+        onSubmit: (value) => {
+          this.handleEditAddress(value, _id);
         },
-        label: address.fullName,
-      };
-    });
+        value: address,
+        components: { CustomForm: AddressForm, TextInput },
+        authStore: this.props.authStore,
+      },
+      label: address.description,
+    }));
 
     const itemAddFormProps = {
       isSaving,
       onSubmit: this.handleAddAddress,
+      components: { CustomForm: AddressForm, TextInput },
+      authStore: this.props.authStore,
     };
 
     return (
-      <div>
-        <AccordionFormListCustom
-          {...this.props}
-          addNewItemButtonText={addNewItemButtonText}
-          components={{ ItemAddForm: AddressForm, ItemEditForm: AddressForm }}
-          deleteItemButtonText={deleteItemButtonText}
-          entryFormSubmitButtonText={entryFormSubmitButtonText}
-          itemAddFormProps={itemAddFormProps}
-          items={items}
-          onItemDeleted={this.handleDeleteAddress}
-          ref={(instance) => {
-            this._accordionFormList = instance;
-          }}
-        />
-      </div>
+      <AccordionFormList
+        addNewItemButtonText={addNewItemButtonText}
+        components={{ ItemAddForm: CustomAddAddressForm, ItemEditForm: CustomAddAddressForm }}
+        deleteItemButtonText={deleteItemButtonText}
+        entryFormSubmitButtonText={entryFormSubmitButtonText}
+        itemAddFormProps={itemAddFormProps}
+        items={items}
+        googleProps={googleProps}
+        onItemDeleted={this.handleDeleteAddress}
+        ref={(instance) => {
+          this._accordionFormList = instance;
+        }}
+        hiddeButtons={false}
+      />
     );
   }
 
@@ -220,7 +383,6 @@ class AddressBook extends Component {
     } = this.props;
     return (
       <AddressReview
-        {...this.props}
         ref={(el) => {
           this._addressReview = el;
         }}
@@ -234,11 +396,9 @@ class AddressBook extends Component {
     const { className } = this.props;
     const { status } = this.state;
     return (
-      <div style={{ width: "100%" }} className={className}>
-        {status === REVIEW ? this.renderAddressReview() : this.renderAccordionFormList()}
-      </div>
+      <div className={className}>{status === REVIEW ? this.renderAddressReview() : this.renderAccordionFormList()}</div>
     );
   }
 }
 
-export default withComponents(AddressBook);
+export default withComponents(inject("authStore")(AddressBook));

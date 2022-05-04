@@ -1,0 +1,15 @@
+query getBranchNear($shopId: ID!, $point: UpdateGeoPointInput!) {
+  metaddress(shopId: $shopId, point: $point) {
+    administrative_area_level_1
+    administrative_area_level_2
+    neighborhood
+    street_address
+    sublocality
+    distance {
+      text
+      value
+      branchId
+      branch
+    }
+  }
+}

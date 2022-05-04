@@ -11,12 +11,12 @@ module.exports = {
       test: /\.(gql|graphql)$/,
       loader: "graphql-tag/loader",
       exclude: ["/node_modules/", "/.next/"],
-      enforce: "pre"
+      enforce: "pre",
     });
 
     webpackConfig.module.rules.push({
       test: /\.mjs$/,
-      type: "javascript/auto"
+      type: "javascript/auto",
     });
 
     // Duplicate versions of the styled-components package were being loaded, this config removes the duplication.
@@ -43,12 +43,12 @@ module.exports = {
 
     return webpackConfig;
   },
-  webpackDevMiddleware: config => {
+  webpackDevMiddleware: (config) => {
     config.watchOptions = {
       poll: 800,
       aggregateTimeout: 300,
-    }
-    return config
+    };
+    return config;
   },
   experimental: {
     redirects() {
@@ -56,23 +56,23 @@ module.exports = {
         {
           source: "/graphiql",
           destination: appConfig.EXTERNAL_GRAPHQL_URL,
-          permanent: true
+          permanent: true,
         },
         {
           source: "/graphql-beta",
           destination: appConfig.EXTERNAL_GRAPHQL_URL,
-          permanent: true
+          permanent: true,
         },
         {
           source: "/graphql-alpha",
           destination: appConfig.EXTERNAL_GRAPHQL_URL,
-          permanent: true
+          permanent: true,
         },
         {
           source: "/graphql",
           destination: appConfig.EXTERNAL_GRAPHQL_URL,
-          permanent: true
-        }
+          permanent: true,
+        },
       ];
     },
     rewrites() {
@@ -80,14 +80,17 @@ module.exports = {
         // Sitemap
         {
           source: "/sitemap:subPage?.xml",
-          destination: "/api/sitemap"
+          destination: "/api/sitemap",
         },
         {
           source: "/",
-          destination: "/api/detectLanguage"
-        }
+          destination: "/api/detectLanguage",
+        },
+        {
+          source: "/token",
+          destination: "/api/account/token",
+        },
       ];
-    }
-  }
-
+    },
+  },
 };

@@ -22,6 +22,7 @@ import definedPaymentMethods from "custom/paymentMethods";
 import { locales } from "translations/config";
 import fetchPrimaryShop from "staticUtils/shop/fetchPrimaryShop";
 import fetchTranslations from "staticUtils/translations/fetchTranslations";
+import useAuthStore from "hooks/globalStores/useAuthStore";
 
 const useStyles = makeStyles((theme) => ({
   checkoutActions: {
@@ -129,6 +130,7 @@ const useStyles = makeStyles((theme) => ({
 const Checkout = ({ router }) => {
   const classes = useStyles();
   const { cartStore } = useStores();
+  const authStore = useAuthStore();
   const shop = useShop();
   const { locale, t } = useTranslation("common"); // eslint-disable-line no-unused-vars, id-length
   const apolloClient = useApolloClient();
@@ -237,6 +239,7 @@ const Checkout = ({ router }) => {
                   <div className={classes.flexContainer}>
                     <div className={classes.checkoutActions}>
                       <CheckoutActions
+                        authStore={authStore}
                         apolloClient={apolloClient}
                         cart={cart}
                         cartStore={cartStore}

@@ -24,7 +24,8 @@ const styles = (theme) => ({
   main: {
     flex: "1 1 auto",
     maxWidth: theme.layout.mainContentMaxWidth,
-    marginLeft: "auto",
+/*     marginLeft: "auto", */
+    // paddingLeft:'40px',
     marginRight: "auto",
     backgroundColor: theme.palette.primary.light,
   },

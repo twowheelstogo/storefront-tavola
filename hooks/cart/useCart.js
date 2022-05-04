@@ -285,6 +285,7 @@ export default function useCart() {
         return response;
       },
       onSetShippingAddress: async (address) => {
+        console.info("LOG: onSetShippingAddress", address);
         const input = { ...cartIdAndCartToken(), address: { ...address } };
         if (input.address) {
           if (input.address._id) {

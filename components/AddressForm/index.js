@@ -4,8 +4,12 @@ import uniqueId from "lodash.uniqueid";
 import isEmpty from "lodash.isempty";
 import { Form } from "reacto-form";
 import styled from "styled-components";
+import GoogleMaps from "components/GoogleMaps";
 import { withComponents } from "@reactioncommerce/components-context";
 import { applyTheme, CustomPropTypes, getRequiredValidator } from "@reactioncommerce/components/utils";
+import { GoogleMap, withScriptjs, withGoogleMap } from "react-google-maps";
+import GoogleMapReact from "google-map-react";
+
 import {
   SwipeableDrawer,
   Typography,
@@ -25,6 +29,7 @@ import {
   AccordionDetails,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { Wrapper, Status } from "@googlemaps/react-wrapper";
 
 const Grid = styled.div`
   display: flex;
@@ -418,8 +423,59 @@ class AddressForm extends Component {
     const phoneInputId = `phone_${this.uniqueInstanceIdentifier}`;
     const isCommercialInputId = `isCommercial_${this.uniqueInstanceIdentifier}`;
 
+    const googleKey = "AIzaSyAW4Y-oSYeI1b3jsqLXgINxYtcfHkAHRhI";
+    // const Map = () => {
+    //   return <GoogleMap defaultZoom={10} defaultCenter={{ lat: 14.596129, lng: -90.511701 }} key={googleKey} />;
+    // };
+    const WrappedMap = withScriptjs(withGoogleMap(Map));
+    // const Map = ({ onClick, onIdle, children, style, ...options }) => {
+    //   const ref = React.useRef < HTMLDivElement > null;
+    //   const [map, setMap] = React.useState();
+
+    //   React.useEffect(() => {
+    //     if (ref.current && !map) {
+    //       setMap(new window.google.maps.Map(ref.current, {}));
+    //     }
+    //   }, [ref, map]);
+
+    //   // because React does not do deep comparisons, a custom hook is used
+    //   // see discussion in https://github.com/googlemaps/js-samples/issues/946
+    //   useDeepCompareEffectForMaps(() => {
+    //     if (map) {
+    //       map.setOptions(options);
+    //     }
+    //   }, [map, options]);
+
+    //   React.useEffect(() => {
+    //     if (map) {
+    //       ["click", "idle"].forEach((eventName) => google.maps.event.clearListeners(map, eventName));
+
+    //       if (onClick) {
+    //         map.addListener("click", onClick);
+    //       }
+
+    //       if (onIdle) {
+    //         map.addListener("idle", () => onIdle(map));
+    //       }
+    //     }
+    //   }, [map, onClick, onIdle]);
+
+    //   return (
+    //     <>
+    //       <div ref={ref} style={style} />
+    //       {React.Children.map(children, (child) => {
+    //         if (React.isValidElement(child)) {
+    //           // set the map prop on the child component
+    //           return React.cloneElement(child, { map });
+    //         }
+    //       })}
+    //     </>
+    //   );
+    // };
+    const AnyReactComponent = ({ text }) => <div>{text}</div>;
+
     return (
-      <div >
+      <div>
         <Form
           className={className}
           ref={(formEl) => {
@@ -435,10 +491,9 @@ class AddressForm extends Component {
           validator={validator}
           revalidateOn="changed"
           value={value}
-       
         >
           <Grid container>
-            <Grid item md={10} >
+            <Grid item md={8}>
               <Accordion defaultExpanded={true} style={{ margin: 0, width: "100%", display: "block" }}>
                 <AccordionSummary
                   style={{ background: "#F6F6F6" }}
@@ -601,10 +656,30 @@ class AddressForm extends Component {
                 </AccordionDetails>
               </Accordion>
             </Grid>
-           {/*  <Grid item md={2} style={{ backgroundColor: "blue" }}>
-              <h1>MAP</h1>
-            </Grid>*/}
-          </Grid> 
+            <Grid item md={2} style={{ backgroundColor: "blue" }}>
+              <div style={{ width: "100vh", height: "100vh" }}>
+                {/* <WrappedMap
+                  googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0_AQXohWc410j_f7QiOxEpzaNNkxaIuU&v=3.exp&libraries=geometry,drawing,places"
+                  loadingElement={<div style={{ height: "100%" }} />}
+                  containerElement={<div style={{ height: "100%" }} />}
+                  mapElement={<div style={{ height: "100%" }} />}
+                /> */}
+                {/* <Wrapper apiKey={"AIzaSyB0_AQXohWc410j_f7QiOxEpzaNNkxaIuU"}>
+                  <Map></Map>
+                </Wrapper> */}
+                <GoogleMapReact
+                  bootstrapURLKeys={{ key: "AIzaSyAd6s6CP9U5tf9t7QU_TbVLoiPfbHzz5Ms" }}
+                  defaultCenter={{
+                    lat: 59.95,
+                    lng: 30.33,
+                  }}
+                  defaultZoom={11}
+                >
+                  <AnyReactComponent lat={59.955413} lng={30.337844} text="My Marker" />
+                </GoogleMapReact>
+              </div>
+            </Grid>
+          </Grid>
         </Form>
       </div>
     );

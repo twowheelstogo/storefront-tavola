@@ -12,6 +12,7 @@ const GoogleMapComponent = withGoogleMap(props =>
 	const {SearchBox, onMarkerChanged} = props;
 	const coords = {lat:props.locationRef.latitude, lng:props.locationRef.longitude};
 	return <GoogleMap
+
 		defaultZoom={14}
 		center={coords}
 		ref = {props.onMapMounted}

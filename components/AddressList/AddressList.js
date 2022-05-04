@@ -121,8 +121,8 @@ class AddressList extends Component {
                       title={ inp.description}
                       description={
                         inp.metaddress
-                          ? ` - ${ inp.address} - ${inp.metaddress.distance.text}`
-                          : `Actualiza su dirección - ${ inp.address} ${ inp.description}`
+                          ? ` - ${ "inp.address" } - ${"inp.metaddress.distance.text"}`
+                          : `Actualiza su dirección - ${" inp.address"} ${" inp.description"}`
                       }
                       isSelected={currentAddress && currentAddress._id == inp._id}
                       value={inp}

@@ -1,0 +1,28 @@
+query viewer {
+  viewer {
+    _id
+    userId
+    addressBook {
+      edges {
+        node {
+          _id
+          address1
+          metafields {
+            description
+            key
+            namespace
+            scope
+            value
+            valueType
+          }
+        }
+      }
+    }
+    emailRecords {
+      address
+    }
+    username
+    name
+    primaryEmailAddress
+  }
+}

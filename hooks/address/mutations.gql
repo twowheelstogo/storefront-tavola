@@ -1,56 +1,89 @@
-mutation addAccountAddressBookEntryMutation(
-  $input: AddAccountAddressBookEntryInput!
-) {
+mutation addAccountAddressBookEntryMutation($input: AddAccountAddressBookEntryInput!) {
   addAccountAddressBookEntry(input: $input) {
     address {
       _id
-      address1
-      metafields {
-        description
-        key
-        namespace
-        scope
-        value
-        valueType
-      } 
-    }
-  }
-}
-
-mutation updateAccountAddressBookEntryMutation(
-  $input: UpdateAccountAddressBookEntryInput!
-) {
-  updateAccountAddressBookEntry(input: $input) {
-    address {
-      _id
-      address1
-      metafields {
-        description
-        key
-        namespace
-        scope
-        value
-        valueType
+      description
+      address
+      reference
+      phone
+      receiver
+      geolocation{
+        latitude
+        longitude
+      }
+      metaddress{
+        administrative_area_level_1
+        administrative_area_level_2
+        neighborhood
+        street_address
+        sublocality
+        distance{
+          value
+          text
+          branch
+          branchId
+        }
       }
     }
   }
 }
 
-mutation removeAccountAddressBookEntryMutation(
-  $input: RemoveAccountAddressBookEntryInput!
-) {
+mutation updateAccountAddressBookEntryMutation($input: UpdateAccountAddressBookEntryInput!) {
+  updateAccountAddressBookEntry(input: $input) {
+    address {
+      _id
+      description
+      address
+      reference
+      phone
+      receiver
+      geolocation{
+        latitude
+        longitude
+      }
+      metaddress{
+        administrative_area_level_1
+        administrative_area_level_2
+        neighborhood
+        street_address
+        sublocality
+        distance{
+          value
+          text
+          branch
+          branchId
+        }
+      }
+    }
+  }
+}
+
+mutation removeAccountAddressBookEntryMutation($input: RemoveAccountAddressBookEntryInput!) {
   removeAccountAddressBookEntry(input: $input) {
     address {
       _id
-      address1
-      metafields {
-        description
-        key
-        namespace
-        scope
-        value
-        valueType
-      } 
+      description
+      address
+      reference
+      receiver
+      phone
+      geolocation{
+        latitude
+        longitude
+      }
+      metaddress{
+        administrative_area_level_1
+        administrative_area_level_2
+        neighborhood
+        street_address
+        sublocality
+        distance{
+          value
+          text
+          branch
+          branchId
+        }
+      }
     }
   }
 }

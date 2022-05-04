@@ -223,7 +223,7 @@ class AccordionFormList extends Component {
 			items,
 			saveButtonText,
 			googleProps,
-      hiddeButtons = false
+			hiddeButtons = false
 		} = this.props;
 		return (
 			<Fragment>
@@ -238,7 +238,7 @@ class AccordionFormList extends Component {
 					>
 						<ItemEditForm
 							{...itemEditFormProps}
-							formRef = {(el) => {
+							formRef={(el) => {
 								this._refs[`editForm_${id}`] = el;
 							}}
 						/>
@@ -264,11 +264,11 @@ class AccordionFormList extends Component {
 							>
 								{cancelButtonText}
 							</Button>
-              {hiddeButtons ? null :
-							<Button onClick={() => this._refs[`editForm_${id}`].submit()} isShortHeight isWaiting={isWaiting}>
-								{saveButtonText}
-							</Button>
-              }
+							{hiddeButtons ? null :
+								<Button onClick={() => this._refs[`editForm_${id}`].submit()} isShortHeight isWaiting={isWaiting}>
+									{saveButtonText}
+								</Button>
+							}
 						</FormActions>
 					</Accordion>
 				))}
@@ -296,11 +296,11 @@ class AccordionFormList extends Component {
 					<Button actionType="secondary" onClick={this.handleEntryFormCancel}>
 						{cancelButtonText}
 					</Button>
-          {hiddeButtons ? null :
-					<Button onClick={() => this._addItemForm.submit()} isWaiting={isWaiting}>
-						{entryFormSubmitButtonText}
-					</Button>
-          }
+					{hiddeButtons ? null :
+						<Button onClick={() => this._addItemForm.submit()} isWaiting={isWaiting}>
+							{entryFormSubmitButtonText}
+						</Button>
+					}
 				</FormActions>
 			</Fragment>
 		);

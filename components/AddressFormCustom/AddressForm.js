@@ -97,7 +97,7 @@ class AddressForm extends Component {
                 <TextInput
                   id={referenceInputId}
                   name="reference"
-                  placeholder="No de casa, apto, nivel, referencia sobre como llegar, etc."
+                  placeholder="No.# de casa, apto, nivel, referencia sobre como llegar, etc."
                 />
               </Field>
             </ColFull>

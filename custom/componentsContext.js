@@ -24,7 +24,7 @@ import iconValid from "@reactioncommerce/components/svg/iconValid";
 import iconVisa from "@reactioncommerce/components/svg/iconVisa";
 import spinner from "@reactioncommerce/components/svg/spinner";
 import Accordion from "@reactioncommerce/components/Accordion/v1";
-import AccordionFormList from "@reactioncommerce/components/AccordionFormList/v1";
+// import AccordionFormList from "@reactioncommerce/components/AccordionFormList/v1";
 import AddressBook from "@reactioncommerce/components/AddressBook/v1";
 import Address from "@reactioncommerce/components/Address/v1";
 import AddressCapture from "@reactioncommerce/components/AddressCapture/v1";
@@ -63,16 +63,19 @@ import StockWarning from "@reactioncommerce/components/StockWarning/v1";
 import StripeForm from "@reactioncommerce/components/StripeForm/v1";
 import TextInput from "@reactioncommerce/components/TextInput/v1";
 import withLocales from "../lib/utils/withLocales";
-import AccordionFormListCustom from "components/AccordionFormListCustom";
-import AccordionCustom from "components/AccordionCustom";
+
 
 /**
 * * *  Override
 */
 import CheckoutAction from "components/CheckoutAction";
+import AccordionFormList from "components/AccordionFormListCustom";
+import FulfillmentTypeAction from "components/FulfillmentTypeAction";
 /**
 * * *  Custom
 */
+import AccordionFormListCustom from "components/AccordionFormListCustom";
+import AccordionCustom from "components/AccordionCustom";
 // import AddressForm from "components/AddressForm";
 import CartItemSelect from "components/CartItemSelect";
 import HorizontalProductCard from "components/HorizontalProductCard";
@@ -102,10 +105,11 @@ import CartCatalogsList from "components/CartCatalogsList";
 import PaymentsCheckoutActionCustom from "components/PaymentsCheckoutActionCustom";
 import SelectableListCustom from "components/SelectableListCustom";
 import SelectableItemCustomer from "components/SelectableItemCustomer";
+import AddressFormCustom from "components/AddressFormCustom";
 
 
 // Providing locales data
-const AddressFormWithLocales = withLocales(AddressForm);
+const AddressFormWithLocales = withLocales(AddressFormCustom);
 export default {
   Accordion,
   AccordionFormList,
@@ -189,5 +193,7 @@ export default {
   AccordionCustom,
   PaymentsCheckoutActionCustom,
   SelectableListCustom,
-  SelectableItemCustomer
+  SelectableItemCustomer,
+  AddressFormCustom,
+  FulfillmentTypeAction
 };
