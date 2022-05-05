@@ -27,7 +27,7 @@ class PaymentMethodCheckoutAction extends Component {
 	static propTypes = {
 		paymentMethods: PropTypes.array,
 		components: PropTypes.shape({
-			CardItems: CustomPropTypes.component.isRequired
+			CartItems: CustomPropTypes.component.isRequired
 		})
 	}
 	componentDidMount() {
@@ -83,13 +83,13 @@ class PaymentMethodCheckoutAction extends Component {
 	renderPaymentMethods() {
 		const {
 			paymentMethods,
-			components: { CardItems },
+			components: { CartItems },
 		} = this.props;
 		const {
 			selectedPaymentMethodName
 		} = this.state;
 		return (
-			<CardItems
+			<CartItems
 				items={paymentMethods}
 				onSelect={this.setSelectedPaymentMethodName}
 				itemSelected={paymentMethods.find((item) => item.name == selectedPaymentMethodName)}

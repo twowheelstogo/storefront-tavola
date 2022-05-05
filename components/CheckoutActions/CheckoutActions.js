@@ -407,8 +407,7 @@ class CheckoutActions extends Component {
 
   handlePaymentsReset = () => {
     this.props.cartStore.resetCheckoutPayments();
-    this.props.cartStore.resetCheckoutGift();
-    this.props.cartStore.resetCheckoutBilling();
+    // this.props.cartStore.resetCheckoutBilling();
   };
 
   handleInputPickupComponentSubmit = async () => {
@@ -639,7 +638,7 @@ class CheckoutActions extends Component {
     return addresses;
   }
   render() {
-    const { addressValidation, addressValidationResults, cart, cartStore, authStore, paymentMethods } = this.props;
+    const { addressValidaption, addressValidationResults, cart, cartStore, authStore, paymentMethods } = this.props;
 
     const {
       checkout: { fulfillmentGroups, summary },
@@ -663,6 +662,7 @@ class CheckoutActions extends Component {
       if (group.shippingAddress) list.push(group.shippingAddress);
       return list;
     }, []);
+
     const payments = cartStore.checkoutPayments.slice();
     const remainingAmountDue = calculateRemainderDue(payments, total.amount);
 
@@ -670,6 +670,15 @@ class CheckoutActions extends Component {
     if (!Array.isArray(paymentMethods) || paymentMethods.length === 0) {
       PaymentComponent = NoPaymentMethodsMessage;
     }
+
+
+    console.info({"information": "importa",
+      "this.payments":payments,
+      "paymentMethods":paymentMethods,
+      "remainingAmountDue":remainingAmountDue,
+      "addresses": addresses
+    })
+
     const customActions = [
       {
         id: "1",
@@ -695,25 +704,41 @@ class CheckoutActions extends Component {
           },
         },
       },
-
-      // {
-      //   id: "4",
-      //   activeLabel: "Elige cómo pagarás tu orden",
-      //   completeLabel: "payment method",
-      //   incompleteLabel: "payment method",
-      //   status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
-      //   component: PaymentMethodCheckoutAction,
-      //   onSubmit: this.handlePaymentSubmit,
-      //   props: {
-      //     addresses,
-      //     alert: actionAlerts["4"],
-      //     onReset: this.handlePaymentsReset,
-      //     payments,
-      //     paymentMethods,
-      //     remainingAmountDue,
-      //     onChange: this.setPaymentInputs,
-      //   },
-      // },
+      {
+        id: "3",
+        activeLabel: "Elige cómo pagarás tu orden.",
+        completeLabel: "Payment information",
+        incompleteLabel: "Payment information",
+        status: remainingAmountDue === 0 && !hasPaymentError ? "complete" : "incomplete",
+        component: PaymentComponent,
+        onSubmit: this.handlePaymentSubmit,
+        props: {
+          addresses,
+          alert: actionAlerts["3"],
+          onReset: this.handlePaymentsReset,
+          payments,
+          paymentMethods,
+          remainingAmountDue
+        }
+      },
+      //  {
+      //    id: "4",
+      //    activeLabel: "Elige cómo pagarás tu orden",
+      //    completeLabel: "payment method",
+      //    incompleteLabel: "payment method",
+      //    status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
+      //    component: PaymentMethodCheckoutAction,
+      //    onSubmit: this.handlePaymentSubmit,
+      //    props: {
+      //      addresses,
+      //      alert: actionAlerts["4"],
+      //      onReset: this.handlePaymentsReset,
+      //      payments,
+      //      paymentMethods,
+      //      remainingAmountDue,
+      //      onChange: this.setPaymentInputs,
+      //    },
+      //  },
       // {
       //   id: "5",
       //   activeLabel: "Datos de facturación",

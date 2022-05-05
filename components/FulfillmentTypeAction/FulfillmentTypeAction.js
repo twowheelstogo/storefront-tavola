@@ -47,7 +47,6 @@ class FulfillmentTypeAction extends Component {
         <div>
           {deliveryMethods &&
             deliveryMethods.map((meth) => (
-              <div>
                 <Button
                   style={{
                     border: `1px solid ${this.state.shippingType === meth.name ? "#000" : "#979797"}`,
@@ -69,7 +68,6 @@ class FulfillmentTypeAction extends Component {
                     <h5>{meth.displayName}</h5>
                   </div>
                 </Button> 
-              </div>
             ))}
         </div>
         {/* <InputContent>

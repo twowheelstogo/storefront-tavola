@@ -102,8 +102,8 @@ class AddressList extends Component {
     } = this.props;
     return (
       <Items>
-        {(addressBook || []).map(({ metafields }) => {
-          const inp={ metaddress : {}, geolocation :{},  ...metas(metafields).res };
+        {(addressBook || []).map(({ metafields, ...addr }) => {
+          const inp={ metaddress : {}, geolocation :{}, ...metas(metafields).res,...addr };
           /*   const getNameOfBranch = (distance) => {
               if (!distance.branchId) {
                 return "Actualiza su dirección";
@@ -111,7 +111,7 @@ class AddressList extends Component {
                 return "Actualiza su dirección";
               } else {
                 return distance.branch;
-              }
+              }s
             }; */
 
           /* ${getNameOfBranch(metaddress.distance)} */
