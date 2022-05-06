@@ -92,6 +92,11 @@ class AddressList extends Component {
     let href = window.location.href;
     window.location.href = `${origin}/en/address?redirect=${encodeURIComponent(href)}`;
   };
+  cleanObj(obj) {
+    return Object.entries(obj)
+      .filter(([_, v]) => v !== null)
+      .reduce((p, [k, v]) => ({ ...p, [k]: v }), {});
+  }
   render() {
     const {
       account: { addressBook = {} },
@@ -103,7 +108,14 @@ class AddressList extends Component {
     return (
       <Items>
         {(addressBook || []).map(({ metafields, ...addr }) => {
-          const inp={ metaddress : {}, geolocation :{}, ...metas(metafields).res,...addr };
+          const inp = {
+            metaddress: {},
+            geolocation: {},
+            ...this.cleanObj(metas(metafields).res),
+            ...this.cleanObj(addr),
+          };
+          console.info("this.props.addressBook", addressBook);
+          // console.info(`LOG:AddressList:${inp._id}`,   inp.geolocation);
           /*   const getNameOfBranch = (distance) => {
               if (!distance.branchId) {
                 return "Actualiza su dirección";
@@ -116,25 +128,23 @@ class AddressList extends Component {
 
           /* ${getNameOfBranch(metaddress.distance)} */
           return (
-            <div>
-              <RadioButtonItem
-                      title={ inp.description}
-                      description={
-                        inp.metaddress
-                          ? ` - ${ "inp.address" } - ${"inp.metaddress.distance.text"}`
-                          : `Actualiza su dirección - ${" inp.address"} ${" inp.description"}`
-                      }
-                      isSelected={currentAddress && currentAddress._id == inp._id}
-                      value={inp}
-                      handleChange={onSelect}
-                      trailing={<Controls id={ inp._id} onAddressDeleted={onAddressDeleted} />}
-                      trailingProps={{
-                        menuOpen: this.state.menuOpen,
-                        handleOpen: this.handleOpen,
-                        handleClose: this.handleClose,
-                      }}
-                    />
-            </div>
+            <RadioButtonItem
+              title={inp.description}
+              description={
+                inp
+                  ? [inp.address, inp.receiver].filter((h) => (h || "").trim() !== "").join(" - ")
+                  : `Actualiza su dirección - ${" inp.address"} ${" inp.description"}`
+              }
+              isSelected={currentAddress && currentAddress._id == inp._id}
+              value={inp}
+              handleChange={onSelect}
+              trailing={<Controls id={inp._id} onAddressDeleted={onAddressDeleted} />}
+              trailingProps={{
+                menuOpen: this.state.menuOpen,
+                handleOpen: this.handleOpen,
+                handleClose: this.handleClose,
+              }}
+            />
           );
         })}
         <CustomRoundedButton onClick={this.createAddress}>

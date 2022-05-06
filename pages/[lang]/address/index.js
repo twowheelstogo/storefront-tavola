@@ -32,7 +32,7 @@ const PlacesWithStandaloneSearchBox = (props) => {
         ref={props.onSearchBoxMounted}
         bounds={props.bounds}
         onPlacesChanged={() => {
-          props.onPlacesChanged(props.authStore.accessToken);
+          props.onPlacesChanged(props.authStore.accessToken, props.shop);
         }}
         controlPosition={google.maps.ControlPosition.TOP_LEFT}
       >
@@ -125,6 +125,7 @@ const styles = (theme) => ({
   },
 });
 const CustomTitle = styled.div`
+  color: #7a6240;
   font-size: 36px;
   font-weight: 600;
   text-align: center;
@@ -167,27 +168,12 @@ const CreateAddress = (props) => {
       };
       delete value._id;
       if (props.googleProps.locationRef.latitude != undefined) {
-        // meta = {
-        // 	...value,
-        // 	geolocation: props.googleProps.locationRef,
-        // 	metaddress: { ...props.googleProps.metadataMarker }
-        // };
-        // for (const [k, obj] of [
-        //   ["geolocation", props.googleProps.locationRef],
-        //   ["metaddress", props.googleProps.metadataMarker],
-        // ]) {
-        //   for (const [kobj, vobj] of Object.entries(obj)) {
-        //     const key = `${k}.${kobj}`;
-        //     const found = meta.metafields.find((m) => m.key === key);
-        // 	const str = typeof vobj !== "string" && vobj !== null ? JSON.stringify(vobj) :vobj;
-        //     if (found) {
-        //       found.value = str;
-        //     } else {
-        //       meta.metafields.push({ key, value: str });
-        //     }
-        //   }
-        // }
-        initMetas(meta, { geolocation: props.googleProps.locationRef, metaddress: props.googleProps.metadataMarker });
+        meta = {
+          ...value,
+          geolocation: props.googleProps.locationRef,
+          metaddress: { ...props.googleProps.metadataMarker },
+        };
+        // initMetas(meta, { geolocation: props.googleProps.locationRef, metaddress: props.googleProps.metadataMarker });
       }
       if (addressBookId != null) {
         await onAddressEdited(addressBookId, meta);
@@ -196,6 +182,7 @@ const CreateAddress = (props) => {
       }
       window.location.href = decodeURIComponent(redirect.redirect);
     } catch (ex) {
+      console.error("Saving Address Error", ex)
       setIsSent(false);
     }
   };
@@ -215,7 +202,7 @@ const CreateAddress = (props) => {
         props.googleProps.whenHasMetaAddress(current.metaddress);
       }
       if (current.geolocation) {
-        props.googleProps.whenHasLocation(current.geolocation);
+        props.googleProps.whenHasLocation(current.geolocation, shop, props.authStore.accessToken);
       }
     }
     setCurrentAddressBook(current);
@@ -224,6 +211,7 @@ const CreateAddress = (props) => {
   const {
     query: { addressBookId },
   } = router;
+  console.info("LOG: currentAddressBook", currentAddressBook);
   if (loading) return <PageLoading />;
   return (
     <Layout shop={shop} noMaxwidth>
@@ -232,10 +220,22 @@ const CreateAddress = (props) => {
         <meta name="description" content={shop && shop.description} />
       </Head>
       {!matches && (
-        <RenderWeb {...props} handleAddAddress={handleAddAddress} isSent={isSent} value={currentAddressBook} />
+        <RenderWeb
+          shop={shop}
+          {...props}
+          handleAddAddress={handleAddAddress}
+          isSent={isSent}
+          value={currentAddressBook}
+        />
       )}
       {matches && (
-        <RenderMobile {...props} handleAddAddress={handleAddAddress} isSent={isSent} value={currentAddressBook} />
+        <RenderMobile
+          shop={shop}
+          {...props}
+          handleAddAddress={handleAddAddress}
+          isSent={isSent}
+          value={currentAddressBook}
+        />
       )}
     </Layout>
   );
@@ -248,6 +248,7 @@ const RenderMobile = withStyles(styles)((props) => {
     classes,
     components: { TextInput, AddressForm, Button },
     value,
+    shop,
   } = props;
   const {
     query: { addressBookId },
@@ -271,12 +272,13 @@ const RenderMobile = withStyles(styles)((props) => {
             <div className={classes.flexMap}>
               <div className={classes.map}>
                 <div className={classes.searchInput}>
-                  <PlacesWithStandaloneSearchBox {...props} {...googleProps}>
+                  <PlacesWithStandaloneSearchBox shop={shop} {...props} {...googleProps}>
                     <TextInput id="search" name="search" placeholder="buscar una dirección" />
                   </PlacesWithStandaloneSearchBox>
                 </div>
                 <div style={{ height: "500px" }}>
                   <GoogleMapComponent
+                    shop={shop}
                     authStore={props.authStore}
                     {...googleProps}
                     location={value && value?.geolocation}
@@ -320,7 +322,6 @@ const RenderMobile = withStyles(styles)((props) => {
                     size="small"
                     startIcon={<LocationSearchingIcon />}
                     onClick={() => setCurrent(0)}
-                    cl
                     className={classes.BotonSecundario}
                   >
                     <CrosshairsGps />
@@ -370,6 +371,7 @@ const RenderWeb = withStyles(styles)((props) => {
     components: { AddressForm, Field, TextInput, Button },
     googleProps,
     value,
+    shop,
   } = props;
   const {
     query: { addressBookId },
@@ -426,6 +428,7 @@ const RenderWeb = withStyles(styles)((props) => {
           <div className={classes.flexMap}>
             <div className={classes.map}>
               <GoogleMapComponent
+                shop={shop}
                 authStore={props.authStore}
                 {...googleProps}
                 location={value && value?.geolocation}

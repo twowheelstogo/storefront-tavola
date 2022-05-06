@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/core/styles";
 import ProfileAddressBook from "components/ProfileAddressBook";
 import ProfileMenu from "components/ProfileMenu";
-import Layout from "components/Layout";
+import Layout from "components/CustomLayout";
 import withAddressBook from "containers/address/withAddressBook";
 import { withApollo } from "lib/apollo/withApollo";
 

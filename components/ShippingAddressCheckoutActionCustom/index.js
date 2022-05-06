@@ -239,7 +239,7 @@ class ShippingAddressCheckoutActionCustom extends Component {
   render() {
 
     const { alert, components: { InlineAlert }, label, stepNumber,cart } = this.props;
-    console.info('information',this.props);
+    // console.info('information',this.props);
     return (
       <Fragment>
         <Title>

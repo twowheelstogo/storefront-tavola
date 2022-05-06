@@ -13,7 +13,7 @@ export default function withCart(Component) {
   function WithCart(props) { // eslint-disable-line require-jsdoc
     const cart = useCart();
 
-    console.info("cart.catalogs.itemx", cart.catalogs)
+    // console.info("cart.catalogs.itemx", cart.catalogs)
 
     return (
       <Component {...props} {...cart}/>

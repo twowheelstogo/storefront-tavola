@@ -86,10 +86,10 @@ module.exports = {
           source: "/",
           destination: "/api/detectLanguage",
         },
-        {
-          source: "/token",
-          destination: "/api/account/token",
-        },
+        // {
+        //   source: "/token",
+        //   destination: "/api/account/token",
+        // },
       ];
     },
   },

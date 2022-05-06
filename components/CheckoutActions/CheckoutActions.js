@@ -30,7 +30,6 @@ const MessageDiv = styled.div`
 const ButtonContent = styled.div`
   padding-left: 0;
   @media (min-width: ${applyTheme("sm", "breakpoints")}px) {
-    padding-left: 50%;
   }
 `;
 const NoPaymentMethodsMessage = () => <MessageDiv>No payment methods available</MessageDiv>;
@@ -198,14 +197,14 @@ class CheckoutActions extends Component {
     const {apolloClient,
       checkoutMutations: { onSetShippingAddress },
     } = this.props;
-    console.log("LOG: setShippingAddress: setting shipping", JSON.stringify(address, null,2), this.props.cart.shop)
+    // console.log("LOG: setShippingAddress: setting shipping", JSON.stringify(address, null,2), this.props.cart.shop)
     let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(apolloClient,
       address.geolocation.latitude,
       address.geolocation.longitude,
       this.props.authStore.accessToken,
       this.props.cart.shop
     );
-    console.log("LOG: setShippingAddress: address", address);
+    // console.log("LOG: setShippingAddress: address", address);
     try {
       address = await MetadataService.updateMetadataAddressBook(apolloClient,
         _metaddress,
@@ -217,7 +216,7 @@ class CheckoutActions extends Component {
     }
 
     try {
-      console.log("LOG: setShippingAddress: udpated address", address);
+      // console.log("LOG: setShippingAddress: udpated address", address);
       const { data, error } = await onSetShippingAddress(address);
 
       if (data && !error && this._isMounted) {
@@ -672,12 +671,12 @@ class CheckoutActions extends Component {
     }
 
 
-    console.info({"information": "importa",
-      "this.payments":payments,
-      "paymentMethods":paymentMethods,
-      "remainingAmountDue":remainingAmountDue,
-      "addresses": addresses
-    })
+    // console.info({"information": "importa",
+    //   "this.payments":payments,
+    //   "paymentMethods":paymentMethods,
+    //   "remainingAmountDue":remainingAmountDue,
+    //   "addresses": addresses
+    // })
 
     const customActions = [
       {
@@ -704,41 +703,41 @@ class CheckoutActions extends Component {
           },
         },
       },
-      {
-        id: "3",
-        activeLabel: "Elige cómo pagarás tu orden.",
-        completeLabel: "Payment information",
-        incompleteLabel: "Payment information",
-        status: remainingAmountDue === 0 && !hasPaymentError ? "complete" : "incomplete",
-        component: PaymentComponent,
-        onSubmit: this.handlePaymentSubmit,
-        props: {
-          addresses,
-          alert: actionAlerts["3"],
-          onReset: this.handlePaymentsReset,
-          payments,
-          paymentMethods,
-          remainingAmountDue
-        }
-      },
-      //  {
-      //    id: "4",
-      //    activeLabel: "Elige cómo pagarás tu orden",
-      //    completeLabel: "payment method",
-      //    incompleteLabel: "payment method",
-      //    status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
-      //    component: PaymentMethodCheckoutAction,
-      //    onSubmit: this.handlePaymentSubmit,
-      //    props: {
-      //      addresses,
-      //      alert: actionAlerts["4"],
-      //      onReset: this.handlePaymentsReset,
-      //      payments,
-      //      paymentMethods,
-      //      remainingAmountDue,
-      //      onChange: this.setPaymentInputs,
-      //    },
-      //  },
+      // {
+      //   id: "3",
+      //   activeLabel: "Elige cómo pagarás tu orden.",
+      //   completeLabel: "Payment information",
+      //   incompleteLabel: "Payment information",
+      //   status: remainingAmountDue === 0 && !hasPaymentError ? "complete" : "incomplete",
+      //   component: PaymentComponent,
+      //   onSubmit: this.handlePaymentSubmit,
+      //   props: {
+      //     addresses,
+      //     alert: actionAlerts["3"],
+      //     onReset: this.handlePaymentsReset,
+      //     payments,
+      //     paymentMethods,
+      //     remainingAmountDue
+      //   }
+      // },
+        {
+          id: "4",
+          activeLabel: "Elige cómo pagarás tu orden",
+          completeLabel: "payment method",
+          incompleteLabel: "payment method",
+          status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
+          component: PaymentMethodCheckoutAction,
+          onSubmit: this.handlePaymentSubmit,
+          props: {
+            addresses,
+            alert: actionAlerts["4"],
+            onReset: this.handlePaymentsReset,
+            payments,
+            paymentMethods,
+            remainingAmountDue,
+            onChange: this.setPaymentInputs,
+          },
+        },
       // {
       //   id: "5",
       //   activeLabel: "Datos de facturación",
@@ -786,11 +785,12 @@ class CheckoutActions extends Component {
       //   },
       // }
     ];
+
     return (
       <Fragment>
-        {this.renderPlacingOrderOverlay()}
-        <Actions actions={customActions} />
         <ButtonContent>
+        {this.renderPlacingOrderOverlay()}
+          <Actions actions={customActions} />
           <RoundedButton
             buttonTitle="Finalizar Compra"
             // buttonSubtitle={total && `total: ${total.displayAmount}`}

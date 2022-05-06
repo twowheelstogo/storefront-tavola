@@ -74,7 +74,7 @@ export const UIProvider = ({ children }) => {
     }
     if (selectedCartCatalogId !== id) {
       setPdpSelectedCartCatalogId(id);
-      console.info("selectedCartCatalog", selectedCartCatalogId, id);
+      // console.info("selectedCartCatalog", selectedCartCatalogId, id);
     }
     return id;
   };

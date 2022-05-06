@@ -61,7 +61,7 @@ class ProfileAddressBook extends Component {
 
   render() {
     const { authStore: { account }, classes, shop } = this.props;
-    console.info('this props',this.props)
+    // console.info('this props',this.props)
     if (account && !account._id) return <ErrorPage shop={shop} subtitle="Not Found" />;
 
     return (

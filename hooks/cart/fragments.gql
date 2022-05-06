@@ -204,7 +204,7 @@ fragment CartItemxFragment on CartItemx {
   }
 }
 ## Fragment for cart items, used in both queries and mutations
-fragment CartItemFragment on CartItem {
+fragment CartItemFragment on CartItem  {
   _id
   cartCatalogId
   isHidden

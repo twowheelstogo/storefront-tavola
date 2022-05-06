@@ -486,7 +486,7 @@ class AddressForm extends Component {
           onChange={onChange}
           // onSubmit={this.props.onSubmit}
           onSubmit={(e, d) => {
-            console.info("Submit AddressForm", { e, d });
+            // console.info("Submit AddressForm", { e, d });
           }}
           validator={validator}
           revalidateOn="changed"

@@ -141,7 +141,6 @@ class Accordion extends Component {
 
     const shippingAddress = fulfillmentGroups.length ? fulfillmentGroups[0].shippingAddress || {} : {};
     const { isExpanded } = this.state;
-    console.log(isExpanded)
     return (
       <AccordionWrapper
         ref={(accordionEl) => {

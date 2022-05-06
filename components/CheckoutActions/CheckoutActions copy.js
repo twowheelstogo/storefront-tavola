@@ -198,14 +198,14 @@ class CheckoutActions extends Component {
     const {apolloClient,
       checkoutMutations: { onSetShippingAddress },
     } = this.props;
-    console.log("LOG: setShippingAddress: setting shipping", JSON.stringify(address, null,2), this.props.cart.shop)
+    // console.log("LOG: setShippingAddress: setting shipping", JSON.stringify(address, null,2), this.props.cart.shop)
     let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(apolloClient,
       address.geolocation.latitude,
       address.geolocation.longitude,
       this.props.authStore.accessToken,
       this.props.cart.shop
     );
-    console.log("LOG: setShippingAddress: address", address);
+    // console.log("LOG: setShippingAddress: address", address);
     try {
       address = await MetadataService.updateMetadataAddressBook(apolloClient,
         _metaddress,
@@ -217,7 +217,7 @@ class CheckoutActions extends Component {
     }
 
     try {
-      console.log("LOG: setShippingAddress: udpated address", address);
+      // console.log("LOG: setShippingAddress: udpated address", address);
       const { data, error } = await onSetShippingAddress(address);
 
       if (data && !error && this._isMounted) {

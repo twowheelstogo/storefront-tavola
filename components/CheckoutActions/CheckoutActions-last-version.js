@@ -109,7 +109,7 @@ class CheckoutActions extends Component {
   setShippingAddress = async (address) => {
     const { checkoutMutations: { onSetShippingAddress } } = this.props;
     delete address.isValid;
-    console.info("LOG: setShippingAddress", address)
+    // console.info("LOG: setShippingAddress", address)
     const { data, error } = await onSetShippingAddress(address);
 
     if (data && !error && this._isMounted) {

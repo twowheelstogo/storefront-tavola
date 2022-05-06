@@ -58,6 +58,7 @@ class AddressForm extends Component {
     const descriptionInputId = `descriptionInput_${this.uniqueInstanceIdentifier}`;
     const receptorInputId = `receptorInputId${this.uniqueInstanceIdentifier}`;
     const telefonoInputId = `telefonoInputId${this.uniqueInstanceIdentifier}`;
+    console.info("LOG.ADDRESS_FORM", value);
     return (
       <Fragment>
         <Form
@@ -65,18 +66,19 @@ class AddressForm extends Component {
           onChange={onChange}
           value={value}
           revalidateOn="changed"
-          onSubmit={(v, val) => {
-            const res = {  address1: v.address, metafields: (value || {}).metafields || [] };
-            for (const o of ["reference", "description", "receiver"]) {
-              const found = res.metafields.find((m) => m.key === o);
-              if (found) {
-                found.value = v[o];
-              } else {
-                res.metafields.push({ key: o, value: v[o] });
-              }
-            }
-            onSubmit(res);
-          }}
+          onSubmit={onSubmit}
+          // onSubmit={(v, val) => {
+          //   const res = { address1: v.address, ...v, metafields: (value || {}).metafields || [] };
+          //   for (const o of ["reference", "description", "receiver"]) {
+          //     const found = res.metafields.find((m) => m.key === o);
+          //     if (found) {
+          //       found.value = v[o];
+          //     } else {
+          //       res.metafields.push({ key: o, value: v[o] });
+          //     }
+          //   }
+          //   onSubmit(res);
+          // }}
           validator={validator}
         >
           <Grid>
