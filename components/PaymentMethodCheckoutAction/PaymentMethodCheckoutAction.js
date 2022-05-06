@@ -17,12 +17,13 @@ class PaymentsCheckoutAction extends Component {
     if (!Array.isArray(payments) || payments.length === 0) return null;
 
     const paymentLines = payments.map(({ displayName, payment }, index) => (
-      <div key={`${index}`}>{displayName}{payment.amount ? ` (${formatMoney(payment.amount)})` : null}</div>
+      <div key={`${index}`}>
+        {displayName}
+        {payment.amount ? ` (${formatMoney(payment.amount)})` : null}
+      </div>
     ));
 
-    return (
-      <ActionCompleteDiv>{paymentLines}</ActionCompleteDiv>
-    );
+    return <ActionCompleteDiv>{paymentLines}</ActionCompleteDiv>;
   }
 
   static propTypes = {
@@ -67,7 +68,7 @@ class PaymentsCheckoutAction extends Component {
       /**
        * A reaction SelectableList component or compatible component.
        */
-      SelectableList: CustomPropTypes.component.isRequired
+      SelectableList: CustomPropTypes.component.isRequired,
     }),
     /**
      * Pass true while the input data is in the process of being saved.
@@ -100,12 +101,14 @@ class PaymentsCheckoutAction extends Component {
     /**
      * List of all payment methods available for this shop / checkout
      */
-    paymentMethods: PropTypes.arrayOf(PropTypes.shape({
-      displayName: PropTypes.string.isRequired,
-      InputComponent: CustomPropTypes.component,
-      name: PropTypes.string.isRequired,
-      shouldCollectBillingAddress: PropTypes.bool.isRequired
-    })).isRequired,
+    paymentMethods: PropTypes.arrayOf(
+      PropTypes.shape({
+        displayName: PropTypes.string.isRequired,
+        InputComponent: CustomPropTypes.component,
+        name: PropTypes.string.isRequired,
+        shouldCollectBillingAddress: PropTypes.bool.isRequired,
+      }),
+    ).isRequired,
     /**
      * Pass in payment objects previously passed to onSubmit
      */
@@ -118,14 +121,14 @@ class PaymentsCheckoutAction extends Component {
     /**
      * Checkout process step number
      */
-    stepNumber: PropTypes.number.isRequired
+    stepNumber: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
     onReadyForSaveChange() {},
     onReset() {},
     onSubmit() {},
-    billingAddressTitleText: "Billing Address"
+    billingAddressTitleText: "Billing Address",
   };
 
   constructor(props) {
@@ -144,7 +147,7 @@ class PaymentsCheckoutAction extends Component {
     this.state = {
       billingAddress: addresses && addresses[0] ? addresses[0] : null,
       inputIsComplete: false,
-      selectedPaymentMethodName
+      selectedPaymentMethodName,
     };
   }
 
@@ -161,7 +164,7 @@ class PaymentsCheckoutAction extends Component {
     } else {
       this.handleInputComponentSubmit();
     }
-  }
+  };
 
   handleInputComponentSubmit = async ({ amount = null, data, displayName } = {}) => {
     const { onSubmit, paymentMethods, remainingAmountDue } = this.props;
@@ -180,17 +183,20 @@ class PaymentsCheckoutAction extends Component {
         amount: cappedPaymentAmount,
         billingAddress,
         data,
-        method: selectedPaymentMethodName
-      }
+        method: selectedPaymentMethodName,
+      },
     });
-  }
+  };
 
   checkIfReadyForSaveChange() {
     const { onReadyForSaveChange, paymentMethods } = this.props;
     const { billingAddress, inputIsComplete, selectedPaymentMethodName } = this.state;
 
-    const isFilled = billingAddress &&
-      Object.keys(billingAddress).every((key) => (["address2", "company"].indexOf(key) > -1 ? true : billingAddress[key] !== null));
+    const isFilled =
+      billingAddress &&
+      Object.keys(billingAddress).every((key) =>
+        ["address2", "company"].indexOf(key) > -1 ? true : billingAddress[key] !== null,
+      );
 
     const selectedPaymentMethod = paymentMethods.find((method) => method.name === selectedPaymentMethodName);
     const isInputReady = !selectedPaymentMethod || !selectedPaymentMethod.InputComponent || inputIsComplete;
@@ -208,7 +214,7 @@ class PaymentsCheckoutAction extends Component {
     this.setState({ inputIsComplete }, () => {
       this.checkIfReadyForSaveChange();
     });
-  }
+  };
 
   handleSelectedPaymentMethodChange = (selectedPaymentMethodName) => {
     this.setState({ selectedPaymentMethodName }, () => {
@@ -217,7 +223,12 @@ class PaymentsCheckoutAction extends Component {
   };
 
   renderBillingAddressForm() {
-    const { addresses, components: { AddressChoice }, isSaving, billingAddressTitleText } = this.props;
+    const {
+      addresses,
+      components: { AddressChoice },
+      isSaving,
+      billingAddressTitleText,
+    } = this.props;
 
     return (
       <Fragment>
@@ -228,22 +239,25 @@ class PaymentsCheckoutAction extends Component {
   }
 
   renderPartialPayments() {
-    const { components: { InlineAlert }, payments } = this.props;
+    const {
+      components: { InlineAlert },
+      payments,
+    } = this.props;
 
     if (!Array.isArray(payments) || payments.length === 0) return null;
 
-    const message = payments.map(({ displayName, payment }) => `${displayName} - ${formatMoney(payment.amount)}`).join(", ");
+    const message = payments
+      .map(({ displayName, payment }) => `${displayName} - ${formatMoney(payment.amount)}`)
+      .join(", ");
 
-    return (
-      <InlineAlert alertType="success" message={message} title="Partial Payments"/>
-    );
+    return <InlineAlert alertType="success" message={message} title="Partial Payments" />;
   }
 
   renderPaymentMethodList() {
     const {
       components: { SelectableList },
       isSaving,
-      paymentMethods
+      paymentMethods,
     } = this.props;
 
     if (paymentMethods.length < 2) return null;
@@ -252,7 +266,7 @@ class PaymentsCheckoutAction extends Component {
     const options = paymentMethods.map((method) => ({
       id: method.name,
       label: method.displayName,
-      value: method.name
+      value: method.name,
     }));
 
     return (
@@ -274,7 +288,7 @@ class PaymentsCheckoutAction extends Component {
       isSaving,
       label,
       paymentMethods,
-      stepNumber
+      stepNumber,
     } = this.props;
 
     const { selectedPaymentMethodName } = this.state;
@@ -288,14 +302,20 @@ class PaymentsCheckoutAction extends Component {
         {alert ? <InlineAlert {...alert} /> : ""}
         {this.renderPartialPayments()}
         {this.renderPaymentMethodList()}
-        {!!selectedPaymentMethod && !!selectedPaymentMethod.InputComponent &&
+        {!!selectedPaymentMethod && !!selectedPaymentMethod.InputComponent && (
           <selectedPaymentMethod.InputComponent
+            {...this.props}
             isSaving={isSaving}
             onReadyForSaveChange={this.handleInputReadyForSaveChange}
             onSubmit={this.handleInputComponentSubmit}
-            ref={(instance) => { this._inputComponent = instance; }}
-          />}
-        {!!selectedPaymentMethod && !!selectedPaymentMethod.shouldCollectBillingAddress && this.renderBillingAddressForm()}
+            ref={(instance) => {
+              this._inputComponent = instance;
+            }}
+          />
+        )}
+        {!!selectedPaymentMethod &&
+          !!selectedPaymentMethod.shouldCollectBillingAddress &&
+          this.renderBillingAddressForm()}
       </div>
     );
   }

@@ -114,7 +114,7 @@ class AddressList extends Component {
             ...this.cleanObj(metas(metafields).res),
             ...this.cleanObj(addr),
           };
-          console.info("this.props.addressBook", addressBook);
+          // console.info("this.props.addressBook", addressBook);
           // console.info(`LOG:AddressList:${inp._id}`,   inp.geolocation);
           /*   const getNameOfBranch = (distance) => {
               if (!distance.branchId) {

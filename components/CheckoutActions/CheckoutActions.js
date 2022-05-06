@@ -136,8 +136,7 @@ class CheckoutActions extends Component {
       await onSetDiscountCode(value);
       this.setState({
         actionAlerts: {
-          7: {
-          },
+          7: {},
         },
       });
     } catch (error) {
@@ -152,7 +151,7 @@ class CheckoutActions extends Component {
         },
       });
     }
-  }
+  };
 
   componentDidUpdate({ addressValidationResults: prevAddressValidationResults }) {
     const { addressValidationResults } = this.props;
@@ -194,22 +193,25 @@ class CheckoutActions extends Component {
   }
 
   setShippingAddress = async (address) => {
-    const {apolloClient,
+    const {
+      apolloClient,
       checkoutMutations: { onSetShippingAddress },
     } = this.props;
     // console.log("LOG: setShippingAddress: setting shipping", JSON.stringify(address, null,2), this.props.cart.shop)
-    let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(apolloClient,
+    let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(
+      apolloClient,
       address.geolocation.latitude,
       address.geolocation.longitude,
       this.props.authStore.accessToken,
-      this.props.cart.shop
+      this.props.cart.shop,
     );
     // console.log("LOG: setShippingAddress: address", address);
     try {
-      address = await MetadataService.updateMetadataAddressBook(apolloClient,
+      address = await MetadataService.updateMetadataAddressBook(
+        apolloClient,
         _metaddress,
         address._id,
-        this.props.authStore.accessToken
+        this.props.authStore.accessToken,
       );
     } catch (errTmp) {
       console.error("errtmp", errTmp);
@@ -223,7 +225,7 @@ class CheckoutActions extends Component {
         this.setState({
           actionAlerts: {
             1: {},
-            2: {}
+            2: {},
           },
         });
       }
@@ -233,8 +235,8 @@ class CheckoutActions extends Component {
           2: {
             alertType: "error",
             title: "Shipping error",
-            message: error.message
-          }
+            message: error.message,
+          },
         },
       });
       console.error("graphql error: ", error);
@@ -313,6 +315,7 @@ class CheckoutActions extends Component {
     if (cappedPaymentAmount && typeof remainingAmountDue === "number") {
       cappedPaymentAmount = Math.min(cappedPaymentAmount, remainingAmountDue);
     }
+    console.info("LOG: handleInputComponentSubmit", data);
     Object.keys(data).forEach((key) => {
       if (data[key] == null)
         throw new CheckoutError({
@@ -337,10 +340,10 @@ class CheckoutActions extends Component {
     const shippingAlert =
       validationErrors && validationErrors.length
         ? {
-          alertType: validationErrors[0].type,
-          title: validationErrors[0].summary,
-          message: validationErrors[0].details,
-        }
+            alertType: validationErrors[0].type,
+            title: validationErrors[0].summary,
+            message: validationErrors[0].details,
+          }
         : null;
     this.setState({ actionAlerts: { 1: shippingAlert } });
   }
@@ -375,6 +378,7 @@ class CheckoutActions extends Component {
   };
 
   handlePaymentSubmit = (paymentInput) => {
+    console.info("LOG: handlePaymentSubmit", paymentInput);
     this.props.cartStore.addCheckoutPayment(paymentInput);
     this.setState({
       hasPaymentError: false,
@@ -446,7 +450,7 @@ class CheckoutActions extends Component {
         this.props.authStore.accessToken,
         this.props.cart.shop,
         pickupDetails.branchId,
-        _datePickup
+        _datePickup,
       );
       if (_isAvailable === false) {
         throw new CheckoutError({
@@ -479,7 +483,7 @@ class CheckoutActions extends Component {
       const isAvailable = await AddressAvailableService.getIsAvailableBranch(
         this.props.authStore.accessToken,
         this.props.cart.shop,
-        branchId
+        branchId,
       );
       if (isAvailable === false) {
         throw new CheckoutError({
@@ -512,13 +516,15 @@ class CheckoutActions extends Component {
           quantity: item.quantity,
           metafields: item.metafields || [],
         }));
-        if (!selectedFulfillmentOption || selectedFulfillmentOption == null) {
-          throw new CheckoutError({
-            message: "La dirección seleccionada está fuera del rango de envío",
-            actionCode: 6,
-            title: "Error de envío",
-          });
-        }
+
+        console.info("LOG: selectedFulfillmentOption",selectedFulfillmentOption,group);
+        // if (!selectedFulfillmentOption || selectedFulfillmentOption == null) {
+        //   throw new CheckoutError({
+        //     message: "La dirección seleccionada está fuera del rango de envío",
+        //     actionCode: 6,
+        //     title: "Error de envío",
+        //   });
+        // }
         return {
           data,
           items,
@@ -535,9 +541,11 @@ class CheckoutActions extends Component {
         fulfillmentGroups,
         shopId: cart.shop._id,
       };
+      console.info("LOG: PlaceOrder", order);
 
       return this.setState({ isPlacingOrder: true }, () => this.placeOrder(order));
     } catch (error) {
+      console.error("LOG: PlaceOrder", error);
       this.setState({
         hasPaymentError: true,
         hasBillingError: true,
@@ -670,7 +678,6 @@ class CheckoutActions extends Component {
       PaymentComponent = NoPaymentMethodsMessage;
     }
 
-
     // console.info({"information": "importa",
     //   "this.payments":payments,
     //   "paymentMethods":paymentMethods,
@@ -720,24 +727,24 @@ class CheckoutActions extends Component {
       //     remainingAmountDue
       //   }
       // },
-        {
-          id: "4",
-          activeLabel: "Elige cómo pagarás tu orden",
-          completeLabel: "payment method",
-          incompleteLabel: "payment method",
-          status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
-          component: PaymentMethodCheckoutAction,
-          onSubmit: this.handlePaymentSubmit,
-          props: {
-            addresses,
-            alert: actionAlerts["4"],
-            onReset: this.handlePaymentsReset,
-            payments,
-            paymentMethods,
-            remainingAmountDue,
-            onChange: this.setPaymentInputs,
-          },
+      {
+        id: "4",
+        activeLabel: "Elige cómo pagarás tu orden",
+        completeLabel: "payment method",
+        incompleteLabel: "payment method",
+        status: fulfillmentGroup.selectedFulfillmentOption ? "complete" : "incomplete",
+        component: PaymentMethodCheckoutAction,
+        onSubmit: this.handlePaymentSubmit,
+        props: {
+          addresses,
+          alert: actionAlerts["4"],
+          onReset: this.handlePaymentsReset,
+          payments,
+          paymentMethods,
+          remainingAmountDue,
+          onChange: this.setPaymentInputs,
         },
+      },
       // {
       //   id: "5",
       //   activeLabel: "Datos de facturación",
@@ -789,7 +796,7 @@ class CheckoutActions extends Component {
     return (
       <Fragment>
         <ButtonContent>
-        {this.renderPlacingOrderOverlay()}
+          {this.renderPlacingOrderOverlay()}
           <Actions actions={customActions} />
           <RoundedButton
             buttonTitle="Finalizar Compra"

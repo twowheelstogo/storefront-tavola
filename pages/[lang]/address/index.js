@@ -211,7 +211,6 @@ const CreateAddress = (props) => {
   const {
     query: { addressBookId },
   } = router;
-  console.info("LOG: currentAddressBook", currentAddressBook);
   if (loading) return <PageLoading />;
   return (
     <Layout shop={shop} noMaxwidth>

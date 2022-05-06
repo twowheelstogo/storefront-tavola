@@ -58,7 +58,6 @@ class AddressForm extends Component {
     const descriptionInputId = `descriptionInput_${this.uniqueInstanceIdentifier}`;
     const receptorInputId = `receptorInputId${this.uniqueInstanceIdentifier}`;
     const telefonoInputId = `telefonoInputId${this.uniqueInstanceIdentifier}`;
-    console.info("LOG.ADDRESS_FORM", value);
     return (
       <Fragment>
         <Form
