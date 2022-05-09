@@ -17,7 +17,7 @@ class FulfillmentTypeAction extends Component {
     const {
       submits: { onSelectFulfillmentType },
     } = this.props;
-    await onSelectFulfillmentType(method.name);
+    await onSelectFulfillmentType(method);
   };
 
   handleShippingType = (data) => {
@@ -60,7 +60,7 @@ class FulfillmentTypeAction extends Component {
                   }}
                   onClick={() => {
                     this.handleShippingType(meth);
-                    // this.setSelectedDeliveryMethodName(meth)
+                    this.setSelectedDeliveryMethodName(meth.name)
                   }}
                 >
                   <div>

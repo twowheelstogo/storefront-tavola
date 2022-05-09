@@ -7,7 +7,7 @@ const deliveryMethods = [
 		id: 1,
 		name: "shipping",
 		InputComponent: ShippingCheckoutAction,
-		displayName: "Delivery",
+		displayName: "Delivery", 
 		icon: shippingImage,
 		enabled: true
 	},

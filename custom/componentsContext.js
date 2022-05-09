@@ -11,7 +11,6 @@
  * System components, as well as any of your own components that you've wrapped
  * with the `withComponents` higher-order component.
  */
-
 import iconAmericanExpress from "@reactioncommerce/components/svg/iconAmericanExpress";
 import iconClear from "@reactioncommerce/components/svg/iconClear";
 import iconDiscover from "@reactioncommerce/components/svg/iconDiscover";
@@ -58,12 +57,11 @@ import ProgressiveImage from "components/ProgressiveImage";
 import RegionInput from "@reactioncommerce/components/RegionInput/v1";
 import Select from "@reactioncommerce/components/Select/v1";
 import SelectableItem from "@reactioncommerce/components/SelectableItem/v1";
-import SelectableList from "@reactioncommerce/components/SelectableList/v1";
+import SelectableList from "components/SelectableListCustom";
 import StockWarning from "@reactioncommerce/components/StockWarning/v1";
 import StripeForm from "@reactioncommerce/components/StripeForm/v1";
 import TextInput from "@reactioncommerce/components/TextInput/v1";
 import withLocales from "../lib/utils/withLocales";
-
 
 /**
 * * *  Override

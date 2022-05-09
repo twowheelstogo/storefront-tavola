@@ -8,19 +8,9 @@ import { NitService } from 'services/index.js'
 import { Button } from "@material-ui/core";
 
 const styles = theme => ({
-	input: {		
-		width: "100%",
-		border: "none",				
-		backgroundColor:"#F9F9F9",
-		color: "#000",
-		bordeRadius: "4px",			
-	},
-	label_ : {
-		marginTop:"10px"
-	},
-	labelColor: {
-		color: "#000"
-	},	
+	input: {
+		width: "100%"
+	}
 });
 const Grid = styled.div`
   display: flex;
@@ -203,11 +193,10 @@ class BillingFormAction extends Component {
 					<ColFull>
 						<Checkbox label={cfBillingLabelText} name="isCf" value={isCf} onChange={(val) => { this.handleOnChange("isCf", val) }} />
 					</ColFull>
-					<ColHalf style={this.getHiddenStyles()}>
-						<Field name="nit"  labelFor={nitbillingForm} >
-						<label className={classes.labelColor}>Nit</label>
-						<div className={classes.label_}></div>
-							<TextInput								
+					<ColHalfNit style={this.getHiddenNit()}>
+						<Field name="nit" label={nitBillingLabelText} labelFor={nitbillingForm}>
+							<TextInput
+								className={classes.input}
 								id={nitbillingForm}
 								name='nit'
 								placeholder={placeholderProps}
@@ -217,17 +206,16 @@ class BillingFormAction extends Component {
 								value={nitValue}
 							/>
 						</Field>
-						</ColHalf>
-					{/* <ColHalfButton style={this.getHiddenNit()}>
+					</ColHalfNit>
+					<ColHalfButton style={this.getHiddenNit()}>
 						<Button isFullWidth>
 							Buscar
 						</Button>
-					</ColHalfButton> */}
-					<ColHalf style={this.getHiddenStyles()}>
-						<Field name="name"  labelFor={namebillingForm} >
-						<label className={classes.labelColor}>Nombre de facturación</label>
-						<div className={classes.label_}></div>
-							<TextInput								
+					</ColHalfButton>
+					<ColFull style={this.getHiddenStyles()}>
+						<Field name="name" label={nameBillingLabelText} labelFor={namebillingForm}>
+							<TextInput
+								className={classes.input}
 								id={namebillingForm}
 								name='name'
 								placeholder={placeholderProps}
@@ -237,11 +225,9 @@ class BillingFormAction extends Component {
 								value={nameValue}
 							/>
 						</Field>
-						</ColHalf>
+					</ColFull>
 					<ColFull style={this.getHiddenStyles()}>
-						<Field name="address" labelFor={addresbillingForm} isOptional >
-						<label className={classes.labelColor}>Dirección de facturación</label>
-						<div className={classes.label_}></div>
+						<Field name="address" label={addresBillingLabelText} labelFor={addresbillingForm} isOptional>
 							<TextInput
 								id={addresbillingForm}
 								name='address'
@@ -253,10 +239,10 @@ class BillingFormAction extends Component {
 							/>
 						</Field>
 					</ColFull>
-					{/* <ColHalf style={this.getHiddenStyles()}>
+					<ColHalf style={this.getHiddenStyles()}>
 						<Field name="depto" label={deptoLabelText} labelFor={deptobillingForm}>
 							<TextInput
-								
+								className={classes.input}
 								id={deptobillingForm}
 								name='depto'
 								placeholder={placeholderProps}
@@ -270,7 +256,7 @@ class BillingFormAction extends Component {
 					<ColHalf style={this.getHiddenStyles()}>
 						<Field name="city" label={cityLabelText} labelFor={citybillingForm}>
 							<TextInput
-								
+								className={classes.input}
 								id={citybillingForm}
 								name='city'
 								placeholder={placeholderProps}
@@ -280,7 +266,7 @@ class BillingFormAction extends Component {
 								value={cityValue}
 							/>
 						</Field>
-					</ColHalf>  */}
+					</ColHalf>
 				</Grid>
 			</div>
 		);

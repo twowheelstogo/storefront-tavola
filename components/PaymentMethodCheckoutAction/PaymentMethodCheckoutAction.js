@@ -232,8 +232,8 @@ class PaymentsCheckoutAction extends Component {
 
     return (
       <Fragment>
-        <Title>{billingAddressTitleText}</Title>
-        <AddressChoice addresses={addresses} isReadOnly={isSaving} onChange={this.handleAddressChange} />
+         {/* <Title>{billingAddressTitleText}</Title>
+         <AddressChoice addresses={addresses} isReadOnly={isSaving} onChange={this.handleAddressChange} /> */}
       </Fragment>
     );
   }
