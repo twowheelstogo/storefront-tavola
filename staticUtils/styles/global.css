@@ -1,0 +1,193 @@
+
+.pre {
+	white-space: pre-line !important;
+}
+
+.dib, span, label, a, .fl, .fr {
+	display: inline-block;
+	margin: 0;
+}
+
+.vm {
+	vertical-align: middle !important;
+}
+
+.db {
+	display: block !important;
+}
+
+.dn {
+	display: none;
+}
+
+.d-i {
+	display: inline !important;
+}
+
+.por {
+	position: relative;
+}
+
+.box {
+	padding: 20px 20px 20px 57px;
+	border-radius: 3px;
+}
+
+.fl {
+	float: left;
+}
+
+.fr, .float-right {
+	float: right;
+}
+
+.pl20 {
+	padding-left: 20px;
+}
+
+.pt20 {
+	padding-top: 20px;
+}
+
+.crp {
+	cursor: pointer !important;
+}
+
+.spinner svg {
+	width: 40px;
+	padding-top: 30px;
+}
+
+.nowrap {
+	white-space: nowrap;
+	overflow: hidden;
+	margin-right: 12px;
+}
+
+.tri {
+	position: relative;
+}
+
+.tri > * {
+	position: relative;
+}
+
+.tri:before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: block;
+	opacity: 0.6;
+}
+ 
+
+.valign {
+	position: absolute !important;
+	color:white;
+	justify-content: center;
+	height: 100%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -moz-box;
+	display: -moz-flex;
+	display: -ms-flexbox;
+	display: flex;
+	align-items: center;
+	top: 0;
+	left: 0;
+}
+
+.valign.tac {
+	width: 100%;
+}
+
+.talign {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -moz-box;
+	display: -moz-flex;
+	display: -ms-flexbox;
+	display: flex;
+	align-items: center;
+	top: 0;
+	left: 0;
+}
+
+.talign.tac {
+	width: 100%;
+}
+
+.bg, .bg-contain {
+	transition: all 0.5s;
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.bg-contain {
+	background-size: contain;
+}
+
+.fit-content {
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+.fit-width {
+	width: 100%;
+}
+
+.flex {
+	display: flex;
+}
+
+.flex > * {
+	margin: 0 2px;
+	width: 100%;
+}
+
+.flex > *:first-child {
+	margin-left: auto;
+}
+
+.flex > *:last-child {
+	margin-right: auto;
+}
+
+.tac {
+	text-align: center;
+	justify-content: center !important;
+}
+
+.tar {
+	text-align: right;
+	justify-content: flex-end !important;
+}
+
+.tal {
+	text-align: left;
+	justify-content: flex-start !important;
+}
+
+.video-container {
+	position: relative;
+	padding-bottom: 56.25%;
+	padding-top: 30px;
+	height: 0;
+	overflow: hidden;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.video-container iframe, .video-container object, .video-container embed, .video-container .iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}

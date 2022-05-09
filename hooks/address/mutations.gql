@@ -2,18 +2,28 @@ mutation addAccountAddressBookEntryMutation($input: AddAccountAddressBookEntryIn
   addAccountAddressBookEntry(input: $input) {
     address {
       _id
-      address1
-      address2
-      city
-      company
-      country
-      fullName
-      isBillingDefault
-      isCommercial
-      isShippingDefault
+      description
+      address
+      reference
       phone
-      postal
-      region
+      receiver
+      geolocation{
+        latitude
+        longitude
+      }
+      metaddress{
+        administrative_area_level_1
+        administrative_area_level_2
+        neighborhood
+        street_address
+        sublocality
+        distance{
+          value
+          text
+          branch
+          branchId
+        }
+      }
     }
   }
 }
@@ -22,18 +32,28 @@ mutation updateAccountAddressBookEntryMutation($input: UpdateAccountAddressBookE
   updateAccountAddressBookEntry(input: $input) {
     address {
       _id
-      address1
-      address2
-      city
-      company
-      country
-      fullName
-      isBillingDefault
-      isCommercial
-      isShippingDefault
+      description
+      address
+      reference
       phone
-      postal
-      region
+      receiver
+      geolocation{
+        latitude
+        longitude
+      }
+      metaddress{
+        administrative_area_level_1
+        administrative_area_level_2
+        neighborhood
+        street_address
+        sublocality
+        distance{
+          value
+          text
+          branch
+          branchId
+        }
+      }
     }
   }
 }
@@ -42,18 +62,28 @@ mutation removeAccountAddressBookEntryMutation($input: RemoveAccountAddressBookE
   removeAccountAddressBookEntry(input: $input) {
     address {
       _id
-      address1
-      address2
-      city
-      company
-      country
-      fullName
-      isBillingDefault
-      isCommercial
-      isShippingDefault
+      description
+      address
+      reference
+      receiver
       phone
-      postal
-      region
+      geolocation{
+        latitude
+        longitude
+      }
+      metaddress{
+        administrative_area_level_1
+        administrative_area_level_2
+        neighborhood
+        street_address
+        sublocality
+        distance{
+          value
+          text
+          branch
+          branchId
+        }
+      }
     }
   }
 }

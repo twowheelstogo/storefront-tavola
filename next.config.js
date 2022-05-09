@@ -1,26 +1,22 @@
 const path = require("path");
-const appConfig = require("./config");
-
+const lodash = require("lodash");
+const appConfig = Object.entries(require("./config"))
+  .filter(([k]) => !k.match("npm_"))
+  .reduce((p, [k, v]) => ({ ...p, [k]: v }), {});
 module.exports = {
-  env: {
-    CANONICAL_URL: appConfig.CANONICAL_URL,
-    INTERNAL_GRAPHQL_URL: appConfig.INTERNAL_GRAPHQL_URL,
-    EXTERNAL_GRAPHQL_URL: appConfig.EXTERNAL_GRAPHQL_URL,
-    SEGMENT_ANALYTICS_SKIP_MINIMIZE: appConfig.SEGMENT_ANALYTICS_SKIP_MINIMIZE,
-    SEGMENT_ANALYTICS_WRITE_KEY: appConfig.SEGMENT_ANALYTICS_WRITE_KEY,
-    STRIPE_PUBLIC_API_KEY: appConfig.STRIPE_PUBLIC_API_KEY
-  },
+  publicRuntimeConfig: appConfig,
+  env: lodash.omit(appConfig, ["NODE_VERSION", "NODE_ENV"]),
   webpack: (webpackConfig) => {
     webpackConfig.module.rules.push({
       test: /\.(gql|graphql)$/,
       loader: "graphql-tag/loader",
       exclude: ["/node_modules/", "/.next/"],
-      enforce: "pre"
+      enforce: "pre",
     });
 
     webpackConfig.module.rules.push({
       test: /\.mjs$/,
-      type: "javascript/auto"
+      type: "javascript/auto",
     });
 
     // Duplicate versions of the styled-components package were being loaded, this config removes the duplication.
@@ -47,29 +43,36 @@ module.exports = {
 
     return webpackConfig;
   },
+  webpackDevMiddleware: (config) => {
+    config.watchOptions = {
+      poll: 800,
+      aggregateTimeout: 300,
+    };
+    return config;
+  },
   experimental: {
     redirects() {
       return [
         {
           source: "/graphiql",
           destination: appConfig.EXTERNAL_GRAPHQL_URL,
-          permanent: true
+          permanent: true,
         },
         {
           source: "/graphql-beta",
           destination: appConfig.EXTERNAL_GRAPHQL_URL,
-          permanent: true
+          permanent: true,
         },
         {
           source: "/graphql-alpha",
           destination: appConfig.EXTERNAL_GRAPHQL_URL,
-          permanent: true
+          permanent: true,
         },
         {
           source: "/graphql",
           destination: appConfig.EXTERNAL_GRAPHQL_URL,
-          permanent: true
-        }
+          permanent: true,
+        },
       ];
     },
     rewrites() {
@@ -77,14 +80,17 @@ module.exports = {
         // Sitemap
         {
           source: "/sitemap:subPage?.xml",
-          destination: "/api/sitemap"
+          destination: "/api/sitemap",
         },
         {
           source: "/",
-          destination: "/api/detectLanguage"
-        }
+          destination: "/api/detectLanguage",
+        },
+        // {
+        //   source: "/token",
+        //   destination: "/api/account/token",
+        // },
       ];
-    }
-  }
-
+    },
+  },
 };

@@ -1,33 +1,35 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
+import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 import CartItems from "components/CartItems";
-import OrderSummary from "components/OrderSummary";
 
 const styles = (theme) => ({
   fulfillmentGroup: {
-    border: theme.palette.borders.default
   },
-  fulfillmentDetails: {
+  fulfillmentGroupDetails: {
     padding: theme.spacing(2)
   },
-  header: {
+  fulfillmentGroupCount: theme.typography.subtitle2,
+  fulfillmentGroupHeader: {
+    borderBottom: theme.palette.borders.default,
+    borderTop: theme.palette.borders.default,
     padding: theme.spacing(1, 2)
   },
-  headerRightColumn: {
+  fulfillmentGroupHeaderRightColumn: {
     textAlign: "right"
   },
-  summary: {
-    paddingTop: theme.spacing(2)
-  },
-  subtitle2: theme.typography.subtitle2
+  trackShipmentButton: {
+    textTransform: "none"
+  }
 });
 
-class OrderFulfillmentGroup extends Component {
+class OrderCardFulfillmentGroup extends Component {
   static propTypes = {
     classes: PropTypes.object,
+    currentGroupCount: PropTypes.number,
     fulfillmentGroup: PropTypes.shape({
       items: PropTypes.shape({
         nodes: PropTypes.arrayOf(PropTypes.object)
@@ -40,14 +42,15 @@ class OrderFulfillmentGroup extends Component {
     loadMoreCartItems: PropTypes.func,
     onChangeCartItemsQuantity: PropTypes.func,
     onRemoveCartItems: PropTypes.func,
-    payments: PropTypes.arrayOf(PropTypes.object)
+    payments: PropTypes.arrayOf(PropTypes.object),
+    totalGroupsCount: PropTypes.number
   }
 
   static defaultProps = {
     hasMoreCartItems: false,
-    loadMoreCartItems() {},
-    onChangeCartItemsQuantity() {},
-    onRemoveCartItems() {}
+    loadMoreCartItems() { },
+    onChangeCartItemsQuantity() { },
+    onRemoveCartItems() { }
   }
 
   handleItemQuantityChange = (quantity, cartItemId) => {
@@ -63,7 +66,7 @@ class OrderFulfillmentGroup extends Component {
   }
 
   renderItems() {
-    const { classes, fulfillmentGroup, hasMoreCartItems, loadMoreCartItems } = this.props;
+    const { classes, fulfillmentGroup } = this.props;
 
     if (fulfillmentGroup && Array.isArray(fulfillmentGroup.items.nodes)) {
       const items = fulfillmentGroup.items.nodes.map((item) => ({
@@ -74,93 +77,34 @@ class OrderFulfillmentGroup extends Component {
       }));
 
       return (
-        <div className={classes.fulfillmentDetails}>
-          <Grid item xs={12}>
-            <CartItems
-              isMiniCart
-              isReadOnly
-              hasMoreCartItems={hasMoreCartItems}
-              onLoadMoreCartItems={loadMoreCartItems}
-              items={items}
-              onChangeCartItemQuantity={this.handleItemQuantityChange}
-              onRemoveItemFromCart={this.handleRemoveItem}
-            />
-          </Grid>
-        </div>
+        <Grid className={classes.fulfillmentGroupDetails} item xs={12} md={12}>
+          <CartItems
+            isMiniCart
+            isReadOnly
+            items={items}
+          />
+        </Grid>
       );
     }
 
     return null;
   }
 
-  renderFulfillmentInfo() {
-    const { classes, fulfillmentGroup } = this.props;
-
-    if (fulfillmentGroup.data && fulfillmentGroup.data.shippingAddress) {
-      const { data: { shippingAddress } } = fulfillmentGroup;
-      const address = (
-        <Typography variant="body2">
-          {(shippingAddress.fullName) && (
-            <span>
-              {shippingAddress.fullName}
-              <br />
-            </span>
-          )}
-          {shippingAddress.address1}
-          <br />
-          {(shippingAddress.address2 && shippingAddress.address2 !== "") && (
-            <span>
-              {shippingAddress.address2} <br />
-            </span>
-          )}
-          {shippingAddress.city}, {shippingAddress.region} {shippingAddress.postal} <br />
-          {shippingAddress.country}
-        </Typography>
-      );
-
-      return (
-        <div className={classes.fulfillmentDetails}>
-          <Grid container spacing={3}>
-            <Grid item xs={3}>
-              <Typography className={classes.subtitle2} variant="subtitle1">{"Shipping Address"}</Typography>
-            </Grid>
-            <Grid item xs={9}>
-              {address}
-            </Grid>
-          </Grid>
-        </div>
-      );
-    }
-
-    return null;
+  onTrackShipmentButtonClick() {
+    // TODO: What do we do to track a shipment? Link to a specific provider website?
   }
 
   render() {
-    const { classes, fulfillmentGroup, payments } = this.props;
-    const { fulfillmentMethod } = fulfillmentGroup.selectedFulfillmentOption;
+    const { classes, currentGroupCount, fulfillmentGroup, totalGroupsCount } = this.props;
 
     return (
       <Fragment>
         <section className={classes.fulfillmentGroup}>
-          <header className={classes.header}>
-            <Grid container spacing={3}>
-              <Grid item xs={6}>
-                <Typography className={classes.subtitle2} variant="subtitle1">{fulfillmentMethod.displayName}</Typography>
-              </Grid>
-              <Grid item xs={6} className={classes.headerRightColumn}>
-                <Typography variant="body2">{fulfillmentMethod.group}</Typography>
-              </Grid>
-            </Grid>
-          </header>
           {this.renderItems()}
-          {this.renderFulfillmentInfo()}
-        </section>
-        <section className={classes.summary}>
-          <OrderSummary fulfillmentGroup={fulfillmentGroup} payments={payments} />
         </section>
       </Fragment>
     );
   }
 }
 
-export default withStyles(styles, { name: "SkOrderFulfillmentGroup" })(OrderFulfillmentGroup);
+export default withStyles(styles)(OrderCardFulfillmentGroup);

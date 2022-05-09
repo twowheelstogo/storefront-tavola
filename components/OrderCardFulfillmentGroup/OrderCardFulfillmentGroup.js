@@ -100,40 +100,6 @@ class OrderCardFulfillmentGroup extends Component {
     return (
       <Fragment>
         <section className={classes.fulfillmentGroup}>
-          <header className={classes.fulfillmentGroupHeader}>
-            <Grid
-              container
-              direction="row"
-              justify="center"
-              alignItems="center"
-              spacing={3}
-            >
-              <Grid item xs={6}>
-                <Typography className={classes.fulfillmentGroupCount} variant="subtitle1">Shipment {currentGroupCount} of {totalGroupsCount}</Typography>
-              </Grid>
-              <Grid item xs={6} className={classes.fulfillmentGroupHeaderRightColumn}>
-                {fulfillmentGroup.tracking ?
-                  <Button
-                    className={classes.trackShipmentButton}
-                    onClick={this.onTrackShipmentButtonClick}
-                    size="small"
-                    variant="outlined"
-                  >
-                    Track shipment
-                  </Button>
-                  :
-                  <Button
-                    className={classes.trackShipmentButton}
-                    disabled
-                    size="small"
-                    variant="outlined"
-                  >
-                    No tracking available
-                  </Button>
-                }
-              </Grid>
-            </Grid>
-          </header>
           {this.renderItems()}
         </section>
       </Fragment>

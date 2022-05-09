@@ -1,0 +1,31 @@
+query GetAllBranches($shopId: ID!) {
+  branchWithoutPagination(shopId: $shopId) {
+    _id
+    shopId
+    generalData {
+      name
+      address
+      phone
+      invoiceCode
+      deliveryCode
+    }
+    scheduleData {
+      isClosed
+      sheduledOpenString
+      scheduledOpenNumber
+      scheduledCloseString
+      scheduledClosedNumber
+    }
+    geographyData {
+      point {
+        type
+        coordinates
+      }
+      polygon {
+        type
+        coordinates
+      }
+      distance
+    }
+  }
+}

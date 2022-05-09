@@ -3,50 +3,78 @@
  * The other theme file is `componentTheme.js`
  */
 import { createMuiTheme } from "@material-ui/core/styles";
-
+const beAfter = {
+  content: "''",
+  position: "absolute",
+};
 const theme = createMuiTheme({
+  // design in the layout
   layout: {
-    mainContentMaxWidth: "1440px",
-    mainLoginMaxWidth: "1024px"
+    mainContentMaxWidth: "1930px",
+    mainLoginMaxWidth: "1024px",
   },
   palette: {
     primary: {
-      light: "#26B0F9",
-      main: "#1999DD",
-      dark: "#172F3C",
-      contrastText: "#FFFFFF"
+      light: "#FFFFFF",
+      main: "#EA6D23",
+      dark: "#1D0D13",
+      contrastText: "#FFFFFF",
+    },
+    Logo: {
+      WidthDesktop: "100px",
+      WidthMobile: "64.17px",
+      HeightDesktop: "68px",
+      HeightMobile: "44px",
     },
     secondary: {
       light: "#5d8ea9",
       main: "#5E7480",
       dark: "#1D1D1D",
-      contrastText: "#000000"
+      contrastText: "#000000",
+      botones: "#1D0D13",
     },
     background: {
-      default: "#ffffff"
+      default: "#ffffff",
+      //es el color principal de la pagina
+      theme_: "#1D0D13",
+      Main: "#1D0D13",
+      colorTabs: "#C88E2B",
+      //el main es para los que cambian de color en el centro
+      Modal: "#1D0D13",
+      //Fondo del mensaje mi carrito de cart carrito
+      Carrito: "#202124",
+      CartColor: "#FFF",
     },
     error: {
       light: "#E54F5D",
       main: "#CD3F4C",
       dark: "#3C1F21",
-      contrastText: "#FFFFFF"
+      contrastText: "#FFFFFF",
     },
     action: {
       hover: "#f5f5f5",
-      selected: "#f5f5f5"
+      selected: "#f5f5f5",
     },
     colors: {
-      buttonBorderColor: "#5e7480"
+      buttonBorderColor: "#C88E2B",
+      CartSummary: "#F9F9F9",
+      //color principal de la letra
+      TextTheme: "#1D0D13",
+      SearchColor: "#dcdcdc",
+      TextThemeTitle: "#FFFFFF",
+      //text theme es el color de la letra
+      //texto botones secundarios
+      BotonColor: "#FFFFFF",
     },
     borders: {
-      default: "1px solid #e6e6e6"
+      default: "1px solid #e6e6e6",
     },
     reaction: {
       activeElementBorderColor: "#94E8D1",
       activeElementBackground: "#E6E6E6",
       badges: {
         bestseller: "#8CE0C9",
-        sale: "#E54F5D"
+        sale: "#E54F5D",
       },
       borderColor: "#CCCCCC",
       buttonBorderRadius: 2,
@@ -120,7 +148,7 @@ const theme = createMuiTheme({
       red600: "#3c1f21",
       pageLoading: {
         innerColor: "#1999dd",
-        outerColor: "rgba(9.80392156862745%,59.99999999999995%,86.66666666666667%,0.122)"
+        outerColor: "rgba(9.80392156862745%,59.99999999999995%,86.66666666666667%,0.122)",
       },
       teal: "#8ce0c9",
       teal100: "#edfdf8",
@@ -128,19 +156,25 @@ const theme = createMuiTheme({
       teal300: "#a3f2dc",
       teal400: "#55e4be",
       teal500: "#447467",
-      teal600: "#34584f"
-    }
+      teal600: "#34584f",
+    },
   },
   borderRadii: {
-    default: 2
+    default: 2,
   },
   boxShadow: {
     depth0: "none",
     depth1: "0 0 1rem -0.5rem #808080",
-    depth2: "0 0 1rem #808080"
+    depth2: "0 0 1rem #808080",
   },
   typography: {
     fontFamily: "Source Sans Pro, Helvetica Neue, Helvetica, sans-serif",
+    family: {
+      custom: "Changa, sans-serif",
+      normal: "Open+Sans, sans-serif",
+      title: "Quicksand, sans-serif",
+      google: "Google Sans, sans-serif",
+    },
     fontSize: 16,
     fontWeightLight: 400,
     fontWeightRegular: 400,
@@ -148,19 +182,68 @@ const theme = createMuiTheme({
     fontWeightBold: 700,
     subtitle2: {
       fontSize: 14,
-      color: "#737373"
+      color: "#737373",
     },
     body2: {
       fontSize: 14,
       fontWeight: 400,
-      color: "#595959"
+      color: "#595959",
     },
     subtitle1: {
       fontSize: 16,
       fontWeight: 600,
-      color: "#3c3c3c"
-    }
-  }
+      color: "#3c3c3c",
+    },
+  },
+  mixin: {
+    customFunction: (color)=>{
+      return {
+        backgroundColor: color
+      }
+    },
+    vAlign: {
+      display: "flex",
+      alignItems: "center",
+    },
+    hAlign: {
+      display: "flex",
+      justifyContent: "center",
+    },
+    cAlign: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    beAfter,
+    before: {
+      position: "relative",
+      "&:before": beAfter,
+    },
+    after: {
+      position: "relative",
+      "&:after": beAfter,
+    },
+    fit: {
+      position: "absolute",
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+    },
+    fitValue: (_top, _right, _bottom, _left) => {
+      const top = _top || 0,
+        right = _right || top,
+        bottom = _bottom || top,
+        left = _left || right;
+      return {
+        position: "absolute",
+        top,
+        right,
+        bottom,
+        left,
+      };
+    },
+  },
 });
 
 export default theme;

@@ -2,14 +2,15 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@reactioncommerce/components/Button/v1";
-import CartItemsList from "@reactioncommerce/components/CartItems/v1";
+import { withComponents } from "@reactioncommerce/components-context";
+// import CartItemsList from "@reactioncommerce/components/CartItems/v1";
 
 const styles = (theme) => ({
   loadMore: {
     display: "flex",
     justifyContent: "center",
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
   },
   cfXPgA: {
     paddingLeft: 0,
@@ -67,7 +68,8 @@ class CartItems extends Component {
       isMiniCart,
       isReadOnly,
       hasMoreCartItems,
-      onLoadMoreCartItems
+      onLoadMoreCartItems,
+      components: {CartItemsList}
     } = this.props;
 
     return (
@@ -96,4 +98,4 @@ class CartItems extends Component {
   }
 }
 
-export default withStyles(styles)(CartItems);
+export default withComponents(withStyles(styles)(CartItems));

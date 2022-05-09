@@ -1,6 +1,7 @@
 import NextApp from "next/app";
 import React from "react";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import { SnackbarProvider } from "notistack";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ContextProviders } from "context/ContextProviders";
 import { ComponentsProvider } from "@reactioncommerce/components-context";
@@ -8,6 +9,7 @@ import components from "custom/componentsContext";
 import theme from "custom/reactionTheme";
 
 import { StripeWrapper } from "components/StripeCard";
+import "rc-collapse/assets/index.css";
 
 export default class App extends NextApp {
   componentDidMount() {
@@ -27,7 +29,9 @@ export default class App extends NextApp {
           <ComponentsProvider value={components}>
             <MuiThemeProvider theme={theme}>
               <CssBaseline />
-              <Component {...rest} {...pageProps} />
+              <SnackbarProvider maxSnack={3}>
+                <Component {...rest} {...pageProps} />
+              </SnackbarProvider>
             </MuiThemeProvider>
           </ComponentsProvider>
         </ContextProviders>

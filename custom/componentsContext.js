@@ -11,7 +11,6 @@
  * System components, as well as any of your own components that you've wrapped
  * with the `withComponents` higher-order component.
  */
-
 import iconAmericanExpress from "@reactioncommerce/components/svg/iconAmericanExpress";
 import iconClear from "@reactioncommerce/components/svg/iconClear";
 import iconDiscover from "@reactioncommerce/components/svg/iconDiscover";
@@ -24,7 +23,7 @@ import iconValid from "@reactioncommerce/components/svg/iconValid";
 import iconVisa from "@reactioncommerce/components/svg/iconVisa";
 import spinner from "@reactioncommerce/components/svg/spinner";
 import Accordion from "@reactioncommerce/components/Accordion/v1";
-import AccordionFormList from "@reactioncommerce/components/AccordionFormList/v1";
+// import AccordionFormList from "@reactioncommerce/components/AccordionFormList/v1";
 import AddressBook from "@reactioncommerce/components/AddressBook/v1";
 import Address from "@reactioncommerce/components/Address/v1";
 import AddressCapture from "@reactioncommerce/components/AddressCapture/v1";
@@ -34,13 +33,13 @@ import AddressReview from "@reactioncommerce/components/AddressReview/v1";
 import BadgeOverlay from "@reactioncommerce/components/BadgeOverlay/v1";
 import Button from "@reactioncommerce/components/Button/v1";
 import CartItem from "@reactioncommerce/components/CartItem/v1";
-import CartItemDetail from "@reactioncommerce/components/CartItemDetail/v1";
+/* import CartItemDetail from "@reactioncommerce/components/CartItemDetail/v1"; */
 import CartItems from "@reactioncommerce/components/CartItems/v1";
 import CartSummary from "@reactioncommerce/components/CartSummary/v1";
 import CatalogGrid from "@reactioncommerce/components/CatalogGrid/v1";
 import CatalogGridItem from "components/CatalogGridItem";
 import Checkbox from "@reactioncommerce/components/Checkbox/v1";
-import CheckoutAction from "@reactioncommerce/components/CheckoutAction/v1";
+// import CheckoutAction from "@reactioncommerce/components/CheckoutAction/v1";
 import CheckoutActionComplete from "@reactioncommerce/components/CheckoutActionComplete/v1";
 import CheckoutActionIncomplete from "@reactioncommerce/components/CheckoutActionIncomplete/v1";
 import ErrorsBlock from "@reactioncommerce/components/ErrorsBlock/v1";
@@ -54,19 +53,61 @@ import PhoneNumberInput from "@reactioncommerce/components/PhoneNumberInput/v1";
 import Price from "@reactioncommerce/components/Price/v1";
 import ProfileImage from "@reactioncommerce/components/ProfileImage/v1";
 import ProgressiveImage from "components/ProgressiveImage";
-import QuantityInput from "@reactioncommerce/components/QuantityInput/v1";
+/* import QuantityInput from "@reactioncommerce/components/QuantityInput/v1"; */
 import RegionInput from "@reactioncommerce/components/RegionInput/v1";
 import Select from "@reactioncommerce/components/Select/v1";
 import SelectableItem from "@reactioncommerce/components/SelectableItem/v1";
-import SelectableList from "@reactioncommerce/components/SelectableList/v1";
+import SelectableList from "components/SelectableListCustom";
 import StockWarning from "@reactioncommerce/components/StockWarning/v1";
 import StripeForm from "@reactioncommerce/components/StripeForm/v1";
 import TextInput from "@reactioncommerce/components/TextInput/v1";
 import withLocales from "../lib/utils/withLocales";
 
-// Providing locales data
-const AddressFormWithLocales = withLocales(AddressForm);
+/**
+* * *  Override
+*/
+import CheckoutAction from "components/CheckoutAction";
+import AccordionFormList from "components/AccordionFormListCustom";
+import FulfillmentTypeAction from "components/FulfillmentTypeAction";
+/**
+* * *  Custom
+*/
+import AccordionFormListCustom from "components/AccordionFormListCustom";
+import AccordionCustom from "components/AccordionCustom";
+// import AddressForm from "components/AddressForm";
+import CartItemSelect from "components/CartItemSelect";
+import HorizontalProductCard from "components/HorizontalProductCard";
+import CatalogLayout from "components/CatalogLayout";
+import HorizontalTagsProducts from "components/HorizontalTagsProducts";
+import CartItemsList from "components/CartItemsList";
+import QuantityInput from "components/QuantityInput";
+import MiniCartComponent from "components/MiniCartComponent";
+import IconsActions from "components/IconsActions";
+import SearchBar from "components/SearchBar";
+import SlideHero from "components/SlideHero";
+import CustomFooter from "components/CustomFooter";
+import NavigationHeader from "components/NavigationHeader";
+import CartEmptyMessage from "components/CartEmptyMessage";
+import AddressList from "components/AddressList";
+import RadioButtonItem from "components/RadioButtonItem";
+import BillingForm from "components/BillingForm";
+import PickupForm from "components/PickupForm";
+import Breadcrumbs from "components/Breadcrumbs";
+import BreadcrumbsSwitch from "components/BreadcrumbsSwitch";
+import OrderDetails from "components/OrderDetails";
+import ProductDetailDrawer from "components/ProductDetailDrawer";
+import CartCatalogs from "components/CartCatalogs";
+import CartItemDetail from "components/CartItemDetail";
+import CartCatalog from "components/CartCatalog";
+import CartCatalogsList from "components/CartCatalogsList";
+import PaymentsCheckoutActionCustom from "components/PaymentsCheckoutActionCustom";
+import SelectableListCustom from "components/SelectableListCustom";
+import SelectableItemCustomer from "components/SelectableItemCustomer";
+import AddressFormCustom from "components/AddressFormCustom";
 
+
+// Providing locales data
+const AddressFormWithLocales = withLocales(AddressFormCustom);
 export default {
   Accordion,
   AccordionFormList,
@@ -117,5 +158,40 @@ export default {
   SelectableList,
   StockWarning,
   StripeForm,
-  TextInput
+  TextInput,
+
+  /**
+   * * *  Custom
+   */
+  HorizontalProductCard,
+  CatalogLayout,
+  HorizontalTagsProducts,
+  CartItemsList,
+  AddressList,
+  RadioButtonItem,
+  CartSummary,
+  MiniCartComponent,
+  NavigationHeader,
+  IconsActions,
+  SearchBar,
+  SlideHero,
+  CustomFooter,
+  CartEmptyMessage,
+  CartItemSelect,
+  BillingForm,
+  PickupForm,
+  Breadcrumbs,
+  BreadcrumbsSwitch,
+  OrderDetails,
+  ProductDetailDrawer,
+  CartCatalogs,
+  CartCatalog,
+  CartCatalogsList,
+  AccordionFormListCustom,
+  AccordionCustom,
+  PaymentsCheckoutActionCustom,
+  SelectableListCustom,
+  SelectableItemCustomer,
+  AddressFormCustom,
+  FulfillmentTypeAction
 };

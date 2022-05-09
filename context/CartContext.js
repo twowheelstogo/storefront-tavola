@@ -11,7 +11,23 @@ export const CartProvider = ({ children }) => {
   const [anonymousCartId, setAnonymousCartId] = useState();
   const [anonymousCartToken, setAnonymousCartToken] = useState();
   const [accountCartId, setAccountCartId] = useState();
+  const [isReconcilingCarts, setIsReconcilingCarts] = useState(false);
   const [checkoutPayments, setCheckoutPayments] = useState([]);
+  const [checkoutBilling, _setCheckoutBilling] = useState({
+    partnerId: -1,
+    isCf: true,
+    nit: "0",
+    name: "CF",
+    address: "guatemala",
+    country: "Guatemala",
+    depto: "Guatemala",
+    city: "Guatemala",
+  });
+  const [checkoutGift, _setCheckoutGift] = useState({
+    sender: "",
+    receiver: "",
+    message: "",
+  });
 
   const setAnonymousCartCredentials = (newAnonymousCartId, newAnonymousCartToken) => {
     setAnonymousCartId(newAnonymousCartId || null);
@@ -55,6 +71,32 @@ export const CartProvider = ({ children }) => {
     setCheckoutPayments([...checkoutPayments, value]);
   };
 
+  const addCheckoutBilling = (value) => {
+    _setCheckoutBilling({ ...checkoutBilling, ...value });
+  };
+
+  const resetCheckoutBilling = () => {
+    _setCheckoutBilling({
+      partnerId: -1,
+      isCf: true,
+      nit: "0",
+      name: "CF",
+      address: "guatemala",
+    });
+  };
+
+  const addCheckoutGift = (value) => {
+    _setCheckoutGift({ ...checkoutGift, ...value });
+  };
+
+  const resetCheckoutGift = () => {
+    _setCheckoutGift({
+      sender: "",
+      receiver: "",
+      message: "",
+    });
+  };
+
   const setCheckoutPayment = (value) => {
     setCheckoutPayments([value]);
   };
@@ -66,20 +108,27 @@ export const CartProvider = ({ children }) => {
   return (
     <CartContext.Provider
       value={{
+        addCheckoutGift,
+        resetCheckoutGift,
         anonymousCartId,
         anonymousCartToken,
         accountCartId,
-        // isReconcilingCarts,
+        isReconcilingCarts,
         checkoutPayments,
+        checkoutBilling,
+        checkoutGift,
         setAnonymousCartCredentials,
         clearAnonymousCartCredentials,
         setAnonymousCartCredentialsFromLocalStorage,
+        setIsReconcilingCarts,
         hasAnonymousCartCredentials: (anonymousCartId && anonymousCartToken) || false,
         hasAccountCart: typeof accountCartId === "string",
         setAccountCartId,
         addCheckoutPayment,
         setCheckoutPayment,
-        resetCheckoutPayments
+        resetCheckoutPayments,
+        addCheckoutBilling,
+        resetCheckoutBilling,
       }}
     >
       {children}
@@ -88,5 +137,5 @@ export const CartProvider = ({ children }) => {
 };
 
 CartProvider.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };

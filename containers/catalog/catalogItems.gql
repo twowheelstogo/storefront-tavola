@@ -1,5 +1,25 @@
-query catalogItemsQuery($shopId: ID!, $tagIds: [ID] $first: ConnectionLimitInt, $last:  ConnectionLimitInt, $before: ConnectionCursor, $after: ConnectionCursor, $sortBy: CatalogItemSortByField, $sortByPriceCurrencyCode: String, $sortOrder: SortOrder) {
-  catalogItems(shopIds: [$shopId], tagIds: $tagIds, first: $first, last: $last, before: $before, after: $after, sortBy: $sortBy, sortByPriceCurrencyCode: $sortByPriceCurrencyCode, sortOrder: $sortOrder) {
+query catalogItemsQuery(
+  $shopId: ID!
+  $tagIds: [ID]
+  $first: ConnectionLimitInt
+  $last: ConnectionLimitInt
+  $before: ConnectionCursor
+  $after: ConnectionCursor
+  $sortBy: CatalogItemSortByField
+  $sortByPriceCurrencyCode: String
+  $sortOrder: SortOrder
+) {
+  catalogItems(
+    shopIds: [$shopId]
+    tagIds: $tagIds
+    first: $first
+    last: $last
+    before: $before
+    after: $after
+    sortBy: $sortBy
+    sortByPriceCurrencyCode: $sortByPriceCurrencyCode
+    sortOrder: $sortOrder
+  ) {
     totalCount
     pageInfo {
       endCursor
@@ -14,8 +34,129 @@ query catalogItemsQuery($shopId: ID!, $tagIds: [ID] $first: ConnectionLimitInt, 
         ... on CatalogItemProduct {
           product {
             _id
+            productId
             title
             slug
+            variants {
+              _id
+              isHidden
+              variantId
+              title
+              optionTitle
+              index
+              multipleOption
+              maxOption
+              minOption
+              pricing {
+                maxFreeQty
+                maxQty
+                minQty
+                compareAtPrice {
+                  displayAmount
+                }
+                price
+                currency {
+                  code
+                }
+                displayPrice
+              }
+              canBackorder
+              inventoryAvailableToSell
+              isBackorder
+              isSoldOut
+              isLowQuantity
+              options {
+                _id
+                isHidden
+                variantId
+                title
+                index
+                pricing {
+                  maxFreeQty
+                  maxQty
+                  minQty
+                  compareAtPrice {
+                    displayAmount
+                  }
+                  price
+                  currency {
+                    code
+                  }
+                  displayPrice
+                }
+                optionTitle
+                canBackorder
+                inventoryAvailableToSell
+                isBackorder
+                isSoldOut
+                isLowQuantity
+                media {
+                  priority
+                  productId
+                  variantId
+                  URLs {
+                    thumbnail
+                    small
+                    medium
+                    large
+                    original
+                  }
+                }
+                metafields {
+                  description
+                  key
+                  namespace
+                  scope
+                  value
+                  valueType
+                }
+                primaryImage {
+                  URLs {
+                    large
+                    medium
+                    original
+                    small
+                    thumbnail
+                  }
+                  priority
+                  productId
+                  variantId
+                }
+              }
+              media {
+                priority
+                productId
+                variantId
+                URLs {
+                  thumbnail
+                  small
+                  medium
+                  large
+                  original
+                }
+              }
+              metafields {
+                description
+                key
+                namespace
+                scope
+                value
+                valueType
+              }
+              primaryImage {
+                URLs {
+                  large
+                  medium
+                  original
+                  small
+                  thumbnail
+                }
+                priority
+                productId
+                variantId
+              }
+            }
+            tagIds
             description
             vendor
             isLowQuantity
@@ -35,6 +176,9 @@ query catalogItemsQuery($shopId: ID!, $tagIds: [ID] $first: ConnectionLimitInt, 
               }
             }
             pricing {
+              maxFreeQty
+              maxQty
+              minQty
               compareAtPrice {
                 displayAmount
               }

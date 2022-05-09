@@ -1,5 +1,5 @@
 import CartItems from "components/CartItems";
-import CartSummary from "@reactioncommerce/components/CartSummary/v1";
+import CartSummary from "components/CartSummary";
 import Grid from "@material-ui/core/Grid";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -7,7 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => ({
   summary: {
-    borderTop: theme.palette.borders.default
+    // border: theme.palette.borders.default
   }
 });
 
@@ -56,8 +56,6 @@ class CheckoutSummary extends Component {
 
   renderCartItems() {
     const { cart, hasMoreCartItems, loadMoreCartItems } = this.props;
-
-    if (cart && Array.isArray(cart.items)) {
       return (
         <Grid item xs={12}>
           <CartItems
@@ -71,8 +69,6 @@ class CheckoutSummary extends Component {
           />
         </Grid>
       );
-    }
-
     return null;
   }
 
@@ -87,7 +83,7 @@ class CheckoutSummary extends Component {
         taxTotal,
         total
       } = cart.checkout.summary;
-
+      
       return (
         <Grid item xs={12} className={classes.summary}>
           <CartSummary

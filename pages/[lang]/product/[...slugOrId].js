@@ -8,12 +8,13 @@ import ProductDetail from "components/ProductDetail";
 import PageLoading from "components/PageLoading";
 import Layout from "components/Layout";
 import { withApollo } from "lib/apollo/withApollo";
-
 import { locales } from "translations/config";
 import fetchPrimaryShop from "staticUtils/shop/fetchPrimaryShop";
 import fetchCatalogProduct from "staticUtils/catalog/fetchCatalogProduct";
 import fetchAllTags from "staticUtils/tags/fetchAllTags";
 import fetchTranslations from "staticUtils/translations/fetchTranslations";
+import { withStyles } from "@material-ui/core/styles";
+import inject from "hocs/inject";
 
 /**
  *
@@ -23,6 +24,24 @@ import fetchTranslations from "staticUtils/translations/fetchTranslations";
  * @summary Builds a JSONLd object from product properties.
  * @return {String} Stringified product jsonld
  */
+
+const styles = (theme) => ({
+  main: {
+    flex: "1 1 auto",
+    maxWidth: theme.layout.mainContentMaxWidth,
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  article: {
+    ["@media (min-width:900px)"]: {
+      padding: theme.spacing(3),
+    },
+    ["@media (max-width:899px)"]: {
+      padding: theme.spacing(0),
+    },
+  },
+});
+
 function buildJSONLd(product, shop) {
   if (!product || !shop) return "";
 
@@ -45,21 +64,21 @@ function buildJSONLd(product, shop) {
   const productJSON = {
     "@context": "http://schema.org/",
     "@type": "Product",
-    "brand": product.vendor,
-    "description": product.description,
-    "image": images,
-    "name": product.title,
-    "sku": product.sku,
-    "offers": {
+    brand: product.vendor,
+    description: product.description,
+    image: images,
+    name: product.title,
+    sku: product.sku,
+    offers: {
       "@type": "Offer",
-      "priceCurrency": currencyCode,
-      "price": priceData.minPrice,
-      "availability": productAvailability,
-      "seller": {
+      priceCurrency: currencyCode,
+      price: priceData.minPrice,
+      availability: productAvailability,
+      seller: {
         "@type": "Organization",
-        "name": shop.name
-      }
-    }
+        name: shop.name,
+      },
+    },
   };
 
   return JSON.stringify(productJSON);
@@ -74,7 +93,7 @@ function buildJSONLd(product, shop) {
  * @param {Object} shop - the shop this product belong to
  * @return {React.Component} The product detail page
  */
-function ProductDetailPage({ addItemsToCart, product, isLoadingProduct, shop }) {
+function ProductDetailPage({ addItemsToCart, product, isLoadingProduct, shop, routingStore, catalogItems }) {
   const router = useRouter();
   const currencyCode = (shop && shop.currency.code) || "USD";
   const JSONLd = useMemo(() => {
@@ -85,21 +104,16 @@ function ProductDetailPage({ addItemsToCart, product, isLoadingProduct, shop }) 
   }, [product, shop]);
 
   if (isLoadingProduct || router.isFallback) return <PageLoading />;
-  if (!product || !shop) return <Typography>Not Found</Typography>;
+  if (!product || !shop) return <Typography>Producto no enconrado</Typography>;
 
   return (
-    <Layout shop={shop}>
+    <Layout shop={shop} routerType={2} product={product} routerLabel={routingStore.tagId} catalogItems={catalogItems}>
       <Helmet
         title={`${product && product.title} | ${shop && shop.name}`}
         meta={[{ name: "description", content: product && product.description }]}
         script={[{ type: "application/ld+json", innerHTML: JSONLd }]}
       />
-      <ProductDetail
-        addItemsToCart={addItemsToCart}
-        currencyCode={currencyCode}
-        product={product}
-        shop={shop}
-      />
+      <ProductDetail addItemsToCart={addItemsToCart} currencyCode={currencyCode} product={product} shop={shop} />
     </Layout>
   );
 }
@@ -120,9 +134,11 @@ ProductDetailPage.propTypes = {
   shop: PropTypes.shape({
     name: PropTypes.string.isRequired,
     currency: PropTypes.shape({
-      code: PropTypes.string.isRequired
-    })
-  })
+      code: PropTypes.string.isRequired,
+    }),
+  }),
+  routingStore: PropTypes.object.isRequired,
+  catalogItems: PropTypes.array,
 };
 
 /**
@@ -132,7 +148,7 @@ ProductDetailPage.propTypes = {
  */
 export async function getStaticProps({ params: { slugOrId, lang } }) {
   const productSlug = slugOrId && slugOrId[0];
-  const primaryShop = await fetchPrimaryShop(lang);
+  const primaryShop = await fetchPrimaryShop({ language: lang });
 
   if (!primaryShop?.shop) {
     return {
@@ -140,22 +156,22 @@ export async function getStaticProps({ params: { slugOrId, lang } }) {
         shop: null,
         translations: null,
         products: null,
-        tags: null
+        tags: null,
       },
       // eslint-disable-next-line camelcase
-      unstable_revalidate: 1 // Revalidate immediately
+      unstable_revalidate: 1, // Revalidate immediately
     };
   }
 
   return {
     props: {
       ...primaryShop,
-      ...await fetchTranslations(lang, ["common", "productDetail"]),
-      ...await fetchCatalogProduct(productSlug),
-      ...await fetchAllTags(lang)
+      ...(await fetchTranslations(lang, ["common", "productDetail"])),
+      ...(await fetchCatalogProduct(productSlug)),
+      ...(await fetchAllTags(lang)),
     },
     // eslint-disable-next-line camelcase
-    unstable_revalidate: 120 // Revalidate each two minutes
+    unstable_revalidate: 120, // Revalidate each two minutes
   };
 }
 
@@ -167,8 +183,8 @@ export async function getStaticProps({ params: { slugOrId, lang } }) {
 export async function getStaticPaths() {
   return {
     paths: locales.map((locale) => ({ params: { lang: locale, slugOrId: ["-"] } })),
-    fallback: true
+    fallback: true,
   };
 }
 
-export default withApollo()(withCart(ProductDetailPage));
+export default withApollo()(inject("routingStore", "catalogItems", "uiStore")(withCart(ProductDetailPage)));

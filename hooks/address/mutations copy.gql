@@ -1,0 +1,91 @@
+mutation addAccountAddressBookEntryMutation(
+  $input: AddAccountAddressBookEntryInput!
+) {
+  addAccountAddressBookEntry(input: $input) {
+    address {
+      _id
+      description
+      address
+      reference
+      metafields {
+        description
+        key
+        namespace
+        scope
+        value
+        valueType
+      }
+      geolocation {
+        latitude
+        longitude
+      }
+      metaddress {
+        administrative_area_level_1
+        administrative_area_level_2
+        neighborhood
+        street_address
+        sublocality
+        distance {
+          value
+          text
+        }
+      }
+    }
+  }
+}
+
+mutation updateAccountAddressBookEntryMutation(
+  $input: UpdateAccountAddressBookEntryInput!
+) {
+  updateAccountAddressBookEntry(input: $input) {
+    address {
+      _id
+      description
+      address
+      reference
+      geolocation {
+        latitude
+        longitude
+      }
+      metaddress {
+        administrative_area_level_1
+        administrative_area_level_2
+        neighborhood
+        street_address
+        sublocality
+        distance {
+          value
+          text
+        }
+      }
+    }
+  }
+}
+
+mutation removeAccountAddressBookEntryMutation(
+  $input: RemoveAccountAddressBookEntryInput!
+) {
+  removeAccountAddressBookEntry(input: $input) {
+    address {
+      _id
+      description
+      address
+      reference
+      geolocation {
+        latitude
+        longitude
+      }
+      metaddress {
+        administrative_area_level_1
+        administrative_area_level_2
+        neighborhood
+        street_address
+        sublocality
+        distance {
+          value
+          text
+        }
+      }
+    }
+  }
+}

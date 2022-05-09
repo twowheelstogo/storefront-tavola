@@ -6,6 +6,15 @@ import OrderCardHeader from "components/OrderCardHeader";
 import OrderCardFulfillmentGroup from "components/OrderCardFulfillmentGroup";
 import OrderCardSummary from "components/OrderCardSummary";
 import PageLoading from "components/PageLoading";
+import OrderDetails from "components/OrderDetails";
+import styled from "styled-components";
+
+const TitleItems = styled.div`
+font-size: 20px;
+font-weight: 800;
+padding-left: 16px;
+padding-top: 10px;
+`;
 
 const styles = (theme) => ({
   orderCard: {
@@ -16,7 +25,6 @@ const styles = (theme) => ({
   orderCardHeader: {},
   orderCardFulfillmentGroups: {},
   orderCardSummary: {
-    borderTop: theme.palette.borders.default,
     padding: theme.spacing(2)
   }
 });
@@ -59,7 +67,13 @@ class OrderCard extends Component {
 
   renderSummary() {
     const { order: { summary } } = this.props;
+
     return <OrderCardSummary summary={summary} />;
+  }
+
+  renderCustomer() {
+    const { order } = this.props;
+    return <OrderDetails order={order}/>
   }
 
   render() {
@@ -74,12 +88,24 @@ class OrderCard extends Component {
             <header className={classes.orderCardHeader}>
               {this.renderHeader()}
             </header>
-            <section className={classes.orderCardFulfillmentGroups}>
-              {this.renderFulfillmentGroups()}
-            </section>
-            <section className={classes.orderCardSummary}>
-              {this.renderSummary()}
-            </section>
+            <Grid container >
+              <Grid item xs={12} md={6} >
+                <Grid container style={{ height: '100%' }} justifyContent="space-between" flexDirection="column">
+                  <Grid item xs={12}>
+                    {this.renderCustomer()}
+                  </Grid>
+                  <Grid item xs={12} className={classes.orderCardSummary}>
+                    {this.renderSummary()}
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TitleItems>Items</TitleItems>
+                <section className={classes.orderCardFulfillmentGroups}>
+                  {this.renderFulfillmentGroups()}
+                </section>
+              </Grid>
+            </Grid>
           </div>
         </Grid>
       </Grid>

@@ -1,0 +1,66 @@
+query catalogItems($shopId: ID!, $tagId:ID) {
+  catalogItems(shopIds: [$shopId] tagIds: [$tagId]) {
+    totalCount
+    pageInfo {
+      endCursor
+      startCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    edges {
+      cursor
+      node {
+        _id
+        ... on CatalogItemProduct {
+          product {
+            _id
+            productId
+            title
+            slug
+            tagIds
+            description 
+            vendor
+            isLowQuantity
+            isSoldOut
+            isBackorder
+            metafields {
+              description
+              key
+              namespace
+              scope
+              value
+              valueType
+            }
+            shop {
+              currency {
+                code
+              }
+            }
+            pricing {
+              maxFreeQty
+              maxQty
+              minQty
+              compareAtPrice {
+                displayAmount
+              }
+              currency {
+                code
+              }
+              displayPrice
+              minPrice
+              maxPrice
+            }
+            primaryImage {
+              URLs {
+                thumbnail
+                small
+                medium
+                large
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

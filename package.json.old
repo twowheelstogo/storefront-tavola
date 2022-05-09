@@ -1,0 +1,149 @@
+{
+  "name": "example-storefront",
+  "version": "5.1.1",
+  "description": "The Example Storefront serves as a reference for implementing a web based storefront using the Reaction Commerce GraphQL API.",
+  "keywords": [],
+  "author": {
+    "name": "Reaction Commerce",
+    "email": "engineering@reactioncommerce.com",
+    "url": "https://reactioncommerce.com"
+  },
+  "release": {
+    "branches": [
+      "trunk"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "sed -i 's/${lastRelease.version}/${nextRelease.version}/g' docker-compose.yml"
+        }
+      ],
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json",
+            "package-lock.json",
+            "CHANGELOG.md",
+            "docker-compose.yml"
+          ],
+          "message": "chore(release): v${nextRelease.version} [skip ci]"
+        }
+      ]
+    ]
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "scripts": {
+    "dev": "echo 'Note: dev script has been renamed to start:dev' && yarn run start:dev",
+    "build": "yarn run build-clean && NODE_ENV=production IS_BUILDING_NEXTJS=1 next build",
+    "build-clean": "rimraf .next",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "start": "NODE_ENV=production next start -p 4000",
+    "start:dev": "NODE_ENV=development next dev -p 4000",
+    "test": "yarn run test:unit",
+    "test:ci": "yarn run test:unit --ci --runInBand --colors",
+    "test:unit": "NODE_ENV=jesttest jest",
+    "test:unit:watch": "NODE_ENV=jesttest jest --watchAll",
+    "test:link": "blc http://web.reaction.localhost:4000 -ro -filter=3 -e",
+    "test:file": "NODE_ENV=jesttest jest --watch --no-coverage",
+    "type-check": "tsc",
+    "postinstall": "is-ci || is-docker || husky install",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable"
+  },
+  "eslintConfig": {
+    "extends": "@reactioncommerce",
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "overrides": [
+      {
+        "files": [
+          "*.ts",
+          "*.tsx"
+        ],
+        "rules": {
+          "comma-dangle": "off",
+          "max-len": "off",
+          "quote-props": "off",
+          "react/prop-types": "off",
+          "react/jsx-max-props-per-line": "off",
+          "parser": "babel-eslint"
+        }
+      }
+    ]
+  },
+  "dependencies": {
+    "@idigi/random": "^0.0.0",
+    "react": "^17.0.0"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/reports/**",
+      "!**/dist/**",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "coverageDirectory": "reports/coverage",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/node_nodules/",
+      "<rootDir>/build/",
+      "<rootDir>/lib/tracking/utils"
+    ],
+    "moduleNameMapper": {
+      "^hocs(.*)$": "<rootDir>/hocs$1",
+      "^hooks(.*)$": "<rootDir>/hooks$1",
+      "^context(.*)$": "<rootDir>/context$1",
+      "^lib(.*)$": "<rootDir>/lib$1",
+      "^containers(.*)$": "<rootDir>/containers$1",
+      "^components(.*)$": "<rootDir>/components$1",
+      "^translations(.*)$": "<rootDir>/translations$1",
+      "^staticUtils(.*)$": "<rootDir>/staticUtils$1"
+    },
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "roots": [
+      "<rootDir>"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.js"
+    ],
+    "transform": {
+      "\\.(gql|graphql)$": "jest-transform-graphql",
+      ".*": "babel-jest"
+    }
+  },
+  "jest-junit": {
+    "output": "reports/junit/junit.xml",
+    "suiteName": "jest-tests"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
+}

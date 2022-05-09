@@ -23,18 +23,29 @@ fragment CartCommon on Cart {
       type
       data {
         shippingAddress {
-          address1
-          address2
-          city
-          company
-          country
-          fullName
-          isBillingDefault
-          isCommercial
-          isShippingDefault
+          _id
+          description
+          address
+          reference
           phone
-          postal
-          region
+          receiver
+          geolocation {
+            latitude
+            longitude
+          }
+          metaddress {
+            administrative_area_level_1
+            administrative_area_level_2
+            neighborhood
+            street_address
+            sublocality
+            distance {
+              value
+              text
+              branch
+              branchId
+            }
+          }
         }
       }
       availableFulfillmentOptions {
@@ -66,19 +77,31 @@ fragment CartCommon on Cart {
       shop {
         _id
       }
+      
       shippingAddress {
-        address1
-        address2
-        city
-        company
-        country
-        fullName
-        isBillingDefault
-        isCommercial
-        isShippingDefault
+        _id
+        description
+        address
+        reference
+        receiver
         phone
-        postal
-        region
+        geolocation {
+          latitude
+          longitude
+        }
+        metaddress {
+          administrative_area_level_1
+          administrative_area_level_2
+          neighborhood
+          street_address
+          sublocality
+          distance {
+            value
+            text
+            branch
+            branchId
+          }
+        }
       }
     }
     summary {
@@ -107,11 +130,15 @@ fragment CartCommon on Cart {
     }
   }
   totalItemQuantity
+  totalCatalogQuantity
 }
 
 # Fragment for queries that require pagination
 fragment CartQueryFragment on Cart {
   ...CartCommon
+  catalogs(first: 20, after: $itemsAfterCursor) {
+    ...CartCatalogConnectionFragment
+  }
   items(first: 20, after: $itemsAfterCursor) {
     ...CartItemConnectionFragment
   }
@@ -120,6 +147,9 @@ fragment CartQueryFragment on Cart {
 # Fragment for use with cart payloads
 fragment CartPayloadFragment on Cart {
   ...CartCommon
+  catalogs {
+    ...CartCatalogConnectionFragment
+  }
   items {
     ...CartItemConnectionFragment
   }
@@ -133,73 +163,121 @@ fragment CartItemConnectionFragment on CartItemConnection {
   }
   edges {
     node {
-      _id
-      productConfiguration {
-        productId
-        productVariantId
-      }
-      addedAt
-      attributes {
-        label
-        value
-      }
-      createdAt
-      isBackorder
-      isLowQuantity
-      isSoldOut
-      imageURLs {
-        large
-        small
-        original
-        medium
-        thumbnail
-      }
-      metafields {
-        value
-        key
-      }
-      parcel {
-        length
-        width
-        weight
-        height
-      }
-      price {
-        amount
-        displayAmount
-        currency {
-          code
-        }
-      }
-      priceWhenAdded {
-        amount
-        displayAmount
-        currency {
-          code
-        }
-      }
-      productSlug
-      productType
-      quantity
-      shop {
-        _id
-      }
-      subtotal {
-        displayAmount
-      }
-      title
-      productTags {
-        nodes {
-          name
-        }
-      }
-      productVendor
-      variantTitle
-      optionTitle
-      updatedAt
-      inventoryAvailableToSell
+      ...CartItemFragment
     }
   }
+}
+## Fragment for cart items, used in both queries and mutations
+fragment CartCatalogConnectionFragment on CartCatalogConnection {
+  pageInfo {
+    hasNextPage
+    endCursor
+  }
+  edges {
+    node {
+      _id
+      title
+      createdAt
+      updatedAt
+      quantity
+      productId
+      itemx {
+        ...CartItemxFragment
+      }
+      items {
+        ...CartItemFragment
+      }
+    }
+  }
+}
+## Fragment for cart items, used in both queries and mutations
+fragment CartItemxFragment on CartItemx {
+  _id
+  label
+  value
+  quantity
+  options {
+    _id
+    label
+    value
+    quantity
+  }
+}
+## Fragment for cart items, used in both queries and mutations
+fragment CartItemFragment on CartItem  {
+  _id
+  cartCatalogId
+  isHidden
+  pricex {
+    _id
+    variant {
+      _id
+    }
+  }
+  productConfiguration {
+    productId
+    productVariantId
+  }
+  addedAt
+  attributes {
+    label
+    value
+  }
+  createdAt
+  isBackorder
+  isLowQuantity
+  isSoldOut
+  imageURLs {
+    large
+    small
+    original
+    medium
+    thumbnail
+  }
+  metafields {
+    value
+    key
+  }
+  parcel {
+    length
+    width
+    weight
+    height
+  }
+  price {
+    amount
+    displayAmount
+    currency {
+      code
+    }
+  }
+  priceWhenAdded {
+    amount
+    displayAmount
+    currency {
+      code
+    }
+  }
+  productSlug
+  productType
+  quantity
+  shop {
+    _id
+  }
+  subtotal {
+    displayAmount
+  }
+  title
+  productTags {
+    nodes {
+      name
+    }
+  }
+  productVendor
+  variantTitle
+  optionTitle
+  updatedAt
+  inventoryAvailableToSell
 }
 
 # Fragment for use with payloads related cart. Used solely for mutations
@@ -227,6 +305,15 @@ fragment IncorrectPriceFailureDetailsFragment on IncorrectPriceFailureDetails {
 # Fragment for use with payloads related cart. Used solely for mutations
 fragment MinOrderQuantityFailureDetailsFragment on MinOrderQuantityFailureDetails {
   minOrderQuantity
+  productConfiguration {
+    productId
+    productVariantId
+  }
+  quantity
+}
+# Fragment for use with payloads related cart. Used solely for mutations
+fragment MaxOrderQuantityFailureDetailsFragment on MaxOrderQuantityFailureDetails {
+  maxOrderQuantity
   productConfiguration {
     productId
     productVariantId

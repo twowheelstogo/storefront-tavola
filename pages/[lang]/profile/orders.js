@@ -18,14 +18,14 @@ import ErrorPage from "pages/_error";
 
 const styles = (theme) => ({
   accountProfileInfoContainer: {
-    marginBottom: theme.spacing(4)
-  }
+    marginBottom: theme.spacing(4),
+  },
 });
 
 class ProfileOrdersPage extends Component {
   static propTypes = {
     authStore: PropTypes.shape({
-      account: PropTypes.object.isRequired
+      account: PropTypes.object.isRequired,
     }),
     classes: PropTypes.object,
     onAddressAdded: PropTypes.func.isRequired,
@@ -34,8 +34,8 @@ class ProfileOrdersPage extends Component {
     router: PropTypes.object.isRequired,
     shop: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      description: PropTypes.string
-    })
+      description: PropTypes.string,
+    }),
   };
 
   renderMainContent() {
@@ -43,7 +43,11 @@ class ProfileOrdersPage extends Component {
   }
 
   render() {
-    const { authStore: { account }, router, shop } = this.props;
+    const {
+      authStore: { account },
+      router,
+      shop,
+    } = this.props;
 
     // If there is no logged in user, return Not Found page
     if (account && !account._id) {
@@ -85,9 +89,9 @@ class ProfileOrdersPage extends Component {
 export async function getStaticProps({ params: { lang } }) {
   return {
     props: {
-      ...await fetchPrimaryShop(lang),
-      ...await fetchTranslations(lang, ["common"])
-    }
+      ...(await fetchPrimaryShop({ language: lang })),
+      ...(await fetchTranslations(lang, ["common"])),
+    },
   };
 }
 
@@ -98,7 +102,7 @@ export async function getStaticProps({ params: { lang } }) {
 export async function getStaticPaths() {
   return {
     paths: locales.map((locale) => ({ params: { lang: locale } })),
-    fallback: false
+    fallback: false,
   };
 }
 
