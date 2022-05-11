@@ -144,7 +144,7 @@ const HorizontalProductCard = (props) => {
                           >
                             <ProductMediaWrapper>
                               <ProgressiveImage
-                                fit={""}
+                                fit={"container"}
                                 altText={"description"}
                                 presrc={
                                   values.primaryImage !== null

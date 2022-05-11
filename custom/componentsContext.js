@@ -72,6 +72,7 @@ import FulfillmentTypeAction from "components/FulfillmentTypeAction";
 /**
 * * *  Custom
 */
+import CartItemCustom from "components/CartItem";
 import AccordionFormListCustom from "components/AccordionFormListCustom";
 import AccordionCustom from "components/AccordionCustom";
 // import AddressForm from "components/AddressForm";
@@ -104,7 +105,9 @@ import PaymentsCheckoutActionCustom from "components/PaymentsCheckoutActionCusto
 import SelectableListCustom from "components/SelectableListCustom";
 import SelectableItemCustomer from "components/SelectableItemCustomer";
 import AddressFormCustom from "components/AddressFormCustom";
-
+import CardItemList from "components/CardItemList";
+import CardItemSelect from "components/CardItemSelect";
+import FulfillmentList from "components/FulfillmentList";
 
 // Providing locales data
 const AddressFormWithLocales = withLocales(AddressFormCustom);
@@ -167,6 +170,7 @@ export default {
   CatalogLayout,
   HorizontalTagsProducts,
   CartItemsList,
+  CartItemCustom,
   AddressList,
   RadioButtonItem,
   CartSummary,
@@ -193,5 +197,7 @@ export default {
   SelectableListCustom,
   SelectableItemCustomer,
   AddressFormCustom,
-  FulfillmentTypeAction
+  FulfillmentTypeAction,CardItemList,
+  CardItemSelect,
+  FulfillmentList
 };

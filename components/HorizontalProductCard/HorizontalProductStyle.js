@@ -33,7 +33,7 @@ const StyledSubtitleVertical = styled.div`
 const CardContainerVertical = styled.div`
   border: ${({ withBorder, boderColor }) => (withBorder ? boderColor : "none")};
   cursor: pointer;
-  height: 100%;
+  height: 200px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;

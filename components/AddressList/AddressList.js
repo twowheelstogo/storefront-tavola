@@ -3,8 +3,8 @@ import { withComponents } from "@reactioncommerce/components-context";
 import styled from "styled-components";
 import { Menu, MenuItem, IconButton } from "@material-ui/core";
 import metas from "lib/utils/metas";
-/* import MoreVertIcon from "@material-ui/icons/MoreVert";
-import AddIcon from "@material-ui/icons/Add"; */
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import AddIcon from "@material-ui/icons/Add";
 const Items = styled.div`
   display: flex;
   flex-direction: column;
@@ -62,7 +62,7 @@ const Controls = (props) => {
   return (
     <div>
       <IconButton onClick={handleOpen} aria-controls={id} aria-haspopup="true">
-        {/*  <MoreVertIcon /> */}
+        <MoreVertIcon />
       </IconButton>
       <Menu id={id} keepMounted anchorEl={state.menuOpen} open={Boolean(state.menuOpen)} onClose={handleClose}>
         <MenuItem onClick={editAddress}>Editar</MenuItem>
@@ -151,7 +151,7 @@ class AddressList extends Component {
           <CustomButtonText>
             {addressBook.length > 0 ? "Agregar otra dirección" : "Agregar una dirección"}
           </CustomButtonText>
-          {/*   <AddIcon /> */}
+          <AddIcon /> 
         </CustomRoundedButton>
       </Items>
     );

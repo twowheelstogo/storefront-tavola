@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
   },
   Contenedor: {
     ["@media (max-width:599px)"]: {
-      backgroundColor: "#202124",
+      backgroundColor: "#FFFFF",
     },
   },
   root: {},

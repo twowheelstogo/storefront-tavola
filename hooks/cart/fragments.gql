@@ -54,6 +54,9 @@ fragment CartCommon on Cart {
           displayAmount
         }
         fulfillmentMethod {
+          destination {
+            distance
+          }
           _id
           name
           displayName
@@ -61,6 +64,9 @@ fragment CartCommon on Cart {
       }
       selectedFulfillmentOption {
         fulfillmentMethod {
+          destination {
+            distance
+          }
           _id
           name
           displayName

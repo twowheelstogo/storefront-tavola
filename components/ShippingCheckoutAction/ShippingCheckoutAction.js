@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { applyTheme, CustomPropTypes, getRequiredValidator } from "@reactioncommerce/components/utils";
 import { Form } from "reacto-form";
 import ShippingAddressCheckoutAction from "components/ShippingAddressCheckoutAction";
+import ShippingMethodCheckoutAction from "components/ShippingMethodCheckoutAction";
 import Actions from "components/Actions";
-import ShippingMethodCheckoutAction from "components/ShippingCheckoutAction";
 class ShippingCheckoutAction extends Component {
 	static propTypes = {
 		components: PropTypes.shape({
@@ -62,40 +62,40 @@ class ShippingCheckoutAction extends Component {
 				ref={(formEl) => {
 					this._dateForm = formEl;
 				}}
-			/>
+
+			>
+			</Form>
 		);
 	}
 	renderActions() {
 		const { actionAlerts, fulfillmentGroup, onSubmit, onSubmitShippingAddress, submits } = this.props;
-		console.log('actionsAlerts----> ShippingCheckoutAction',actionAlerts)
-		console.log(actionAlerts)
 		const actions = [
 			{
-    			id: "2",
-    			activeLabel: "A dónde llevaremos tu orden?",
-    			completeLabel: "Shipping address",
-    			incompleteLabel: "Shipping address",
-    			// status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
-    			component: ShippingAddressCheckoutAction,
-    			onSubmit: submits?.onSubmitShippingAddress,
-    			props: {
-    				alert: actionAlerts["2"],
-    				fulfillmentGroup
-    			}
-    		},
-    		// {
-    		// 	id: "3",
-    		// 	activeLabel: "Elige un método de envío",
-    		// 	completeLabel: "Shipping address",
-    		// 	incompleteLabel: "Shipping address",
-    		// 	// status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
-    		// 	component: ShippingMethodCheckoutAction,
-    		// 	onSubmit: submits.onSetShippingMethod,
-    		// 	props: {
-    		// 		alert: actionAlerts["3"],
-    		// 		fulfillmentGroup
-    		// 	}
-    		// },
+				id: "2",
+				activeLabel: "A dónde llevaremos tu orden?",
+				completeLabel: "Shipping address",
+				incompleteLabel: "Shipping address",
+				// status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
+				component: ShippingAddressCheckoutAction,
+				onSubmit: submits.onSubmitShippingAddress,
+				props: {
+					alert: actionAlerts["2"],
+					fulfillmentGroup
+				}
+			},
+			{
+				id: "3",
+				activeLabel: "Tu costo de envío",
+				completeLabel: "Shipping address",
+				incompleteLabel: "Shipping address",
+				// status: fulfillmentGroup.type !== "shipping" || fulfillmentGroup.shippingAddress ? "complete" : "incomplete",
+				component: ShippingMethodCheckoutAction,
+				onSubmit: submits.onSetShippingMethod,
+				props: {
+					alert: actionAlerts["3"],
+					fulfillmentGroup
+				}
+			},
 		];
 		return <Actions actions={actions} />;
 	}

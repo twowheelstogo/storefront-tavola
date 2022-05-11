@@ -84,6 +84,7 @@ class BillingFormAction extends Component {
 	}
 	async handleOnChangeNit(value) {
 		const { onChange, isCf, authStore } = this.props;
+		console.info("authStore ---> getting nit", authStore)
 		if (value == null || value == "") {
 			return;
 		}
@@ -92,7 +93,7 @@ class BillingFormAction extends Component {
 				return;
 			}
 			this.setState({ loading: true, hasData: false, partnerId: -1, searchNit: true });
-			let nitRes = await NitService.getNit(value, authStore.accessToken);
+			let nitRes = await NitService.getNit(this.props.apolloClient, value, authStore.accessToken);
 			onChange({
 				isCf: false,
 				nit: nitRes.vat,
