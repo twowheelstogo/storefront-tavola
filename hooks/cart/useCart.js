@@ -14,6 +14,7 @@ import {
   setEmailOnAnonymousCartMutation,
   setFulfillmentOptionCartMutation,
   setShippingAddressCartMutation,
+  setFulfillmentOnCartMutation,
   uCartCatalogsQtyMutation,
   updateCartItemsQuantityMutation,
   updateFulfillmentOptionsForGroup,
@@ -308,6 +309,32 @@ export default function useCart() {
         } = response;
         handleUpdateFulfillmentOptionsForGroup(setShippingAddressOnCart.cart.checkout.fulfillmentGroups[0]._id);
 
+        return response;
+      },
+      onSetFulfillment: async (data = {}) => {
+        // console.info("LOG: setFulfillmentOnCart", address);
+        const input = { ...cartIdAndCartToken(), ...data };
+        if (input.address) {
+          if (input.address._id) {
+            input.addressId = input.addressId || input.address._id;
+            delete input.address._id;
+          }
+          for (const o of ["isCommercial", "isBillingDefault", "isShippingDefault"]) {
+            input.address[o] = !!input.address[o];
+            // [undefined, 0, false, null] => false
+          }
+        }
+        const response = await apolloClient.mutate({
+          mutation: setFulfillmentOnCartMutation,
+          variables: { input },
+        });
+  
+        // Update fulfillment options for current cart
+        const {
+          data: { setFulfillmentOnCart },
+        } = response;
+        handleUpdateFulfillmentOptionsForGroup(setFulfillmentOnCart.cart.checkout.fulfillmentGroups[0]._id);
+  
         return response;
       },
     },

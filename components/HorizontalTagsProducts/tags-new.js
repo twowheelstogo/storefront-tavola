@@ -20,7 +20,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box p={2}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -92,7 +92,6 @@ export default function ScrollSpyTabsNew(props) {
                 return (
                   <div>
                     <h1>{tag.displayTitle}</h1>
-                    <div>
                       <HorizontalProductCard
                         {...props}
                         catalogProducts={catalogProducts}
@@ -103,7 +102,6 @@ export default function ScrollSpyTabsNew(props) {
                         setSortBy
                         sortBy
                       />
-                    </div>
                   </div>
                 );
               })}

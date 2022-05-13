@@ -394,8 +394,6 @@ class NavigationHeader extends Component {
             ) : (
               "null"
             )}
-            {/* old version Slider */}
-            {/*   {withHero ? <SlideHero title={MessageCover} subtitle={""} background={ImageCoverUrl} type={"jpg"} /> : null} */}
           </>
         )}
       </Fragment>

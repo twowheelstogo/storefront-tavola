@@ -18,7 +18,7 @@ class ShippingMethodCheckoutAction extends React.Component{
 		console.info('selectedFulfillmentOption ----->',id)
       	const { onSubmit } = this.props;
       	await onSubmit({ selectedFulfillmentOption });
-      }
+      }	
 
       renderfulfillmentList(){
       	const {components:{FulfillmentList,},

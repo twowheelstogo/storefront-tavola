@@ -67,6 +67,7 @@ class CheckoutActions extends Component {
     checkoutMutations: PropTypes.shape({
       onSetFulfillmentOption: PropTypes.func.isRequired,
       onSetShippingAddress: PropTypes.func.isRequired,
+      onSetFulfillment: PropTypes.func,
     }),
     clearAuthenticatedUsersCart: PropTypes.func.isRequired,
     orderEmailAddress: PropTypes.string.isRequired,
@@ -196,7 +197,7 @@ class CheckoutActions extends Component {
   setShippingAddress = async (address) => {
     const {
       apolloClient,
-      checkoutMutations: { onSetShippingAddress },
+      checkoutMutations: { onSetFulfillment },
     } = this.props;
     // console.log("LOG: setShippingAddress: setting shipping", JSON.stringify(address, null,2), this.props.cart.shop)
     let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(
@@ -220,7 +221,7 @@ class CheckoutActions extends Component {
 
     try {
       // console.log("LOG: setShippingAddress: udpated address", address);
-      const { data, error } = await onSetShippingAddress(address);
+      const { data, error } = await onSetFulfillment({ type: "shipping", address });
 
       if (data && !error && this._isMounted) {
         this.setState({
@@ -368,7 +369,7 @@ class CheckoutActions extends Component {
     const {
       checkoutMutations: { onSetFulfillmentType },
     } = this.props;
-    console.log('checkoutMutations setFulfillmentType', this.props)
+    console.log("checkoutMutations setFulfillmentType", this.props);
     const {
       checkout: { fulfillmentGroups },
     } = this.props.cart;
@@ -519,7 +520,7 @@ class CheckoutActions extends Component {
           metafields: item.metafields || [],
         }));
 
-        console.info("LOG: selectedFulfillmentOption",selectedFulfillmentOption,group);
+        console.info("LOG: selectedFulfillmentOption", selectedFulfillmentOption, group);
         // if (!selectedFulfillmentOption || selectedFulfillmentOption == null) {
         //   throw new CheckoutError({
         //     message: "La dirección seleccionada está fuera del rango de envío",

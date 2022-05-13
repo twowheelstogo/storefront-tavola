@@ -69,6 +69,7 @@ class CheckoutActions extends Component {
     checkoutMutations: PropTypes.shape({
       onSetFulfillmentOption: PropTypes.func.isRequired,
       onSetShippingAddress: PropTypes.func.isRequired,
+      onSetFulfillment: PropTypes.func,
     }),
     clearAuthenticatedUsersCart: PropTypes.func.isRequired,
     orderEmailAddress: PropTypes.string.isRequired,
@@ -139,8 +140,7 @@ class CheckoutActions extends Component {
       await onSetDiscountCode(value);
       this.setState({
         actionAlerts: {
-          7: {
-          },
+          7: {},
         },
       });
     } catch (error) {
@@ -155,7 +155,7 @@ class CheckoutActions extends Component {
         },
       });
     }
-  }
+  };
 
   componentDidUpdate({ addressValidationResults: prevAddressValidationResults }) {
     const { addressValidationResults } = this.props;
@@ -238,6 +238,56 @@ class CheckoutActions extends Component {
             title: "Shipping error",
             message: error.message
           }
+        },
+      });
+      console.error("graphql error: ", error);
+    }
+  };
+  setFulfillment = async (input = {}) => {
+    const {
+      apolloClient,
+      checkoutMutations: { onSetFulfillment },
+    } = this.props;
+    if (input.address) {
+      console.log("setting shipping");
+      let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(
+        apolloClient,
+        input.address.geolocation.latitude,
+        input.address.geolocation.longitude,
+        this.props.authStore.accessToken,
+        this.props.cart.shop,
+      );
+      console.log("address", input.address);
+      try {
+        input.address = await MetadataService.updateMetadataAddressBook(
+          apolloClient,
+          _metaddress,
+          input.address._id,
+          this.props.authStore.accessToken,
+        );
+      } catch (errTmp) {
+        console.error("errtmp", errTmp);
+      }
+      console.log("udpated address", input.address);
+    }
+    try {
+      const { data, error } = await onSetFulfillment(input);
+      if (data && !error && this._isMounted) {
+        this.setState({
+          actionAlerts: {
+            1: {},
+            2: {},
+          },
+        });
+      }
+    } catch (error) {
+      this.setState({
+        actionAlerts: {
+          2: {
+            alertType: "error",
+            title: "Shipping error",
+            message: error.message,
+          },
         },
       });
       console.error("graphql error: ", error);
@@ -340,10 +390,10 @@ class CheckoutActions extends Component {
     const shippingAlert =
       validationErrors && validationErrors.length
         ? {
-          alertType: validationErrors[0].type,
-          title: validationErrors[0].summary,
-          message: validationErrors[0].details,
-        }
+            alertType: validationErrors[0].type,
+            title: validationErrors[0].summary,
+            message: validationErrors[0].details,
+          }
         : null;
     this.setState({ actionAlerts: { 1: shippingAlert } });
   }
@@ -374,6 +424,8 @@ class CheckoutActions extends Component {
       fulfillmentGroupId: fulfillmentGroups[0]._id,
       fulfillmentType: type,
     };
+
+    console.info("setFulfillmentType ---->", fulfillmentTypeInput);
     await onSetFulfillmentType(fulfillmentTypeInput);
   };
 
@@ -450,7 +502,7 @@ class CheckoutActions extends Component {
         this.props.authStore.accessToken,
         this.props.cart.shop,
         pickupDetails.branchId,
-        _datePickup
+        _datePickup,
       );
       if (_isAvailable === false) {
         throw new CheckoutError({
@@ -483,7 +535,7 @@ class CheckoutActions extends Component {
       const isAvailable = await AddressAvailableService.getIsAvailableBranch(
         this.props.authStore.accessToken,
         this.props.cart.shop,
-        branchId
+        branchId,
       );
       if (isAvailable === false) {
         throw new CheckoutError({
@@ -641,7 +693,8 @@ class CheckoutActions extends Component {
     return addresses;
   }
   render() {
-    const { addressValidation, addressValidationResults, cart, cartStore, authStore, paymentMethods, apolloClient } = this.props;
+    const { addressValidation, addressValidationResults, cart, cartStore, authStore, paymentMethods, apolloClient } =
+      this.props;
 
     const {
       checkout: { fulfillmentGroups, summary },
@@ -682,6 +735,7 @@ class CheckoutActions extends Component {
         component: DeliveryOptionsCheckoutAction,
         onSubmit: this.setShippingAddress,
         props: {
+          cart,
           apolloClient,
           alert: actionAlerts["1"],
           deliveryMethods,
@@ -695,6 +749,7 @@ class CheckoutActions extends Component {
             onSetShippingMethod: this.setShippingMethod,
             onSelectFulfillmentType: this.setFulfillmentType,
             onSubmitPickupDetails: this.setPickupDetails,
+            onSubmitSetFulfillment: this.setFulfillment,
           },
         },
       },
@@ -746,7 +801,7 @@ class CheckoutActions extends Component {
       //   component: GiftCheckoutAction,
       //   onSubmit: this.handleGiftSubmit,
       //   props: {
-        // apolloClient,
+      // apolloClient,
       //     alert: actionAlerts["6"],
       //     onChange: this.setGiftInputs,
       //     senderValue: this.state.giftInputs.sender,
@@ -763,7 +818,7 @@ class CheckoutActions extends Component {
       //   component: DiscountCodeAction,
       //   onSubmit: this.handleDiscountCodeToCart,
       //   props: {
-        // apolloClient,
+      // apolloClient,
       //     alert: actionAlerts["7"]
       //   },
       // }

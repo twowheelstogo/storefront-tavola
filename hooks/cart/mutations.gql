@@ -101,6 +101,16 @@ mutation setShippingAddressCartMutation(
     }
   }
 }
+# setFulfillmentOnCart
+mutation setFulfillmentOnCartMutation(
+  $input: SetFulfillmentOnCartInput!
+) {
+  setFulfillmentOnCart(input: $input) {
+    cart {
+      ...CartPayloadFragment
+    }
+  }
+}
 
 # Update the quantities of items in the cart
 mutation updateCartItemsQuantityMutation(

@@ -21,6 +21,7 @@ fragment CartCommon on Cart {
     fulfillmentGroups {
       _id
       type
+      picktimes{time note}
       data {
         shippingAddress {
           _id

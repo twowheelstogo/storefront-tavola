@@ -142,7 +142,6 @@ const HorizontalProductCard = (props) => {
                             href={values.slug && "/product/[...slugOrId]"}
                             as={values.slug && `/product/${values.slug}`}
                           >
-                            <ProductMediaWrapper>
                               <ProgressiveImage
                                 fit={"container"}
                                 altText={"description"}
@@ -155,17 +154,12 @@ const HorizontalProductCard = (props) => {
                                   values.primaryImage !== null ? values.primaryImage.URLs : "/images/placeholder.gif"
                                 }
                               />
-                            </ProductMediaWrapper>
                             <CardContent>
-                              <div>
                                 <StyledTitleVertical>{values.title}</StyledTitleVertical>
                                 <StyledSubtitleVertical>{values.description}</StyledSubtitleVertical>
-                              </div>
-                              <div>
                                 <Typography className={classes.textPrice}>
                                   {/* values.pricing[0].displayPrice */}
                                 </Typography>
-                              </div>
                             </CardContent>
                           </Link>
                         </CardContainerVertical>
