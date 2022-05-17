@@ -25,6 +25,13 @@ fragment OrderCommon on Order {
           phone
           postal
           region
+
+          description
+          address
+          reference
+          receiver
+          geolocation
+          metaddress
         }
       }
     }

@@ -197,22 +197,25 @@ class CheckoutActions extends Component {
   }
 
   setShippingAddress = async (address) => {
-    const {apolloClient,
+    const {
+      apolloClient,
       checkoutMutations: { onSetShippingAddress },
     } = this.props;
-    console.log("setting shipping")
-    let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(apolloClient,
+    console.log("setting shipping");
+    let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(
+      apolloClient,
       address.geolocation.latitude,
       address.geolocation.longitude,
       this.props.authStore.accessToken,
-      this.props.cart.shop
+      this.props.cart.shop,
     );
     console.log("address", address);
     try {
-      address = await MetadataService.updateMetadataAddressBook(apolloClient,
+      address = await MetadataService.updateMetadataAddressBook(
+        apolloClient,
         _metaddress,
         address._id,
-        this.props.authStore.accessToken
+        this.props.authStore.accessToken,
       );
     } catch (errTmp) {
       console.error("errtmp", errTmp);
@@ -226,7 +229,7 @@ class CheckoutActions extends Component {
         this.setState({
           actionAlerts: {
             1: {},
-            2: {}
+            2: {},
           },
         });
       }
@@ -236,8 +239,8 @@ class CheckoutActions extends Component {
           2: {
             alertType: "error",
             title: "Shipping error",
-            message: error.message
-          }
+            message: error.message,
+          },
         },
       });
       console.error("graphql error: ", error);
@@ -562,11 +565,18 @@ class CheckoutActions extends Component {
         let { selectedFulfillmentOption } = group;
 
         const items = cart.items.map((item) => ({
+          _id: item._id,
+          cartCatalogId: item.cartCatalogId,
           addedAt: item.addedAt,
           price: item.price.amount,
           productConfiguration: item.productConfiguration,
           quantity: item.quantity,
           metafields: item.metafields || [],
+        }));
+        const catalogs = (cart.catalogs || []).map((catalog) => ({
+          _id: catalog._id,
+          addedAt: catalog.addedAt,
+          quantity: catalog.quantity,
         }));
         if (!selectedFulfillmentOption || selectedFulfillmentOption == null) {
           throw new CheckoutError({
@@ -578,6 +588,7 @@ class CheckoutActions extends Component {
         return {
           data,
           items,
+          catalogs,
           selectedFulfillmentMethodId: selectedFulfillmentOption.fulfillmentMethod._id,
           shopId: group.shop._id,
           totalPrice: checkout.summary.total.amount,
@@ -753,7 +764,6 @@ class CheckoutActions extends Component {
           },
         },
       },
-
       {
         id: "4",
         activeLabel: "Elige cómo pagarás tu orden",
@@ -763,7 +773,6 @@ class CheckoutActions extends Component {
         component: PaymentMethodCheckoutAction,
         onSubmit: this.handlePaymentSubmit,
         props: {
-          apolloClient,
           addresses,
           alert: actionAlerts["4"],
           onReset: this.handlePaymentsReset,

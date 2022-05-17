@@ -2,7 +2,7 @@
 
 # place an order
 mutation placeOrderMutation($input: PlaceOrderInput!, $language: String! = "en") {
-  placeOrder(input: $input) {
+  cOrder(input: $input) {
     orders {
       ...OrderQueryFragment
     },
