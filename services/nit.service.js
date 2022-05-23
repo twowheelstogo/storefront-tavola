@@ -5,7 +5,7 @@ const getNit = async (apolloClient, nit, accessToken) => {
     let accessTokenStorage;
   try {
      accessTokenStorage = window.localStorage.getItem("accounts:accessToken");
-    console.info("accessTokenStorage", accessTokenStorage)
+    // console.info("accessTokenStorage", accessTokenStorage)
   } catch (ex) {
     console.error("getting nit error", ex);
   }

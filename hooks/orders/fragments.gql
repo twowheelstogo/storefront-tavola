@@ -10,6 +10,8 @@ fragment OrderCommon on Order {
   email
   fulfillmentGroups {
     _id
+    ids
+    picktimes{time note}
     data {
       ... on ShippingOrderFulfillmentGroupData {
         shippingAddress {

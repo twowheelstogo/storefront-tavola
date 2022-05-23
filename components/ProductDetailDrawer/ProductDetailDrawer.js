@@ -121,7 +121,7 @@ class ProductDetailDrawer extends Component {
     for (const [variantId, optionQtys] of Object.entries(uiStore.qtyx())) {
       const variant = product.variants.find((v) => v.variantId === variantId);
       if (!variant) {
-        console.info(`Error the variant not exists variantId:${variantId} | optionQtys:${optionQtys} `);
+        console.error(`ERROR: the variant not exists variantId:${variantId} | optionQtys:${optionQtys} `);
         continue;
       }
       const vPricing = this.getPricing(variant);
@@ -134,13 +134,13 @@ class ProductDetailDrawer extends Component {
       for (const [optionId, qty] of Object.entries(optionQtys)) {
         const option = (variant.options || []).find((o) => o.variantId === optionId);
         if (!option) {
-          console.info("Error the option not exists");
+          console.error("ERROR: the option not exists");
           continue;
         }
         const oPricing = this.getPricing(option);
         // console.info("currencyCode", currencyCode, "qty", qty, "pricing", oPricing);
         if (!oPricing) {
-          console.info("Error the pricing option not exists");
+          console.error("ERROR: the pricing option not exists");
           continue;
         }
         const oMaxFreeQty = oPricing.maxFreeQty || 0;
@@ -531,7 +531,7 @@ class ProductDetailDrawer extends Component {
           onClose={() => {
             uiStore.toggleCatalog({ catalogId: null });
             this.setState({ product: {}, catalogId: null });
-            console.info("Close drawer");
+            // console.info("Close drawer");
           }}
         >
           <div className={classes.container}>

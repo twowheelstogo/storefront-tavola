@@ -85,7 +85,7 @@ class RadioButtonItem extends React.Component {
             trailingProps, value, methSend,
             priceDestination
         } = this.props;
-        console.info("RadioButtonItem ------>", this.props)
+        // console.info("RadioButtonItem ------>", this.props)
         return (
             <Item>
                 <ItemLeading>

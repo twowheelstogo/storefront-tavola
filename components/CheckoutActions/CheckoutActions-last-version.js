@@ -317,7 +317,7 @@ class CheckoutActions extends Component {
     if (cappedPaymentAmount && typeof remainingAmountDue === "number") {
       cappedPaymentAmount = Math.min(cappedPaymentAmount, remainingAmountDue);
     }
-    console.info("LOG: handleInputComponentSubmit", data);
+    // console.info("LOG: handleInputComponentSubmit", data);
     Object.keys(data).forEach((key) => {
       if (data[key] == null)
         throw new CheckoutError({
@@ -381,7 +381,7 @@ class CheckoutActions extends Component {
   };
 
   handlePaymentSubmit = (paymentInput) => {
-    console.info("LOG: handlePaymentSubmit", paymentInput);
+    // console.info("LOG: handlePaymentSubmit", paymentInput);
     this.props.cartStore.addCheckoutPayment(paymentInput);
     this.setState({
       hasPaymentError: false,
@@ -520,7 +520,7 @@ class CheckoutActions extends Component {
           metafields: item.metafields || [],
         }));
 
-        console.info("LOG: selectedFulfillmentOption", selectedFulfillmentOption, group);
+        // console.info("LOG: selectedFulfillmentOption", selectedFulfillmentOption, group);
         // if (!selectedFulfillmentOption || selectedFulfillmentOption == null) {
         //   throw new CheckoutError({
         //     message: "La dirección seleccionada está fuera del rango de envío",
@@ -544,11 +544,11 @@ class CheckoutActions extends Component {
         fulfillmentGroups,
         shopId: cart.shop._id,
       };
-      console.info("LOG: PlaceOrder", order);
+      // console.info("LOG: PlaceOrder", order);
 
       return this.setState({ isPlacingOrder: true }, () => this.placeOrder(order));
     } catch (error) {
-      console.error("LOG: PlaceOrder", error);
+      console.error("ERROR: PlaceOrder", error);
       this.setState({
         hasPaymentError: true,
         hasBillingError: true,

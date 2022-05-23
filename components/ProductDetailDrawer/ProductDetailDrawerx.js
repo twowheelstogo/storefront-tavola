@@ -83,7 +83,7 @@ class ProductDetailDrawer extends Component {
     const { uiStore } = this.props;
     const res = uiStore.selectedCatalogs[uiStore.selectedCartCatalogId].options;
     // console.info("uiStore.SelectedOptions", uiStore.selectedCartCatalogId, res, uiStore.SelectedOptions());
-    console.info("res", uiStore.selectedCartCatalogId, uiStore.selectedCatalogs[uiStore.selectedCartCatalogId]);
+    // console.info("res", uiStore.selectedCartCatalogId, uiStore.selectedCatalogs[uiStore.selectedCartCatalogId]);
     return res;
   };
   determineProductPrice = (opts = {}) => {
@@ -91,14 +91,14 @@ class ProductDetailDrawer extends Component {
     const errors = [];
     let selectedTotal = 0.0;
     const product = opts.product || (opts.state || {}).product || this.state.product;
-    console.info("uiStore.SelectedOptions()", uiStore.selectedCartCatalogId, uiStore.SelectedOptions());
+    // console.info("uiStore.SelectedOptions()", uiStore.selectedCartCatalogId, uiStore.SelectedOptions());
     ///|\\\|///|\\\|///|\\\
     ///      Selected Options
     ///|\\\|///|\\\|///|\\\
     for (const [variantId, optionQtys] of Object.entries(uiStore.SelectedOptions())) {
       const variant = product.variants.find((v) => v.variantId === variantId);
       if (!variant) {
-        console.info("Error the variant not exists");
+        console.error("ERROR: the variant not exists");
         continue;
       }
       const vPricing = this.getPricing(variant);
@@ -111,13 +111,13 @@ class ProductDetailDrawer extends Component {
       for (const [optionId, qty] of Object.entries(optionQtys)) {
         const option = (variant.options || []).find((o) => o.variantId === optionId);
         if (!option) {
-          console.info("Error the option not exists");
+          console.error("ERROR: the option not exists");
           continue;
         }
         const oPricing = this.getPricing(option);
         // console.info("currencyCode", currencyCode, "qty", qty, "pricing", oPricing);
         if (!oPricing) {
-          console.info("Error the pricing option not exists");
+          console.error("ERROR: the pricing option not exists");
           continue;
         }
         const oMaxFreeQty = oPricing.maxFreeQty || 0;
@@ -154,7 +154,7 @@ class ProductDetailDrawer extends Component {
     if (!opts.isInit) {
       this.showNotif();
     }
-    console.info("Total : selectedTotal", selectedTotal);
+    // console.info("Total : selectedTotal", selectedTotal);
 
     return !errors.length;
   };
@@ -439,7 +439,7 @@ class ProductDetailDrawer extends Component {
     //cartCatalogId
     const cartCatalogId = cartCatalogIdIn || Random.id();
     const nid=this.props.uiStore.selectedCartCatalogF(cartCatalogId);
-    console.info("cartCatalogId", cartCatalogId, nid, this.props.uiStore.selectedCartCatalogId);
+    // console.info("cartCatalogId", cartCatalogId, nid, this.props.uiStore.selectedCartCatalogId);
     let selectedItems = this.initItems(product, uiStore.SelectedOptions(cartCatalogId));
     // Init Qty
     this.refs = {};

@@ -84,7 +84,7 @@ class BillingFormAction extends Component {
 	}
 	async handleOnChangeNit(value) {
 		const { onChange, isCf, authStore } = this.props;
-		console.info("authStore ---> getting nit", authStore)
+		// console.info("authStore ---> getting nit", authStore)
 		if (value == null || value == "") {
 			return;
 		}

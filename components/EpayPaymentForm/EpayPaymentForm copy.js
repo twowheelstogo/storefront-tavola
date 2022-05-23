@@ -101,7 +101,7 @@ function EpayPaymentForm(props, ref) {
 	} = useReactoForm({
 		isReadOnly: isSaving,
 		onChange(formData) {
-			console.log('onChange',formData)
+			// console.log('onChange',formData)
 			const resultDoc = buildResult(formData);
 			const stringDoc = JSON.stringify(resultDoc);
 			if (stringDoc !== lastDocRef.current) {
@@ -117,7 +117,7 @@ function EpayPaymentForm(props, ref) {
 		 onSubmit: (formData) => onSubmit(buildResult(formData))
 	});
 	const handleChange = formData => {
-		console.log('handleChange',formData)
+		// console.log('handleChange',formData)
 		// const resultDoc = buildResult(formData);
 		// const stringDoc = JSON.stringify(resultDoc);
 		// if (stringDoc !== lastDocRef.current) {
@@ -160,7 +160,7 @@ function EpayPaymentForm(props, ref) {
 		props.components.iconMastercard
 	];
 
-	console.info(ccIcons)
+	// console.info(ccIcons)
 	return <div>
 		<AcceptedPaymentMethods>
 			{renderIcons(ccIcons)}

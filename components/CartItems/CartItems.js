@@ -71,16 +71,16 @@ class CartItems extends Component {
       onLoadMoreCartItems,
       components: {CartItemsList}
     } = this.props;
-    console.log("CartItemsList ---------->", {
-      classes,
-      items,
-      isMiniCart,
-      isReadOnly,
-      hasMoreCartItems,
-      onLoadMoreCartItems,
-      components: {CartItemsList}
-    }
-      )
+    // console.log("CartItemsList ---------->", {
+    //   classes,
+    //   items,
+    //   isMiniCart,
+    //   isReadOnly,
+    //   hasMoreCartItems,
+    //   onLoadMoreCartItems,
+    //   components: {CartItemsList}
+    // }
+    //   )
     return (
       <Fragment>
         <CartItemsList

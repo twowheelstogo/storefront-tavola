@@ -80,7 +80,7 @@ class ProductDetailDrawer extends Component {
     for (const [variantId, optionQtys] of Object.entries(uiStore.SelectedOptions)) {
       const variant = product.variants.find((v) => v.variantId === variantId);
       if (!variant) {
-        console.info("Error the variant not exists");
+        console.error("ERROR: the variant not exists");
         continue;
       }
       const vPricing = this.getPricing(variant);
@@ -93,12 +93,12 @@ class ProductDetailDrawer extends Component {
       for (const [optionId, qty] of Object.entries(optionQtys)) {
         const option = (variant.options || []).find((o) => o.variantId === optionId);
         if (!option) {
-          console.info("Error the option not exists");
+          console.error("ERROR: the option not exists");
           continue;
         }
         const oPricing = this.getPricing(option);
         if (!oPricing) {
-          console.info("Error the pricing option not exists");
+          console.error("ERROR: the pricing option not exists");
           continue;
         }
         const oMaxFreeQty = oPricing.maxFreeQty || 0;

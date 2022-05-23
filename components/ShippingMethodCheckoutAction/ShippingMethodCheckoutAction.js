@@ -15,7 +15,7 @@ class ShippingMethodCheckoutAction extends React.Component{
       	const { fulfillmentGroup: { availableFulfillmentOptions } } = this.props;
       	// We get the ID, but we want to pass the whole fulfillment option to onSubmit
       	const selectedFulfillmentOption = availableFulfillmentOptions.find((option) => option.fulfillmentMethod._id === id);
-		console.info('selectedFulfillmentOption ----->',id)
+		// console.info('selectedFulfillmentOption ----->',id)
       	const { onSubmit } = this.props;
       	await onSubmit({ selectedFulfillmentOption });
       }	
@@ -27,7 +27,7 @@ class ShippingMethodCheckoutAction extends React.Component{
       			selectedFulfillmentOption
       		},
       	} = this.props;
-		  console.info('ShippingMethodCheckoutAction Must be Array----->',availableFulfillmentOptions)
+		//   console.info('ShippingMethodCheckoutAction Must be Array----->',availableFulfillmentOptions)
       	return (
 			<FulfillmentList 
 				handleChange={this.handleSubmit}

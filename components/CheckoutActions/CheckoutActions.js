@@ -201,7 +201,7 @@ class CheckoutActions extends Component {
       apolloClient,
       checkoutMutations: { onSetShippingAddress },
     } = this.props;
-    console.log("setting shipping");
+    // console.log("setting shipping");
     let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(
       apolloClient,
       address.geolocation.latitude,
@@ -209,7 +209,7 @@ class CheckoutActions extends Component {
       this.props.authStore.accessToken,
       this.props.cart.shop,
     );
-    console.log("address", address);
+    // console.log("address", address);
     try {
       address = await MetadataService.updateMetadataAddressBook(
         apolloClient,
@@ -222,7 +222,7 @@ class CheckoutActions extends Component {
     }
 
     try {
-      console.log("udpated address", address);
+      // console.log("udpated address", address);
       const { data, error } = await onSetShippingAddress(address);
 
       if (data && !error && this._isMounted) {
@@ -252,7 +252,7 @@ class CheckoutActions extends Component {
       checkoutMutations: { onSetFulfillment },
     } = this.props;
     if (input.address) {
-      console.log("setting shipping");
+      // console.log("setting shipping");
       let _metaddress = await AddressMetadataService.getAddressMetadataGraphql(
         apolloClient,
         input.address.geolocation.latitude,
@@ -260,7 +260,7 @@ class CheckoutActions extends Component {
         this.props.authStore.accessToken,
         this.props.cart.shop,
       );
-      console.log("address", input.address);
+      // console.log("address", input.address);
       try {
         input.address = await MetadataService.updateMetadataAddressBook(
           apolloClient,
@@ -271,7 +271,7 @@ class CheckoutActions extends Component {
       } catch (errTmp) {
         console.error("errtmp", errTmp);
       }
-      console.log("udpated address", input.address);
+      // console.log("udpated address", input.address);
     }
     try {
       const { data, error } = await onSetFulfillment(input);
@@ -428,7 +428,7 @@ class CheckoutActions extends Component {
       fulfillmentType: type,
     };
 
-    console.info("setFulfillmentType ---->", fulfillmentTypeInput);
+    // console.info("setFulfillmentType ---->", fulfillmentTypeInput);
     await onSetFulfillmentType(fulfillmentTypeInput);
   };
 
@@ -475,7 +475,7 @@ class CheckoutActions extends Component {
     const [fulfillmentGroup] = fulfillmentGroups;
     if (fulfillmentGroup.type === "pickup") {
       const {
-        data: { pickupDetails },
+        data: { pickupDetails, ids: { branchId } = {} },
       } = fulfillmentGroup;
       if (!pickupDetails) {
         throw new CheckoutError({
@@ -484,7 +484,7 @@ class CheckoutActions extends Component {
           title: "Error en pickup",
         });
       }
-      if (!pickupDetails.branchId) {
+      if (!pickupDetails.branchId && !branchId) {
         throw new CheckoutError({
           message: "No se ha seleccionado la sucursal de entrega",
           actionCode: 6,
@@ -662,6 +662,9 @@ class CheckoutActions extends Component {
       const {
         placeOrder: { orders, token },
       } = data;
+      console.info(
+        `LOG: Redirect to : /checkout/order?orderId=${orders[0].referenceId}${token ? `&token=${token}` : ""}`,
+      );
       // Send user to order confirmation page
       Router.push(`/checkout/order?orderId=${orders[0].referenceId}${token ? `&token=${token}` : ""}`);
     } catch (error) {

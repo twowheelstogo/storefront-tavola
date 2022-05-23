@@ -9,7 +9,7 @@ class DeliveryOptionsCheckoutAction extends Component {
     const {
       submits: { onSubmitSetFulfillment },
     } = this.props;
-    console.log("setSelectedDeliveryMethodName---->", { type: method.name, fulfillmentId: this.props.fulfillmentGroup._id });
+    // console.log("setSelectedDeliveryMethodName---->", { type: method.name, fulfillmentId: this.props.fulfillmentGroup._id });
     await onSubmitSetFulfillment({ type: method.name, fulfillmentId: this.props.fulfillmentGroup._id });
   };
   renderDeliveryMethods() {
