@@ -445,9 +445,11 @@ const RenderWeb = withStyles(styles)((props) => {
   );
 });
 
-export async function getStaticProps({ params: { lang } }) {
-  const primaryShop = await fetchPrimaryShop({ language: lang });
-  const translations = await fetchTranslations(lang, ["common"]);
+export async function getStaticProps(ctx) {
+  console.info("getStaticProps:ctx", Object.keys(ctx))
+
+  const primaryShop = await fetchPrimaryShop(ctx);
+  const translations = await fetchTranslations(ctx.params.lang, ["common"]);
   if (!primaryShop) {
     return {
       props: {

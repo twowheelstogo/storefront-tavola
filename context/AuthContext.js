@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import PropTypes from "prop-types";
+import getAccountsHandler from "../lib/accountsServer.js";
 
 /**
  * Splits the user's full name into first and last name
@@ -18,7 +19,7 @@ function splitNames(account) {
 
   return {
     firstName,
-    lastName
+    lastName,
   };
 }
 
@@ -27,6 +28,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [accountId, setAccountId] = useState(null);
   const [account, _setAccount] = useState({});
+  const [state, setState] = useState({ loading: true });
+  const { accountsClient } = getAccountsHandler();
 
   const setAccount = (newAccount) => {
     setAccountId(newAccount?._id ?? null);
@@ -37,13 +40,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const fetchUser = async () => {
+    const accountsUser = await accountsClient.getUser();
+    setState({ loading: false, user: accountsUser });
+  };
+
+  const loginWithService = async (service, credentials) => {
+    await accountsClient.loginWithService(service, credentials);
+    await fetchUser();
+  };
+
   return (
-    <AuthContext.Provider value={{
-      accountId,
-      account,
-      setAccount,
-      isAuthenticated: !!accountId
-    }}
+    <AuthContext.Provider
+      value={{
+        accountId,
+        account,
+        setAccount,
+        isAuthenticated: !!accountId,
+        loginWithService,
+        fetchUser,
+      }}
     >
       {children}
     </AuthContext.Provider>
@@ -51,5 +67,5 @@ export const AuthProvider = ({ children }) => {
 };
 
 AuthProvider.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };

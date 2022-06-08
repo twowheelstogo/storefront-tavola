@@ -2,6 +2,19 @@ query viewer {
   viewer {
     _id
     userId
+    addresses {
+      nodes {
+        _id
+        description
+        address
+        reference
+        receiver
+        phone
+        isDef
+        geolocation
+        metaddress
+      }
+    }
     addressBook {
       edges {
         node {

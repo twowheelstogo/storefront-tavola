@@ -1,7 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
-import { isEqual } from "lodash";
+import { isEqual, omit } from "lodash";
 import styled from "styled-components";
 import Actions from "components/Actions";
 import ShippingAddressCheckoutAction from "components/ShippingAddressCheckoutAction";
@@ -560,9 +560,23 @@ class CheckoutActions extends Component {
       await this.handleInputComponentSubmit();
       await this.handleInputBillingComponentSubmit();
       await this.handleInputGiftComponentSubmit();
-      const fulfillmentGroups = checkout.fulfillmentGroups.map((group) => {
-        const { data } = group;
+      console.info("LOG: BuildOrder", checkout.fulfillmentGroups.length);
+
+      const fulfillmentGroups = checkout.fulfillmentGroups.map((group, index) => {
+        const { data, picktimes = [] } = group;
         let { selectedFulfillmentOption } = group;
+        console.info("LOG: BuildOrder:group2", group);
+
+        if (
+          group.type !== "shipping" &&
+          index === checkout.fulfillmentGroups.length - 1 &&
+          !selectedFulfillmentOption
+        ) {
+          selectedFulfillmentOption = {
+            fulfillmentMethod: omit((group.availableFulfillmentMethodOptions || []).concat([group])[0], ["shop"]),
+          };
+        }
+        console.info("LOG: BuildOrder:Check", selectedFulfillmentOption);
 
         const items = cart.items.map((item) => ({
           _id: item._id,
@@ -578,17 +592,21 @@ class CheckoutActions extends Component {
           addedAt: catalog.addedAt,
           quantity: catalog.quantity,
         }));
-        if (!selectedFulfillmentOption || selectedFulfillmentOption == null) {
-          throw new CheckoutError({
-            message: "La dirección seleccionada está fuera del rango de envío",
-            actionCode: 6,
-            title: "Error de envío",
-          });
-        }
+        console.info("LOG: BuildOrder:Check", selectedFulfillmentOption);
+
+        // if (!selectedFulfillmentOption || selectedFulfillmentOption == null) {
+        //   throw new CheckoutError({
+        //     message: "La dirección seleccionada está fuera del rango de envío",
+        //     actionCode: 6,
+        //     title: "Error de envío",
+        //   });
+        // }
         return {
+          _id: group._id,
           data,
           items,
           catalogs,
+          picktimes,
           selectedFulfillmentMethodId: selectedFulfillmentOption.fulfillmentMethod._id,
           shopId: group.shop._id,
           totalPrice: checkout.summary.total.amount,
@@ -622,6 +640,7 @@ class CheckoutActions extends Component {
   };
 
   placeOrder = async (order) => {
+    console.info("LOG: placeOrder", order);
     const { cartStore, clearAuthenticatedUsersCart, apolloClient } = this.props;
 
     // Payments can have `null` amount to mean "remaining".

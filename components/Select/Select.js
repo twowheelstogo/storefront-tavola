@@ -22,10 +22,10 @@ const styles = (theme) => ({
     borderRadius: theme.borderRadii.default
   },
   selected: {
-    backgroundColor: theme.palette.action.hover
+    backgroundColor: theme.palette.action.hover,
   },
   input: {
-    width: theme.spacing(21)
+    width: '100%'
   }
 });
 

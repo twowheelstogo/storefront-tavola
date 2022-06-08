@@ -122,11 +122,13 @@ Login.propTypes = {
  * @param {String} lang - the shop's language
  * @returns {Object} the props
  */
-export async function getStaticProps({ params: { lang } }) {
+export async function getStaticProps(ctx) {
+  console.info("getStaticProps:ctx", Object.keys(ctx))
+
   return {
     props: {
-      ...(await fetchPrimaryShop({ language: lang })),
-      ...(await fetchTranslations(lang, ["common"])),
+      ...(await fetchPrimaryShop(ctx)),
+      ...(await fetchTranslations(ctx.params.lang, ["common"])),
     },
   };
 }

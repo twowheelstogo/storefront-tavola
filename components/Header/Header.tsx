@@ -15,6 +15,8 @@ import AccountDropdown from "components/AccountDropdown";
 import ShopLogo from "@reactioncommerce/components/ShopLogo/v1";
 import Link from "components/Link";
 import MiniCart from "components/MiniCart";
+import { setDefAddr } from "components/GeoAddress";
+import { useApolloClient } from "@apollo/client";
 
 import type { FC } from "react";
 import type { WithStyles, Theme } from "@material-ui/core";
@@ -53,7 +55,13 @@ interface HeaderProps extends WithStyles<typeof styles> {
   viewer: any;
 }
 
-const Header: FC<HeaderProps> = ({ classes, shop, uiStore }) => {
+const Header: FC<HeaderProps> = (props) => {
+  const client = useApolloClient();
+  console.info("LOG: Header", client)
+  const { classes, shop, uiStore, viewer } = props;
+  const load = () => {
+    if (viewer) setDefAddr({ viewer } as any);
+  };
   const handleNavigationToggleClick = () => {
     uiStore.toggleMenuDrawerOpen();
   };
@@ -79,7 +87,7 @@ const Header: FC<HeaderProps> = ({ classes, shop, uiStore }) => {
 
         <LocaleDropdown />
 
-        <AccountDropdown />
+        <AccountDropdown {...props} client={client} />
         <MiniCart />
       </Toolbar>
       <NavigationMobile shop={shop} />

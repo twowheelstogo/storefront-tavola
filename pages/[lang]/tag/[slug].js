@@ -145,8 +145,10 @@ class TagGridPage extends Component {
  * @param {String} slug - the tag's slug
  * @returns {Object} props
  */
-export async function getStaticProps({ params: { lang, slug } }) {
-  const primaryShop = await fetchPrimaryShop({ language: lang });
+export async function getStaticProps(ctx) {//{ params: { lang, slug } }
+  console.info("getStaticProps:ctx", Object.keys(ctx))
+
+  const primaryShop = await fetchPrimaryShop(ctx);
 
   if (!primaryShop?.shop) {
     return {
@@ -164,9 +166,9 @@ export async function getStaticProps({ params: { lang, slug } }) {
   return {
     props: {
       ...primaryShop,
-      ...(await fetchTranslations(lang, ["common"])),
-      ...(await fetchAllTags(lang)),
-      ...(await fetchTag(slug, lang)),
+      ...(await fetchTranslations(ctx.params.lang, ["common"])),
+      ...(await fetchAllTags(ctx.params.lang)),
+      ...(await fetchTag(ctx.params.slug, ctx.params.lang)),
     },
     // eslint-disable-next-line camelcase
     unstable_revalidate: 120, // Revalidate each two minutes

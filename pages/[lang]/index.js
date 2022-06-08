@@ -94,19 +94,20 @@ class ProductGridPage extends Component {
  * @param {String} lang - the shop's language
  * @returns {Object} the props
  */
-export async function getStaticProps({ params: { lang } }) {
-  const primaryShop = await fetchPrimaryShop({ language: lang });
-  const translations = await fetchTranslations(lang, ["common"]);
-  const tags = await fetchAllTags(lang);
+export async function getServerSideProps(ctx) {
+  console.info("getServerSideProps:ctx", Object.keys(ctx))
+  const primaryShop = await fetchPrimaryShop(ctx);
+  const translations = await fetchTranslations(ctx.params.lang, ["common"]);
+  const tags = await fetchAllTags(ctx.params.lang);
   if (!primaryShop) {
     return {
       props: {
         shop: null,
         ...translations,
       },
-      fetchAllTags: null,
-      // eslint-disable-next-line camelcase
-      unstable_revalidate: 1, // Revalidate immediately
+      // fetchAllTags: null,
+      // // eslint-disable-next-line camelcase
+      // unstable_revalidate: 1, // Revalidate immediately
     };
   }
 
@@ -117,20 +118,48 @@ export async function getStaticProps({ params: { lang } }) {
       ...tags,
     },
     // eslint-disable-next-line camelcase
-    unstable_revalidate: 120, // Revalidate each two minutes
+    // unstable_revalidate: 120, // Revalidate each two minutes
   };
+
 }
+// export async function getStaticProps(ctx) {//{ params: { lang } }
+//   console.info("getStaticProps:ctx", Object.keys(ctx))
+//   const primaryShop = await fetchPrimaryShop(ctx);
+//   const translations = await fetchTranslations(ctx.params.lang, ["common"]);
+//   const tags = await fetchAllTags(ctx.params.lang);
+//   if (!primaryShop) {
+//     return {
+//       props: {
+//         shop: null,
+//         ...translations,
+//       },
+//       fetchAllTags: null,
+//       // eslint-disable-next-line camelcase
+//       unstable_revalidate: 1, // Revalidate immediately
+//     };
+//   }
+
+//   return {
+//     props: {
+//       ...primaryShop,
+//       ...translations,
+//       ...tags,
+//     },
+//     // eslint-disable-next-line camelcase
+//     unstable_revalidate: 120, // Revalidate each two minutes
+//   };
+// }
 
 /**
  *  Static paths for the main layout
  *
  * @returns {Object} the paths
  */
-export async function getStaticPaths() {
-  return {
-    paths: locales.map((locale) => ({ params: { lang: locale } })),
-    fallback: false,
-  };
-}
+// export async function getStaticPaths() {
+//   return {
+//     paths: locales.map((locale) => ({ params: { lang: locale } })),
+//     fallback: false,
+//   };
+// }
 
 export default withApollo()(withCatalogItems(inject("routingStore", "uiStore")(ProductGridPage)));

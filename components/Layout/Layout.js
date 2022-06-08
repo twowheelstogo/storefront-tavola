@@ -7,6 +7,7 @@ import Breadcrumbs from "components/Breadcrumbs";
 import { Grid } from "@material-ui/core";
 import withCatalogItems from "containers/catalog/withCatalogItems";
 import { withApollo } from "lib/apollo/withApollo";
+import { setDefAddr } from "components/GeoAddress";
 
 import {
   Facebook as FacebookIcon,
@@ -33,10 +34,10 @@ const styles = (theme) => ({
     // padding: theme.spacing(3),
     [theme.breakpoints.down("sm")]: {
       // padding: theme.spacing(0)
-    }
+    },
   },
   Dividers: {
-    border: '10px solid transparent'
+    border: "10px solid transparent",
   },
   breadcrumbGrid: {
     padding: theme.spacing(1),
@@ -44,7 +45,7 @@ const styles = (theme) => ({
       marginLeft: theme.spacing(5),
     },
     ["@media (max-width:959px)"]: {
-      marginLeft: theme.spacing(0)
+      marginLeft: theme.spacing(0),
     },
 
     ["@media (min-width:600px)"]: {
@@ -58,10 +59,10 @@ const styles = (theme) => ({
   page: {
     backgroundColor: "#F6F6F6",
     ["@media (min-width:600px)"]: {
-      height: '43px',
+      height: "43px",
     },
     ["@media (max-width:599px)"]: {
-      height: '33px',
+      height: "33px",
     },
   },
 });
@@ -71,14 +72,19 @@ class Layout extends Component {
     children: PropTypes.node,
     classes: PropTypes.object,
     shop: PropTypes.shape({
-      name: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired,
     }),
     viewer: PropTypes.object,
     routerLabel: PropTypes.string,
     router: PropTypes.object,
     routerType: PropTypes.number,
     catalogItems: PropTypes.array,
-    product: PropTypes.object
+    product: PropTypes.object,
+  };
+
+  load = () => {
+    console.info("LOG: Layout:load:setDefAddr", this.props.viewer);
+    if (this.props.viewer) setDefAddr(this.props.viewer);
   };
 
   static defaultProps = {
@@ -90,14 +96,18 @@ class Layout extends Component {
     if (product_.lenght > 0) {
       Object.keys(product_).map((index) => {
         let items = product_[index];
-        tmpList.push(
-          { name: items["title"], slug: items['slug'], price: items["pricing"][0]["displayPrice"], photo: items['primaryImage']['URLs']['small'], tagsID: items['tagIds'][0] }
-        )
+        tmpList.push({
+          name: items["title"],
+          slug: items["slug"],
+          price: items["pricing"][0]["displayPrice"],
+          photo: items["primaryImage"]["URLs"]["small"],
+          tagsID: items["tagIds"][0],
+        });
       });
     }
 
     return tmpList;
-  }
+  };
 
   render() {
     const {
@@ -112,22 +122,20 @@ class Layout extends Component {
       routerLabel,
       router,
       routerType,
-      product
+      product,
     } = this.props;
+    this.load();
 
     const Logo = {
       urlLogo:
         "https://firebasestorage.googleapis.com/v0/b/twg-vehicle-dashboard.appspot.com/o/Iconos%2FLogo-Tavola-Blanco.png?alt=media&token=5bf38dd2-f757-4c33-994f-2c03e066d460",
-    }
+    };
 
     const Descripcion = {
       urlLogo: Logo.urlLogo,
       Mensaje1: "Contáctenos",
       Mensaje2: "Encuétrenos",
-      ContenidoMensaje1: [
-        "Galerías Tiffany",
-        "+502 22286310",
-      ],
+      ContenidoMensaje1: ["Galerías Tiffany", "+502 22286310"],
       ContenidoMensaje2: [
         // { Titulo: "Sobre Nosotros", ruta: "/sobre" },
         // { Titulo: "Extra", ruta: "/sobre" },
@@ -138,7 +146,6 @@ class Layout extends Component {
         { Icono: <FacebookIcon />, ruta: "https://www.facebook.com/latavolabistroisn/" },
       ],
     };
-
 
     let products = this.productList_((this.props.catalogItems || []).map((items) => items.node.product));
 
@@ -163,17 +170,17 @@ class Layout extends Component {
 
           {
             <>
-              {routerType === 2 ?
+              {routerType === 2 ? (
                 <div className={classes.page}>
                   <Grid container>
                     <Grid item xs={12} className={classes.breadcrumbGrid}>
-                      <Breadcrumbs isPDP tagId={routerLabel} product={product} />  
+                      <Breadcrumbs isPDP tagId={routerLabel} product={product} />
                     </Grid>
                   </Grid>
                 </div>
-                :
+              ) : (
                 <BreadcrumbsSwitch routerLabel={routerLabel} router={router} routerType={routerType} />
-              }
+              )}
             </>
           }
 

@@ -259,11 +259,11 @@ class CartPage extends Component {
  * @param {String} lang - the shop's language
  * @returns {Object} props
  */
-export async function getServerSideProps({ params: { lang } }) {
+export async function getServerSideProps(ctx) {//{ params: { lang } }
   return {
     props: {
-      ...(await fetchPrimaryShop({ language: lang })),
-      ...(await fetchTranslations(lang, ["common"])),
+      ...(await fetchPrimaryShop(ctx)),
+      ...(await fetchTranslations(ctx.params.lang, ["common"])),
     },
   };
 }

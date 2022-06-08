@@ -87,3 +87,24 @@ mutation removeAccountAddressBookEntryMutation($input: RemoveAccountAddressBookE
     }
   }
 }
+
+mutation uAccountAddress($input: UpdateAccountAddressInput!) {
+  uAccountAddress(input: $input) {
+    address {
+      _id
+      isDef
+      address1
+      address2
+      city
+      company
+      country
+      fullName
+      isBillingDefault
+      isCommercial
+      isShippingDefault
+      phone
+      postal
+      region
+    }
+  }
+}

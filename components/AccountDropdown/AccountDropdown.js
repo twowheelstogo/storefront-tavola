@@ -9,9 +9,13 @@ import { AccountCircleOutline } from "mdi-material-ui";
 import Popover from "@material-ui/core/Popover";
 import useViewer from "hooks/viewer/useViewer";
 import Link from "components/Link";
+import GeoAddress from "components/GeoAddress/index.js";
 import useStores from "hooks/useStores";
 import EntryModal from "../Entry/EntryModal";
 import getAccountsHandler from "../../lib/accountsServer.js";
+import { withApollo } from "lib/apollo/withApollo";
+import { useApolloClient } from "@apollo/client";
+import GoogleSignIn from "components/GoogleSignIn";
 
 const useStyles = makeStyles((theme) => ({  
   accountDropdown: {
@@ -23,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
   marginBottom: {
     marginBottom: theme.spacing(2),
     backgroundColor: theme.palette.background.TextTheme, 
-    border:"1px solid"
   },
   emailUser: {
     fontWeight: "700",
@@ -71,12 +74,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.botones,    
     color: theme.palette.colors.BotonColor,    
     fontWeight: "800",    
+    width:'100%',
     "&:hover": {      
       backgroundColor: theme.palette.secondary.botones,    
       color: theme.palette.colors.BotonColor,
-      borderColor: theme.palette.secondary.botones,   
       }
   },  
+  buttonLink:{
+    width:'100%'
+  },
   Borde:{
     marginTop: "0.5rem",
     marginRight: "1rem",        
@@ -94,6 +100,7 @@ const AccountDropdown = (props) => {
   const [viewer, , refetch] = useViewer();
   const { accountsClient } = getAccountsHandler();
   const isAuthenticated = viewer && viewer._id;
+  const client = useApolloClient();
 
   useEffect(() => {
     // Open the modal in case of reset-password link
@@ -148,9 +155,13 @@ const AccountDropdown = (props) => {
         <div className={classes.accountDropdown}>
           {isAuthenticated ? (
             <Fragment >
+              <h3> Ubicación de Envío </h3>
               <div className={classes.marginBottom}>
-                <Link href="/profile/address">
-                  <Button  className={classes.BotonPrincipal} fullWidth>
+                <GeoAddress client={client} {...props} viewer={viewer} refetch={refetch}/>
+              </div>
+              <div className={classes.marginBottom}>
+                <Link href="/profile/address" className={classes.buttonLink}>
+                  <Button  className={classes.BotonPrincipal}>
                     Perfil
                   </Button>
                 </Link>
@@ -166,6 +177,7 @@ const AccountDropdown = (props) => {
             </Fragment>
           ) : (
             <Fragment>
+              <GoogleSignIn/>
               <div className={classes.authContent}>
                 <Button className={classes.BotonPrincipal}  fullWidth onClick={() => setEntryModal("login")}>
                   Iniciar Sesión
@@ -183,4 +195,4 @@ const AccountDropdown = (props) => {
   );
 };
 
-export default inject("authStore")(AccountDropdown);
+export default withApollo()(inject("authStore")(AccountDropdown));

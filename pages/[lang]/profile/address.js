@@ -6,7 +6,8 @@ import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/core/styles";
 import ProfileAddressBook from "components/ProfileAddressBook";
 import ProfileMenu from "components/ProfileMenu";
-import Layout from "components/CustomLayout";
+import Layout from "components/Layout";
+// import Layout from "components/CustomLayout";
 import withAddressBook from "containers/address/withAddressBook";
 import { withApollo } from "lib/apollo/withApollo";
 
@@ -82,11 +83,13 @@ class ProfileAddressBookPage extends Component {
  *
  * @returns {Object} the props
  */
-export async function getStaticProps({ params: { lang } }) {
+export async function getStaticProps(ctx) {//{ params: { lang } }
+	console.info("getStaticProps:ctx", Object.keys(ctx))
+
 	return {
 		props: {
-			...await fetchPrimaryShop(lang),
-			...await fetchTranslations(lang, ["common"])
+			...await fetchPrimaryShop(ctx),
+			...await fetchTranslations(ctx.params.lang, ["common"])
 		}
 	};
 }

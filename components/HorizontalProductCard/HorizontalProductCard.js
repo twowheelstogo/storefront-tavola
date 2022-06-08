@@ -20,7 +20,7 @@ import {
 const styles = (theme) => ({
   imageProduct: {
     height: "100%",
-    width: "150px",
+    width: "180px",
     objectFit: "cover",
   },
   textPrice: {

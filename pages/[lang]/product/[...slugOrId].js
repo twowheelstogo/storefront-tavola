@@ -146,9 +146,11 @@ ProductDetailPage.propTypes = {
  *
  * @returns {Object} the props
  */
-export async function getStaticProps({ params: { slugOrId, lang } }) {
-  const productSlug = slugOrId && slugOrId[0];
-  const primaryShop = await fetchPrimaryShop({ language: lang });
+export async function getStaticProps(ctx) {//{ params: { slugOrId, lang } }
+  console.info("getStaticProps:ctx", Object.keys(ctx))
+
+  const productSlug = ctx.params.slugOrId && ctx.params.slugOrId[0];
+  const primaryShop = await fetchPrimaryShop(ctx);
 
   if (!primaryShop?.shop) {
     return {
@@ -166,9 +168,9 @@ export async function getStaticProps({ params: { slugOrId, lang } }) {
   return {
     props: {
       ...primaryShop,
-      ...(await fetchTranslations(lang, ["common", "productDetail"])),
+      ...(await fetchTranslations(ctx.params.lang, ["common", "productDetail"])),
       ...(await fetchCatalogProduct(productSlug)),
-      ...(await fetchAllTags(lang)),
+      ...(await fetchAllTags(ctx.params.lang)),
     },
     // eslint-disable-next-line camelcase
     unstable_revalidate: 120, // Revalidate each two minutes
