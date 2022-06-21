@@ -40,6 +40,7 @@ module.exports = {
     webpackConfig.resolve.alias.utils = path.join(__dirname, "utils");
     webpackConfig.resolve.alias.staticUtils = path.join(__dirname, "staticUtils");
     webpackConfig.resolve.alias.apiUtils = path.join(__dirname, "apiUtils");
+    webpackConfig.resolve.alias.routes = path.join(__dirname, "routes");
 
     return webpackConfig;
   },

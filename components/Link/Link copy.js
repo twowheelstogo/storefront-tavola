@@ -41,8 +41,7 @@ function Link({
   ...props
 }) {
   const classes = useStyles();
-  // const { locale } = useTranslation("common");
-  const source=null;
+  const { locale } = useTranslation("common");
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -69,19 +68,19 @@ function Link({
 
   const linkToUse = useMemo(() => route || to || href, [route, to, href]);
 
-  const hrefWithSource = useMemo(() => {
-    if (linkToUse === "/") return "/[source]";
-    return `/[source]${linkToUse}`;
-  }, [linkToUse, source]);
+  const hrefWithLocale = useMemo(() => {
+    if (linkToUse === "/") return "/[lang]";
+    return `/[lang]${linkToUse}`;
+  }, [linkToUse, locale]);
 
   const asWithLocale = useMemo(() => {
-    if (linkToUse === "/") return `/${source}`;
-    if (as) return `/${source}${as}`;
-    return `/${source}${linkToUse}`;
-  }, [linkToUse, source, as]);
+    if (linkToUse === "/") return `/${locale}`;
+    if (as) return `/${locale}${as}`;
+    return `/${locale}${linkToUse}`;
+  }, [linkToUse, locale, as]);
 
   return (
-    <NextLink href={hrefWithSource} as={asWithLocale} {...props} passHref>
+    <NextLink href={hrefWithLocale} as={asWithLocale} {...props} passHref>
       <a
         className={classNames(classes.anchor, className)}
         onClick={(event) => onClick(event)}
